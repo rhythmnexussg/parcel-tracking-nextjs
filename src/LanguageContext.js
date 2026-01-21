@@ -31,28 +31,20 @@ export const LanguageProvider = ({ children }) => {
       const hasVisited = localStorage.getItem('rhythmNexusHasVisited');
 
       if (!saved && !hasVisited) {
-        console.log('First visit detected - attempting IP-based language detection...');
+        console.log('First visit detected - showing language selection modal...');
         
         const ipResult = await detectLanguageFromIP();
         
         if (ipResult) {
           setDetectedCountry(ipResult.countryCode);
-          
-          if (ipResult.isMultiLingual && ipResult.languageOptions) {
-            console.log(`Multi-lingual country detected: ${ipResult.countryCode}`);
-            setLanguageOptions(ipResult.languageOptions);
-            setShowLanguageModal(true);
-            setLanguage(ipResult.languageCode);
-          } else {
-            console.log(`Setting language to: ${ipResult.languageCode} (from IP geolocation)`);
-            setLanguage(ipResult.languageCode);
-          }
+          setLanguage(ipResult.languageCode);
         } else {
           const browserLang = detectLanguageFromBrowser();
-          console.log(`Setting language to: ${browserLang} (from browser settings)`);
           setLanguage(browserLang);
         }
-
+        
+        // Always show language modal on first visit
+        setShowLanguageModal(true);
         localStorage.setItem('rhythmNexusHasVisited', 'true');
       }
     };

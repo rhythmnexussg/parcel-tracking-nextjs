@@ -85,6 +85,19 @@ const multiLanguageCountries = {
   'BN': [
     { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇧🇳' },
     { code: 'en', name: 'English', flag: '🇬🇧' }
+  ],
+  'CA': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'fr', name: 'Français (French)', flag: '🇫🇷' }
+  ],
+  'GB': [
+    { code: 'en', name: 'English', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+    { code: 'cy', name: 'Cymraeg (Welsh)', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' }
+  ],
+  'US': [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'es', name: 'Español (Spanish)', flag: '🇪🇸' },
+    { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' }
   ]
 };
 
