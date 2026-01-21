@@ -5,6 +5,54 @@ import { translations } from './translations';
 import { detectLanguageFromIP, detectLanguageFromBrowser } from './ipGeolocation';
 import LanguageModal from './LanguageModal';
 
+// Helper function to get language name
+const getLanguageName = (code) => {
+  const names = {
+    'en': 'English',
+    'de': 'Deutsch (German)',
+    'fr': 'Français (French)',
+    'es': 'Español (Spanish)',
+    'ja': '日本語 (Japanese)',
+    'zh': '简体中文 (Simplified Chinese)',
+    'zh-hant': '繁體中文 (Traditional Chinese)',
+    'pt': 'Português (Portuguese)',
+    'hi': 'हिन्दी (Hindi)',
+    'th': 'ภาษาไทย (Thai)',
+    'ms': 'Bahasa Melayu (Malay)',
+    'nl': 'Nederlands (Dutch)',
+    'id': 'Bahasa Indonesia (Indonesian)',
+    'cs': 'Čeština (Czech)',
+    'it': 'Italiano (Italian)',
+    'he': 'עברית (Hebrew)',
+    'ga': 'Gaeilge (Irish)',
+    'pl': 'Polski (Polish)',
+    'ko': '한국어 (Korean)',
+    'no': 'Norsk (Norwegian)',
+    'ru': 'Русский (Russian)',
+    'sv': 'Svenska (Swedish)',
+    'fi': 'Suomi (Finnish)',
+    'tl': 'Tagalog',
+    'vi': 'Tiếng Việt (Vietnamese)',
+    'cy': 'Cymraeg (Welsh)'
+  };
+  return names[code] || 'English';
+};
+
+// Helper function to get country flag
+const getCountryFlag = (code) => {
+  const flags = {
+    'CN': '🇨🇳', 'TW': '🇹🇼', 'HK': '🇭🇰', 'JP': '🇯🇵', 'KR': '🇰🇷',
+    'FR': '🇫🇷', 'DE': '🇩🇪', 'ES': '🇪🇸', 'PT': '🇵🇹', 'BR': '🇧🇷',
+    'IT': '🇮🇹', 'NL': '🇳🇱', 'NO': '🇳🇴', 'SE': '🇸🇪', 'PL': '🇵🇱',
+    'CZ': '🇨🇿', 'IN': '🇮🇳', 'TH': '🇹🇭', 'MY': '🇲🇾', 'ID': '🇮🇩',
+    'RU': '🇷🇺', 'PH': '🇵🇭', 'VN': '🇻🇳', 'IE': '🇮🇪', 'IL': '🇮🇱',
+    'BN': '🇧🇳', 'MO': '🇲🇴', 'BE': '🇧🇪', 'CH': '🇨🇭', 'US': '🇺🇸',
+    'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺', 'NZ': '🇳🇿', 'SG': '🇸🇬',
+    'FI': '🇫🇮'
+  };
+  return flags[code] || '🇬🇧';
+};
+
 export const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
@@ -27,26 +75,40 @@ export const LanguageProvider = ({ children }) => {
     const detectInitialLanguage = async () => {
       if (typeof window === 'undefined') return;
       
-      const saved = localStorage.getItem('rhythmNexusLanguage');
-      const hasVisited = localStorage.getItem('rhythmNexusHasVisited');
-
-      if (!saved && !hasVisited) {
-        console.log('First visit detected - showing language selection modal...');
+      console.log('Showing language selection modal...');
+      
+      const ipResult = await detectLanguageFromIP();
+      
+      if (ipResult) {
+        setDetectedCountry(ipResult.countryCode);
+        setLanguage(ipResult.languageCode);
         
-        const ipResult = await detectLanguageFromIP();
-        
-        if (ipResult) {
-          setDetectedCountry(ipResult.countryCode);
-          setLanguage(ipResult.languageCode);
+        // Set language options based on country
+        if (ipResult.isMultiLingual && ipResult.languageOptions) {
+          setLanguageOptions(ipResult.languageOptions);
         } else {
-          const browserLang = detectLanguageFromBrowser();
-          setLanguage(browserLang);
+          // For single-language countries (AU, NZ, etc.), only show English
+          if (ipResult.languageCode === 'en') {
+            setLanguageOptions([
+              { code: 'en', name: 'English', flag: '🇬🇧' }
+            ]);
+          } else {
+            // For other single-language countries, offer English + detected language
+            setLanguageOptions([
+              { code: 'en', name: 'English', flag: '🇬🇧' },
+              { code: ipResult.languageCode, name: getLanguageName(ipResult.languageCode), flag: getCountryFlag(ipResult.countryCode) }
+            ]);
+          }
         }
-        
-        // Always show language modal on first visit
-        setShowLanguageModal(true);
-        localStorage.setItem('rhythmNexusHasVisited', 'true');
+      } else {
+        const browserLang = detectLanguageFromBrowser();
+        setLanguage(browserLang);
+        // Default to English only if IP detection fails
+        setLanguageOptions([{ code: 'en', name: 'English', flag: '🇬🇧' }]);
       }
+      
+      // Always show language modal on every visit
+      setShowLanguageModal(true);
     };
 
     detectInitialLanguage();

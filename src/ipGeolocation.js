@@ -43,52 +43,128 @@ const countryToLanguageMap = {
 
 // Countries with multiple official languages
 const multiLanguageCountries = {
+  'AT': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'de', name: 'Deutsch (German)', flag: '🇦🇹' }
+  ],
+  'BE': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'nl', name: 'Nederlands (Dutch)', flag: '🇳🇱' },
+    { code: 'fr', name: 'Français (French)', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' }
+  ],
+  'BN': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇧🇳' }
+  ],
+  'CA': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'fr', name: 'Français (French)', flag: '🇫🇷' }
+  ],
+  'CN': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' }
+  ],
+  'CZ': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'cs', name: 'Čeština (Czech)', flag: '🇨🇿' }
+  ],
+  'FI': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'fi', name: 'Suomi (Finnish)', flag: '🇫🇮' },
+    { code: 'sv', name: 'Svenska (Swedish)', flag: '🇸🇪' }
+  ],
+  'FR': [
+    { code: 'fr', name: 'Français (French)', flag: '🇫🇷' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
+  ],
+  'DE': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' }
+  ],
+  'HK': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇭🇰' }
+  ],
   'IN': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳' }
   ],
-  'HK': [
-    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇭🇰' },
+  'ID': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'id', name: 'Bahasa Indonesia (Indonesian)', flag: '🇮🇩' }
+  ],
+  'IE': [
+    { code: 'ga', name: 'Gaeilge (Irish)', flag: '🇮🇪' },
     { code: 'en', name: 'English', flag: '🇬🇧' }
+  ],
+  'IL': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'he', name: 'עברית (Hebrew)', flag: '🇮🇱' }
+  ],
+  'IT': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'it', name: 'Italiano (Italian)', flag: '🇮🇹' }
+  ],
+  'JP': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'ja', name: '日本語 (Japanese)', flag: '🇯🇵' }
   ],
   'MO': [
-    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇲🇴' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇲🇴' },
     { code: 'pt', name: 'Português (Portuguese)', flag: '🇵🇹' }
-  ],
-  'BE': [
-    { code: 'fr', name: 'Français (French)', flag: '🇫🇷' },
-    { code: 'nl', name: 'Nederlands (Dutch)', flag: '🇳🇱' },
-    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' },
-    { code: 'en', name: 'English', flag: '🇬🇧' }
-  ],
-  'CH': [
-    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' },
-    { code: 'fr', name: 'Français (French)', flag: '🇫🇷' },
-    { code: 'it', name: 'Italiano (Italian)', flag: '🇮🇹' },
-    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'MY': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇲🇾' },
-    { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' }
+    { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
+    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇲🇾' }
+  ],
+  'NL': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'nl', name: 'Nederlands (Dutch)', flag: '🇳🇱' }
+  ],
+  'NO': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'no', name: 'Norsk (Norwegian)', flag: '🇳🇴' }
   ],
   'PH': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'tl', name: 'Tagalog', flag: '🇵🇭' }
   ],
-  'SG': [
+  'PL': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇸🇬' },
-    { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' }
+    { code: 'pl', name: 'Polski (Polish)', flag: '🇵🇱' }
   ],
-  'BN': [
-    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇧🇳' },
-    { code: 'en', name: 'English', flag: '🇬🇧' }
-  ],
-  'CA': [
+  'PT': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'fr', name: 'Français (French)', flag: '🇫🇷' }
+    { code: 'pt', name: 'Português (Portuguese)', flag: '🇵🇹' }
+  ],
+  'KR': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'ko', name: '한국어 (Korean)', flag: '🇰🇷' }
+  ],
+  'ES': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'es', name: 'Español (Spanish)', flag: '🇪🇸' }
+  ],
+  'SE': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'sv', name: 'Svenska (Swedish)', flag: '🇸🇪' }
+  ],
+  'CH': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' },
+    { code: 'fr', name: 'Français (French)', flag: '🇫🇷' },
+    { code: 'it', name: 'Italiano (Italian)', flag: '🇮🇹' }
+  ],
+  'TW': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇹🇼' }
+  ],
+  'TH': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'th', name: 'ภาษาไทย (Thai)', flag: '🇹🇭' }
   ],
   'GB': [
     { code: 'en', name: 'English', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
@@ -98,10 +174,19 @@ const multiLanguageCountries = {
     { code: 'en', name: 'English', flag: '🇺🇸' },
     { code: 'es', name: 'Español (Spanish)', flag: '🇪🇸' },
     { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' }
+  ],
+  'VN': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'vi', name: 'Tiếng Việt (Vietnamese)', flag: '🇻🇳' }
+  ],
+  'SG': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
+    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇸🇬' }
   ]
 };
 
-/**
+/** 
  * Check if a country has multiple language options
  * @param {string} countryCode - ISO country code
  * @returns {boolean}
