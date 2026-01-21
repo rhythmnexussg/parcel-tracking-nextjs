@@ -233,14 +233,21 @@ export async function detectLanguageFromIP() {
       return null;
     }
 
+    const isMultiLing = isMultiLanguageCountry(countryCode);
+    const langOptions = getLanguageOptions(countryCode);
+    
+    console.log(`Processing country: ${countryCode}`);
+    console.log(`Is multi-lingual check: ${isMultiLing}`);
+    console.log(`Language options:`, langOptions);
+
     const result = {
       countryCode: countryCode,
       languageCode: countryToLanguageMap[countryCode] || 'en',
-      isMultiLingual: isMultiLanguageCountry(countryCode),
-      languageOptions: isMultiLanguageCountry(countryCode) ? getLanguageOptions(countryCode) : null
+      isMultiLingual: isMultiLing,
+      languageOptions: langOptions
     };
 
-    console.log(`Detected country: ${countryCode}, default language: ${result.languageCode}, multi-lingual: ${result.isMultiLingual}, options:`, result.languageOptions);
+    console.log(`Final detection result:`, result);
     return result;
   } catch (error) {
     console.error('Error detecting IP location:', error);
