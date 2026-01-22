@@ -88,7 +88,12 @@ export const LanguageProvider = ({ children }) => {
       
       console.log('✓ First-time visitor or no saved preferences - proceeding with detection');
       
-      const ipResult ✓ Country: ${ipResult.countryCode}`);
+      const ipResult = await detectLanguageFromIP();
+      
+      console.log('IP Detection Result:', ipResult);
+      
+      if (ipResult) {
+        console.log(`✓ Country: ${ipResult.countryCode}`);
         console.log(`✓ Is Multi-Lingual: ${ipResult.isMultiLingual}`);
         console.log(`✓ Language Code: ${ipResult.languageCode}`);
         console.log('✓ Language Options:', ipResult.languageOptions);
@@ -130,12 +135,7 @@ export const LanguageProvider = ({ children }) => {
         setShowLanguageModal(false);
       }
       
-      console.log('=== LANGUAGE DETECTION COMPLETE ==='); const browserLang = detectLanguageFromBrowser();
-        setLanguage(browserLang);
-        // Mark as visited even if IP detection fails
-        localStorage.setItem('rhythmNexusHasVisited', 'true');
-        setShowLanguageModal(false);
-      }
+      console.log('=== LANGUAGE DETECTION COMPLETE ===');
     };
 
     detectInitialLanguage();
