@@ -253,34 +253,34 @@ export async function detectLanguageFromIP() {
     
     console.log(`Detected country code from IP: ${detectedCountryCode}`);
 
-    // Get browser timezone and languages for VPN detection
+    // Get browser timezone and languages for VPN detection (informational only)
     const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const browserLanguages = navigator.languages || [navigator.language];
     
-    // Enhanced VPN detection
+    // Enhanced VPN detection (for informational purposes)
     const vpnDetection = isPotentialVPN(data, browserTimezone, browserLanguages);
     
-    // Use actual country if VPN detected
-    const actualCountryCode = vpnDetection.isVPN ? vpnDetection.actualCountry : detectedCountryCode;
-    
-    console.log(`Actual country code (after VPN check): ${actualCountryCode}`);
     console.log(`VPN detected: ${vpnDetection.isVPN}`);
+    if (vpnDetection.isVPN) {
+      console.log(`Potential actual country: ${vpnDetection.actualCountry}`);
+    }
 
-    const isMultiLing = isMultiLanguageCountry(actualCountryCode);
-    const langOptions = getLanguageOptions(actualCountryCode);
+    // Use the detected IP country (VPN exit node if VPN is used)
+    const isMultiLing = isMultiLanguageCountry(detectedCountryCode);
+    const langOptions = getLanguageOptions(detectedCountryCode);
     
-    console.log(`Processing country: ${actualCountryCode}`);
+    console.log(`Processing country: ${detectedCountryCode}`);
     console.log(`Is multi-lingual check: ${isMultiLing}`);
     console.log(`Language options:`, langOptions);
 
     const result = {
-      countryCode: actualCountryCode,
-      detectedCountryCode: detectedCountryCode,
-      languageCode: countryToLanguageMap[actualCountryCode] || 'en',
+      countryCode: detectedCountryCode,
+      languageCode: countryToLanguageMap[detectedCountryCode] || 'en',
       isMultiLingual: isMultiLing,
       languageOptions: langOptions,
       isVPNDetected: vpnDetection.isVPN,
-      vpnLikelihood: vpnDetection.likelihood
+      vpnLikelihood: vpnDetection.likelihood,
+      estimatedActualCountry: vpnDetection.actualCountry
     };
 
     console.log(`Final detection result:`, result);
@@ -491,41 +491,32 @@ export async function detectLanguageFromIPWithRestrictions() {
     // Check for potential VPN usage with enhanced detection
     const vpnDetection = isPotentialVPN(data, browserTimezone, browserLanguages);
     
-    // Use the actual country if VPN is detected, otherwise use detected country
-    const actualCountryCode = vpnDetection.isVPN ? vpnDetection.actualCountry : detectedCountryCode;
-    
     console.log('=== Enhanced Detection Results ===');
     console.log('Detected Country (IP):', detectedCountryCode);
-    console.log('Actual Country:', actualCountryCode);
     console.log('Browser Timezone:', browserTimezone);
     console.log('Browser Languages:', browserLanguages);
     console.log('VPN Detected:', vpnDetection.isVPN);
     console.log('VPN Likelihood:', vpnDetection.likelihood);
+    if (vpnDetection.isVPN) {
+      console.log('Estimated Actual Country:', vpnDetection.actualCountry);
+    }
     console.log('=================================');
     
-    // Special handling for China - use actual country for language selection
-    let languageCode;
-    if (vpnDetection.isVPN && actualCountryCode === 'CN') {
-      // User is from China using VPN - use Chinese language
-      languageCode = 'zh';
-      console.log('VPN detected from China - using Chinese language');
-    } else {
-      // Normal case - use country mapping
-      languageCode = countryToLanguageMap[actualCountryCode] || 'en';
-    }
+    // Use detected IP country (VPN exit node if using VPN)
+    const languageCode = countryToLanguageMap[detectedCountryCode] || 'en';
 
     const result = {
-      countryCode: actualCountryCode, // Use actual country for language selection
-      detectedCountryCode: detectedCountryCode, // Keep original for reference
+      countryCode: detectedCountryCode, // Use detected IP country
       languageCode: languageCode,
-      isMultiLingual: isMultiLanguageCountry(actualCountryCode),
-      languageOptions: isMultiLanguageCountry(actualCountryCode) ? getLanguageOptions(actualCountryCode) : null,
+      isMultiLingual: isMultiLanguageCountry(detectedCountryCode),
+      languageOptions: isMultiLanguageCountry(detectedCountryCode) ? getLanguageOptions(detectedCountryCode) : null,
       isVPNDetected: vpnDetection.isVPN,
       vpnLikelihood: vpnDetection.likelihood,
       vpnIndicators: vpnDetection.indicators,
+      estimatedActualCountry: vpnDetection.actualCountry,
       browserTimezone: browserTimezone,
       browserLanguages: browserLanguages,
-      accessRestrictions: actualCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null
+      accessRestrictions: detectedCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null
     };
 
     console.log('Final Result:', result);
