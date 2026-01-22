@@ -253,11 +253,11 @@ export async function detectLanguageFromIP() {
     
     console.log(`Detected country code from IP: ${detectedCountryCode}`);
 
-    // Get browser timezone and languages for VPN detection (informational only)
+    // Get browser timezone and languages for VPN detection
     const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const browserLanguages = navigator.languages || [navigator.language];
     
-    // Enhanced VPN detection (for informational purposes)
+    // Enhanced VPN detection
     const vpnDetection = isPotentialVPN(data, browserTimezone, browserLanguages);
     
     console.log(`VPN detected: ${vpnDetection.isVPN}`);
@@ -265,17 +265,25 @@ export async function detectLanguageFromIP() {
       console.log(`Potential actual country: ${vpnDetection.actualCountry}`);
     }
 
-    // Use the detected IP country (VPN exit node if VPN is used)
-    const isMultiLing = isMultiLanguageCountry(detectedCountryCode);
-    const langOptions = getLanguageOptions(detectedCountryCode);
+    // Special handling: If VPN detected and actual country is China, use China
+    // For other countries, use detected IP country (VPN exit node)
+    let finalCountryCode = detectedCountryCode;
+    if (vpnDetection.isVPN && vpnDetection.actualCountry === 'CN') {
+      finalCountryCode = 'CN';
+      console.log('VPN detected from China - using China as country');
+    }
+
+    const isMultiLing = isMultiLanguageCountry(finalCountryCode);
+    const langOptions = getLanguageOptions(finalCountryCode);
     
-    console.log(`Processing country: ${detectedCountryCode}`);
+    console.log(`Processing country: ${finalCountryCode}`);
     console.log(`Is multi-lingual check: ${isMultiLing}`);
     console.log(`Language options:`, langOptions);
 
     const result = {
-      countryCode: detectedCountryCode,
-      languageCode: countryToLanguageMap[detectedCountryCode] || 'en',
+      countryCode: finalCountryCode,
+      detectedCountryCode: detectedCountryCode,
+      languageCode: countryToLanguageMap[finalCountryCode] || 'en',
       isMultiLingual: isMultiLing,
       languageOptions: langOptions,
       isVPNDetected: vpnDetection.isVPN,
@@ -502,21 +510,29 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
     console.log('=================================');
     
-    // Use detected IP country (VPN exit node if using VPN)
-    const languageCode = countryToLanguageMap[detectedCountryCode] || 'en';
+    // Special handling: If VPN detected and actual country is China, use China
+    // For other countries, use detected IP country (VPN exit node)
+    let finalCountryCode = detectedCountryCode;
+    if (vpnDetection.isVPN && vpnDetection.actualCountry === 'CN') {
+      finalCountryCode = 'CN';
+      console.log('VPN detected from China - using China as country');
+    }
+    
+    const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
 
     const result = {
-      countryCode: detectedCountryCode, // Use detected IP country
+      countryCode: finalCountryCode,
+      detectedCountryCode: detectedCountryCode,
       languageCode: languageCode,
-      isMultiLingual: isMultiLanguageCountry(detectedCountryCode),
-      languageOptions: isMultiLanguageCountry(detectedCountryCode) ? getLanguageOptions(detectedCountryCode) : null,
+      isMultiLingual: isMultiLanguageCountry(finalCountryCode),
+      languageOptions: isMultiLanguageCountry(finalCountryCode) ? getLanguageOptions(finalCountryCode) : null,
       isVPNDetected: vpnDetection.isVPN,
       vpnLikelihood: vpnDetection.likelihood,
       vpnIndicators: vpnDetection.indicators,
       estimatedActualCountry: vpnDetection.actualCountry,
       browserTimezone: browserTimezone,
       browserLanguages: browserLanguages,
-      accessRestrictions: detectedCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null
+      accessRestrictions: finalCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null
     };
 
     console.log('Final Result:', result);
