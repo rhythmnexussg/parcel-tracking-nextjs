@@ -252,8 +252,9 @@ export async function detectLanguageFromIP() {
   }
 
   try {
-    // Use ipapi.co free service (no API key required, 1000 requests/day)
-    const response = await fetch('https://ipapi.co/json/', {
+    // Use ip-api.com free service (no API key required, 45 requests/minute)
+    // More reliable than ipapi.co which has Cloudflare protection
+    const response = await fetch('http://ip-api.com/json/', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -270,7 +271,7 @@ export async function detectLanguageFromIP() {
     console.log(JSON.stringify(data, null, 2));
     console.log('===========================');
     
-    const detectedCountryCode = data.country_code; // e.g., 'CN', 'FR', 'US'
+    const detectedCountryCode = data.countryCode; // e.g., 'CN', 'FR', 'US'
 
     if (!detectedCountryCode) {
       console.error('CRITICAL: No country_code in IP response!');
@@ -401,7 +402,7 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
   const indicators = [];
   
   // 1. Check organization/ISP for VPN keywords (20 points)
-  const org = (ipData.org || '').toLowerCase();
+  const org = (ipData.org || ipData.isp || '').toLowerCase();
   const vpnKeywords = ['vpn', 'proxy', 'hosting', 'cloud', 'datacenter', 'digital ocean', 
                         'amazon', 'aws', 'azure', 'google cloud', 'cloudflare'];
   if (vpnKeywords.some(keyword => org.includes(keyword))) {
@@ -432,9 +433,9 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
   }
   
   // 3. Check browser language vs detected country (25 points)
-  if (browserLanguages.length > 0 && ipData.country_code) {
+  if (browserLanguages.length > 0 && (ipData.country_code || ipData.countryCode)) {
     const primaryLang = browserLanguages[0].split('-')[0].toLowerCase();
-    const detectedCountry = ipData.country_code;
+    const detectedCountry = ipData.country_code || ipData.countryCode;
     
     // Chinese language but not in Chinese region
     if ((primaryLang === 'zh' || browserLanguages[0].includes('zh-CN')) && 
@@ -486,7 +487,7 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
   return { 
     isVPN, 
     likelihood: vpnScore,
-    actualCountry: actualCountry || ipData.country_code,
+    actualCountry: actualCountry || ipData.country_code || ipData.countryCode,
     indicators 
   };
 }
@@ -507,7 +508,7 @@ export async function detectLanguageFromIPWithRestrictions() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-    const response = await fetch('https://ipapi.co/json/', {
+    const response = await fetch('http://ip-api.com/json/', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -528,7 +529,7 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
 
     const data = await response.json();
-    const detectedCountryCode = data.country_code;
+    const detectedCountryCode = data.countryCode;
 
     // Get browser timezone and languages for enhanced VPN detection
     const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
