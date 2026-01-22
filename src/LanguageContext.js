@@ -104,25 +104,20 @@ export const LanguageProvider = ({ children }) => {
         // Countries to exclude from language selection modal (AU, NZ)
         const excludedCountries = ['AU', 'NZ'];
         
-        const isExcluded = excludedCountries.includes(ipResult.countryCode);
-        console.log(`✓ Is Excluded Country: ${isExcluded}`);
-        
-        // Only show modal for multi-language countries (excluding AU and NZ) on first visit
-        if (ipResult.isMultiLingual && 
-            ipResult.languageOptions && 
+        // Show modal for ALL first-time visitors who have language options
+        if (ipResult.languageOptions && 
             ipResult.languageOptions.length > 0 &&
-            !isExcluded &&
             !hasVisitedBefore) {
-          console.log('🎉 SHOWING LANGUAGE MODAL - Multi-language country + First visit');
+          console.log('🎉 SHOWING LANGUAGE MODAL - First visit with language options');
+          console.log(`   Country: ${ipResult.countryCode}`);
+          console.log(`   Available languages: ${ipResult.languageOptions.length}`);
           setLanguageOptions(ipResult.languageOptions);
           setShowLanguageModal(true);
         } else {
           console.log('❌ NOT showing modal. Reasons:');
-          console.log('  - Multi-lingual:', ipResult.isMultiLingual);
           console.log('  - Has options:', ipResult.languageOptions?.length > 0);
-          console.log('  - Not excluded:', !isExcluded);
           console.log('  - First visit:', !hasVisitedBefore);
-          // Mark as visited for single-language countries too
+          // Mark as visited
           localStorage.setItem('rhythmNexusHasVisited', 'true');
           setShowLanguageModal(false);
         }

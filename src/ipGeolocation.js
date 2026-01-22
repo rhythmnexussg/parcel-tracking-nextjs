@@ -168,7 +168,8 @@ const multiLanguageCountries = {
   ],
   'GB': [
     { code: 'en', name: 'English', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
-    { code: 'cy', name: 'Cymraeg (Welsh)', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' }
+    { code: 'cy', name: 'Cymraeg (Welsh)', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' },
+    { code: 'ga', name: 'Gaeilge (Irish)', flag: '🇮🇪' }
   ],
   'US': [
     { code: 'en', name: 'English', flag: '🇺🇸' },
@@ -183,6 +184,20 @@ const multiLanguageCountries = {
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
     { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇸🇬' }
+  ],
+  'BR': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'pt', name: 'Português (Portuguese)', flag: '🇧🇷' }
+  ],
+  'RU': [
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'ru', name: 'Русский (Russian)', flag: '🇷🇺' }
+  ],
+  'AU': [
+    { code: 'en', name: 'English', flag: '🇦🇺' }
+  ],
+  'NZ': [
+    { code: 'en', name: 'English', flag: '🇳🇿' }
   ]
 };
 
