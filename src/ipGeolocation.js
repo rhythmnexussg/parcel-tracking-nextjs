@@ -230,6 +230,12 @@ export async function detectLanguageFromIP() {
     return null;
   }
 
+  // Only run on client side
+  if (typeof window === 'undefined') {
+    console.log('Server-side execution detected, skipping IP geolocation');
+    return null;
+  }
+
   try {
     // Use ipapi.co free service (no API key required, 1000 requests/day)
     const response = await fetch('https://ipapi.co/json/', {
