@@ -87,36 +87,29 @@ export const LanguageProvider = ({ children }) => {
         setDetectedCountry(ipResult.countryCode);
         setLanguage(ipResult.languageCode);
         
-        // Set language options based on country
-        if (ipResult.isMultiLingual && ipResult.languageOptions && ipResult.languageOptions.length > 0) {
-          console.log('Using multi-language options:', ipResult.languageOptions);
+        // Countries to exclude from language selection modal (AU, NZ)
+        const excludedCountries = ['AU', 'NZ'];
+        
+        // Only show modal for multi-language countries (excluding AU and NZ)
+        if (ipResult.isMultiLingual && 
+            ipResult.languageOptions && 
+            ipResult.languageOptions.length > 0 &&
+            !excludedCountries.includes(ipResult.countryCode)) {
+          console.log('Multi-language country detected - showing language modal');
           setLanguageOptions(ipResult.languageOptions);
+          setShowLanguageModal(true);
         } else {
-          console.log('Single-language country detected or no language options');
-          // For single-language countries (AU, NZ, etc.), only show English
-          if (ipResult.languageCode === 'en') {
-            console.log('English-only country');
-            setLanguageOptions([
-              { code: 'en', name: 'English', flag: '🇬🇧' }
-            ]);
-          } else {
-            // For other single-language countries, offer English + detected language
-            setLanguageOptions([
-              { code: 'en', name: 'English', flag: '🇬🇧' },
-              { code: ipResult.languageCode, name: getLanguageName(ipResult.languageCode), flag: getCountryFlag(ipResult.countryCode) }
-            ]);
-          }
+          console.log('Single-language country or excluded country - no modal shown');
+          // Don't show modal for single-language countries or excluded countries
+          setShowLanguageModal(false);
         }
       } else {
         console.warn('IP detection failed, falling back to browser language');
         const browserLang = detectLanguageFromBrowser();
         setLanguage(browserLang);
-        // Default to English only if IP detection fails
-        setLanguageOptions([{ code: 'en', name: 'English', flag: '🇬🇧' }]);
+        // Don't show modal if IP detection fails
+        setShowLanguageModal(false);
       }
-      
-      // Always show language modal on every visit
-      setShowLanguageModal(true);
     };
 
     detectInitialLanguage();
