@@ -224,6 +224,12 @@ export function getLanguageOptions(countryCode) {
  * @returns {Promise<Object>} Object with countryCode, languageCode, and isMultiLingual
  */
 export async function detectLanguageFromIP() {
+  // Only run on client side
+  if (typeof window === 'undefined') {
+    console.log('detectLanguageFromIP called on server, skipping');
+    return null;
+  }
+
   try {
     // Use ipapi.co free service (no API key required, 1000 requests/day)
     const response = await fetch('https://ipapi.co/json/', {
@@ -304,6 +310,11 @@ export async function detectLanguageFromIP() {
  * @returns {string} Language code from browser
  */
 export function detectLanguageFromBrowser() {
+  // Only run on client side
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return 'en'; // Default to English on server
+  }
+
   const browserLang = navigator.language || navigator.userLanguage;
   
   // Extract primary language code (e.g., 'en' from 'en-US')
@@ -464,6 +475,12 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
  * @returns {Promise<Object>} Enhanced detection result with access control
  */
 export async function detectLanguageFromIPWithRestrictions() {
+  // Only run on client side
+  if (typeof window === 'undefined') {
+    console.log('detectLanguageFromIPWithRestrictions called on server, skipping');
+    return null;
+  }
+
   try {
     // Add timeout to prevent hanging
     const controller = new AbortController();
