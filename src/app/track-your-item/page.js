@@ -926,9 +926,9 @@ function App() {
       
       {/* Search Order Section */}
       <div className="modern-form-container">
-        <h3>{t('didNotReceiveEmail')}</h3>
+        <h3>{t('searchByEmailOrPhone')}</h3>
         <div className="mb-3">
-          <label className="form-label">{t('searchByEmailOrPhone')}</label>
+          <label className="form-label">{t('enterEmailOrPhone')}</label>
 
           <input
             type="text"
