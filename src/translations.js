@@ -4,7 +4,8 @@ export const translations = {
     // Navigation
     home: "Home", blog: "Blog", aboutUs: "About Us", faq: "FAQ", contact: "Contact", trackPackage: "Track Package",
     // Tracking
-    parcelTracking: "Parcel Tracking", trackingNumber: "Tracking Number", destinationCountry: "Destination Country",
+    parcelTracking: "Parcel Tracking", serviceAnnouncement: "Service Announcement", trackingNumber: "Tracking Number", destinationCountry: "Destination Country",
+    usaStormAdvisory: "Severe winter storm is affecting several parts of USA. This will affect both postal and express delivery for packages into USA.",
     postcode: "Postcode", orderNumber: "Order Number (Example: DLTB1234567890)",
     fromDate: "From Date (REQUIRED for DHL verification)", toDate: "To Date (REQUIRED for DHL verification)",
     trackParcel: "Track Parcel", selectCourier: "-- Select Courier / Country --",
@@ -80,6 +81,11 @@ export const translations = {
     countriesNoMailbox: "Countries known to have mailbox/letterbox delivery unavailable: Brunei, China, India, Israel, Macau SAR China, Philippines, Poland and Vietnam.",
     rhythmNexusNotResponsible: "Rhythm Nexus is NOT RESPONSIBLE for handling the deliveries as it is out of our control and we would kindly prefer for you to track your item status instead.",
     issuesAfterDelivery: "Any issues with your delivery after 30/45 days (14 days for SpeedPost Express) or status show delivered but you didn't receive, please contact us",
+    // Service Announcement UI
+    filteredAllowedDestinations: "(Filtered for your allowed destinations)",
+    loadingAnnouncements: "Loading announcements...",
+    unableToLoadAnnouncements: "Unable to load service announcements at this time.",
+    viewOnSingPostWebsite: "View on SingPost Website →",
     cannotUseEmbed: "We are not able to use embed for tracking as most postal service websites do not support it.",
     clickLinkAbove: "Please click on the link above to track your parcel.",
     trackingDetailsNote: "Note that tracking details may not show up in search results, so it's recommended to paste the tracking number into the system to track the item.",
@@ -218,7 +224,8 @@ export const translations = {
   
   de: {
     home: "Startseite", blog: "Blog", aboutUs: "Über Uns", faq: "FAQ", contact: "Kontakt", trackPackage: "Paket Verfolgen",
-    parcelTracking: "Paketverfolgang", trackingNumber: "Tracking-Nummer", destinationCountry: "Zielland", postcode: "Postleitzahl",
+    parcelTracking: "Paketverfolgung", serviceAnnouncement: "Dienstankündigung", trackingNumber: "Tracking-Nummer", destinationCountry: "Zielland", postcode: "Postleitzahl",
+    usaStormAdvisory: "Schwerer Wintersturm betrifft mehrere Teile der USA. Dies beeinträchtigt sowohl Post- als auch Expresszustellung für Sendungen in die USA.",
     orderNumber: "Bestellnummer (Beispiel: DLTB1234567890)", fromDate: "Von Datum (ERFORDERLICH)", toDate: "Bis Datum (ERFORDERLICH)",
     trackParcel: "Paket Verfolgen", selectCourier: "-- Kurier / Land Wählen --", singaporeCouriers: "Singapurer Kurierdienste",
     topCountries: "Top 5 Länder", otherCountries: "Andere Länder", note: "HINWEIS", disclaimer: "HAFTUNGSAUSSCHLUSS",
@@ -279,6 +286,11 @@ export const translations = {
     countriesNoMailbox: "Länder, in denen bekanntermaßen keine Zustellung in den Briefkasten/Briefkasten erfolgt: Brunei, China, Indien, Israel, Macau SAR China, Philippinen, Polen und Vietnam.",
     rhythmNexusNotResponsible: "Rhythm Nexus ist NICHT VERANTWORTLICH für die Abwicklung der Lieferungen, da dies außerhalb unserer Kontrolle liegt und wir es vorziehen würden, dass Sie Ihren Artikelstatus verfolgen.",
     issuesAfterDelivery: "Bei Problemen mit Ihrer Lieferung nach 30/45 Tagen (14 Tagen für SpeedPost Express) oder wenn der Status als zugestellt angezeigt wird, Sie ihn aber nicht erhalten haben, kontaktieren Sie uns bitte",
+    // Service Announcement UI
+    filteredAllowedDestinations: "(Gefiltert für Ihre erlaubten Ziele)",
+    loadingAnnouncements: "Ankündigungen werden geladen...",
+    unableToLoadAnnouncements: "Dienstankündigungen können derzeit nicht geladen werden.",
+    viewOnSingPostWebsite: "Auf der SingPost-Website ansehen →",
     cannotUseEmbed: "Wir können keine Einbettung für die Verfolgung verwenden, da die meisten Websites von Postdiensten dies nicht unterstützen.",
     clickLinkAbove: "Bitte klicken Sie auf den Link oben, um Ihr Paket zu verfolgen.",
     trackingDetailsNote: "Beachten Sie, dass Tracking-Details möglicherweise nicht in den Suchergebnissen angezeigt werden. Es wird daher empfohlen, die Tracking-Nummer in das System einzufügen, um den Artikel zu verfolgen.",
@@ -411,7 +423,7 @@ export const translations = {
   
   fr: {
     home: "Accueil", blog: "Blog", aboutUs: "À Propos", faq: "FAQ", contact: "Contact", trackPackage: "Suivi de Colis",
-    parcelTracking: "Suivi de Colis", trackingNumber: "Numéro de Suivi", destinationCountry: "Pays de Destination", postcode: "Code Postal",
+    parcelTracking: "Suivi de Colis", usaStormAdvisory: "Une forte tempête hivernale touche plusieurs régions des États‑Unis. Cela affectera la distribution postale et express des colis vers les États‑Unis.", serviceAnnouncement: "Annonce de Service", trackingNumber: "Numéro de Suivi", destinationCountry: "Pays de Destination", postcode: "Code Postal",
     orderNumber: "Numéro de Commande (Exemple: DLTB1234567890)", fromDate: "De la Date (REQUIS)", toDate: "À la Date (REQUIS)",
     trackParcel: "Suivre le Colis", selectCourier: "-- Sélectionner Coursier / Pays --", singaporeCouriers: "Coursiers Singapouriens",
     topCountries: "Top 5 Pays", otherCountries: "Autres Pays", note: "REMARQUE", disclaimer: "AVERTISSEMENT",
@@ -604,7 +616,7 @@ export const translations = {
   
   es: {
     home: "Inicio", blog: "Blog", aboutUs: "Acerca De", faq: "Preguntas Frecuentes", contact: "Contacto", trackPackage: "Rastrear Paquete",
-    parcelTracking: "Rastreo de Paquetes", trackingNumber: "Número de Rastreo", destinationCountry: "País de Destino", postcode: "Código Postal",
+    parcelTracking: "Rastreo de Paquetes", usaStormAdvisory: "Una fuerte tormenta invernal afecta a varias partes de EE. UU. Esto afectará la entrega postal y exprés de paquetes hacia EE. UU.", serviceAnnouncement: "Anuncio de Servicio", trackingNumber: "Número de Rastreo", destinationCountry: "País de Destino", postcode: "Código Postal",
     orderNumber: "Número de Pedido (Ejemplo: DLTB1234567890)", fromDate: "Desde Fecha (REQUERIDO)", toDate: "Hasta Fecha (REQUERIDO)",
     trackParcel: "Rastrear Paquete", selectCourier: "-- Seleccionar Mensajería / País --", singaporeCouriers: "Mensajerías de Singapur",
     topCountries: "Top 5 Países", otherCountries: "Otros Países", note: "NOTA", disclaimer: "DESCARGO DE RESPONSABILIDAD",
@@ -797,7 +809,7 @@ export const translations = {
   
   ja: {
     home: "ホーム", blog: "ブログ", aboutUs: "について", faq: "よくある質問", contact: "お問い合わせ", trackPackage: "小包を追跡する",
-    parcelTracking: "小包追跡", trackingNumber: "追跡番号", destinationCountry: "配送先国", postcode: "郵便番号",
+    parcelTracking: "小包追跡", usaStormAdvisory: "米国の複数地域で厳しい冬の嵐が発生しています。米国向けの郵便および速達の配達に影響します。", serviceAnnouncement: "サービス発表", trackingNumber: "追跡番号", destinationCountry: "配送先国", postcode: "郵便番号",
     orderNumber: "注文番号（例：DLTB1234567890）", fromDate: "開始日（必須）", toDate: "終了日（必須）",
     trackParcel: "小包を追跡", selectCourier: "-- 配送業者/国を選択 --", singaporeCouriers: "シンガポール配送業者",
     topCountries: "トップ5国", otherCountries: "その他の国", note: "注", disclaimer: "免責事項",
@@ -985,7 +997,7 @@ export const translations = {
   
   zh: {
     home: "首页", blog: "博客", aboutUs: "关于我们", faq: "常见问题", contact: "联系我们", trackPackage: "追踪包裹",
-    parcelTracking: "包裹追踪", trackingNumber: "追踪号码", destinationCountry: "目标国家", postcode: "邮政编码",
+    parcelTracking: "包裹追踪", usaStormAdvisory: "严重的冬季风暴正影响美国多个地区。这将影响寄往美国的包裹的邮政和快递投递。", serviceAnnouncement: "服务公告", trackingNumber: "追踪号码", destinationCountry: "目标国家", postcode: "邮政编码",
     orderNumber: "订单号（示例：DLTB1234567890）", fromDate: "从日期（必需）", toDate: "至日期（必需）",
     trackParcel: "追踪包裹", selectCourier: "-- 选择快递/国家 --", optionSingPost: "🇸🇬 新加坡邮政 (SingPost)", singaporeCouriers: "新加坡快递商",
     topCountries: "前5个国家", otherCountries: "其他国家", note: "注意", disclaimer: "免责声明",
@@ -1411,10 +1423,10 @@ export const translations = {
     blogSwissVATContent2: "在瑞士增值税系统注册的卖家直接汇出收取的增值税，确保收件人在配送时不会产生额外的增值税费用。",
     blogSwissVATContent3: "对于通过Etsy或eBay的所有订单，瑞士增值税已在结账时收取，海关文件包含用于EDI提交的税务参考号。",
   },
-  
+
   "zh-hant": {
     home: "首頁", blog: "博客", aboutUs: "關於我們", faq: "常見問題", contact: "聯絡我們", trackPackage: "追蹤包裹",
-    parcelTracking: "包裹追蹤", trackingNumber: "追蹤號碼", destinationCountry: "目標國家", postcode: "郵政編碼",
+    parcelTracking: "包裹追蹤", usaStormAdvisory: "嚴重的冬季風暴正影響美國多個地區。這將影響寄往美國的包裹之郵政與快遞配送。", serviceAnnouncement: "服務公告", trackingNumber: "追蹤號碼", destinationCountry: "目標國家", postcode: "郵政編碼",
     orderNumber: "訂單號（示例：DLTB1234567890）", fromDate: "從日期（必需）", toDate: "至日期（必需）",
     trackParcel: "追蹤包裹", selectCourier: "-- 選擇快遞/國家 --", optionSingPost: "🇸🇬 新加坡郵政 (SingPost)", singaporeCouriers: "新加坡快遞商",
     topCountries: "前5個國家", otherCountries: "其他國家", note: "注意", disclaimer: "免責聲明",
@@ -1521,6 +1533,11 @@ export const translations = {
     orderNumberExample: "訂單編號（以DLTB開頭 - 示例：DLTB1234567890）:",
     deliveryRecordNote: "請注意，物品投遞後，記錄僅保存 7 天，之後將被刪除。",
     copyrightAllRights: "版權所有。",
+    // Service Announcement UI
+    filteredAllowedDestinations: "（依允許目的地篩選）",
+    loadingAnnouncements: "正在載入公告...",
+    unableToLoadAnnouncements: "目前無法載入服務公告。",
+    viewOnSingPostWebsite: "前往 SingPost 網站查看 →",
     countryAF: "阿富汗",
     countryAX: "奧蘭群島",
     countryAL: "阿爾巴尼亞",
@@ -1838,7 +1855,7 @@ export const translations = {
   
   pt: {
     home: "Início", blog: "Blog", aboutUs: "Sobre Nós", faq: "Perguntas Frequentes", contact: "Contato", trackPackage: "Rastrear Encomenda",
-    parcelTracking: "Rastreamento de Encomendas", trackingNumber: "Número de Rastreamento", destinationCountry: "País de Destino", postcode: "Código Postal",
+    parcelTracking: "Rastreamento de Encomendas", usaStormAdvisory: "Uma forte tempestade de inverno está afetando várias partes dos EUA. Isso afetará a entrega postal e expressa de encomendas para os EUA.", serviceAnnouncement: "Anúncio de Serviço", trackingNumber: "Número de Rastreamento", destinationCountry: "País de Destino", postcode: "Código Postal",
     orderNumber: "Número do Pedido (Exemplo: DLTB1234567890)", fromDate: "Data De (NECESSÁRIO)", toDate: "Data Até (NECESSÁRIO)",
     trackParcel: "Rastrear Encomenda", selectCourier: "-- Selecionar Transportadora / País --", optionSingPost: "🇸🇬 Singapore Post (SingPost)", singaporeCouriers: "Transportadoras de Singapura",
     topCountries: "Top 5 Países", otherCountries: "Outros Países", note: "NOTA", disclaimer: "ISENÇÃO DE RESPONSABILIDADE",
@@ -2267,7 +2284,7 @@ export const translations = {
   
   hi: {
     home: "होम", blog: "ब्लॉग", aboutUs: "हमारे बारे में", faq: "अक्सर पूछे जाने वाले प्रश्न", contact: "संपर्क करें", trackPackage: "पार्सल ट्रैक करें",
-    parcelTracking: "पार्सल ट्रैकिंग", trackingNumber: "ट्रैकिंग नंबर", destinationCountry: "गंतव्य देश", postcode: "पिन कोड",
+    parcelTracking: "पार्सल ट्रैकिंग", usaStormAdvisory: "USA के कई हिस्सों में भीषण शीतकालीन तूफान का प्रभाव पड़ रहा है। इससे USA के लिए डाक और एक्सप्रेस वितरण प्रभावित होगा।", serviceAnnouncement: "सेवा घोषणा", trackingNumber: "ट्रैकिंग नंबर", destinationCountry: "गंतव्य देश", postcode: "पिन कोड",
     orderNumber: "ऑर्डर नंबर (उदाहरण: DLTB1234567890)", fromDate: "से तारीख (आवश्यक)", toDate: "तक तारीख (आवश्यक)",
     trackParcel: "पार्सल ट्रैक करें", selectCourier: "-- कूरियर / देश चुनें --", optionSingPost: "🇸🇬 सिंगापुर पोस्ट (SingPost)", singaporeCouriers: "सिंगापुर कूरियर",
     topCountries: "शीर्ष 5 देश", otherCountries: "अन्य देश", note: "नोट", disclaimer: "अस्वीकरण",
@@ -2495,7 +2512,7 @@ export const translations = {
   
   th: {
     home: "หน้าหลัก", blog: "บล็อก", aboutUs: "เกี่ยวกับเรา", faq: "คำถามที่พบบ่อย", contact: "ติดต่อเรา", trackPackage: "ติดตามพัสดุ",
-    parcelTracking: "การติดตามพัสดุ", trackingNumber: "หมายเลขติดตาม", destinationCountry: "ประเทศปลายทาง", postcode: "รหัสไปรษณีย์",
+    parcelTracking: "การติดตามพัสดุ", usaStormAdvisory: "พายุฤดูหนาวรุนแรงกำลังกระทบหลายพื้นที่ของสหรัฐฯ จะส่งผลต่อการจัดส่งไปรษณีย์และด่วนไปยังสหรัฐฯ", serviceAnnouncement: "ประกาศบริการ", trackingNumber: "หมายเลขติดตาม", destinationCountry: "ประเทศปลายทาง", postcode: "รหัสไปรษณีย์",
     orderNumber: "หมายเลขคำสั่งซื้อ (ตัวอย่าง: DLTB1234567890)", fromDate: "จากวันที่ (จำเป็น)", toDate: "ถึงวันที่ (จำเป็น)",
     trackParcel: "ติดตามพัสดุ", selectCourier: "-- เลือกผู้ขนส่ง / ประเทศ --", optionSingPost: "🇸🇬 สไปรษณีย์สิงคโปร์ (SingPost)", singaporeCouriers: "บริษัทขนส่งสิงคโปร์",
     topCountries: "5 อันดับแรก", otherCountries: "ประเทศอื่น ๆ", note: "หมายเหตุ", disclaimer: "ข้อจำกัดความรับผิดชอบ",
@@ -2723,7 +2740,7 @@ export const translations = {
   
   ms: {
     home: "Laman Utama", blog: "Blog", aboutUs: "Tentang Kami", faq: "Soalan Lazim", contact: "Hubungi", trackPackage: "Jejak Bungkusan",
-    parcelTracking: "Penjejakan Bungkusan", trackingNumber: "Nombor Penjejakan", destinationCountry: "Negara Destinasi", postcode: "Poskod",
+    parcelTracking: "Penjejakan Bungkusan", usaStormAdvisory: "Ribut musim sejuk yang teruk menjejaskan beberapa bahagian di AS. Ini akan menjejaskan penghantaran pos dan ekspres bagi bungkusan ke AS.", serviceAnnouncement: "Pengumuman Perkhidmatan", trackingNumber: "Nombor Penjejakan", destinationCountry: "Negara Destinasi", postcode: "Poskod",
     orderNumber: "Nombor Pesanan (Contoh: DLTB1234567890)", fromDate: "Dari Tarikh (DIPERLUKAN)", toDate: "Hingga Tarikh (DIPERLUKAN)",
     trackParcel: "Jejak Bungkusan", selectCourier: "-- Pilih Kurier / Negara --", optionSingPost: "🇸🇬 Pos Singapura (SingPost)", singaporeCouriers: "Kurier Singapura",
     topCountries: "5 Negara Teratas", otherCountries: "Negara Lain",
@@ -2931,7 +2948,7 @@ export const translations = {
   
   nl: {
     home: "Home", blog: "Blog", aboutUs: "Over Ons", faq: "Veelgestelde Vragen", contact: "Contact", trackPackage: "Pakket Volgen",
-    parcelTracking: "Pakket Tracking", trackingNumber: "Trackingnummer", destinationCountry: "Bestemmingsland", postcode: "Postcode",
+    parcelTracking: "Pakket Tracking", usaStormAdvisory: "Een zware winterstorm treft meerdere delen van de VS. Dit beïnvloedt zowel post‑ als expresbezorging van pakketten naar de VS.", serviceAnnouncement: "Dienstaankondiging", trackingNumber: "Trackingnummer", destinationCountry: "Bestemmingsland", postcode: "Postcode",
     orderNumber: "Bestelnummer (Voorbeeld: DLTB1234567890)", fromDate: "Van Datum (VEREIST)", toDate: "Tot Datum (VEREIST)",
     trackParcel: "Pakket Volgen", selectCourier: "-- Koerier / Land Selecteren --", optionSingPost: "🇸🇬 Singapore Post (SingPost)", singaporeCouriers: "Singapore Koeriers",
     topCountries: "Top 5 Landen", otherCountries: "Andere Landen",
@@ -3318,7 +3335,7 @@ export const translations = {
   
   id: {
     home: "Beranda", blog: "Blog", aboutUs: "Tentang Kami", faq: "FAQ", contact: "Kontak", trackPackage: "Lacak Paket",
-    parcelTracking: "Pelacakan Paket", trackingNumber: "Nomor Pelacakan", destinationCountry: "Negara Tujuan", postcode: "Kode Pos",
+    parcelTracking: "Pelacakan Paket", usaStormAdvisory: "Badai musim dingin parah mempengaruhi beberapa bagian AS. Ini akan memengaruhi pengiriman pos dan ekspres untuk paket ke AS.", serviceAnnouncement: "Pengumuman Layanan", trackingNumber: "Nomor Pelacakan", destinationCountry: "Negara Tujuan", postcode: "Kode Pos",
     orderNumber: "Nomor Pesanan (Contoh: DLTB1234567890)", fromDate: "Dari Tanggal (WAJIB)", toDate: "Hingga Tanggal (WAJIB)",
     trackParcel: "Lacak Paket", selectCourier: "-- Pilih Kurir / Negara --", singaporeCouriers: "Kurir Singapura",
     topCountries: "5 Negara Teratas", otherCountries: "Negara Lain",
@@ -3698,7 +3715,7 @@ export const translations = {
   
   cs: {
     home: "Domů", blog: "Blog", aboutUs: "O Nás", faq: "Časté Dotazy", contact: "Kontakt", trackPackage: "Sledovat Balík",
-    parcelTracking: "Sledování Balíku", trackingNumber: "Sledovací Číslo", destinationCountry: "Cílová Země", postcode: "PSČ",
+    parcelTracking: "Sledování Balíku", usaStormAdvisory: "Silná zimní bouře postihuje několik částí USA. Ovlivní to poštovní i expresní doručování zásilek do USA.", serviceAnnouncement: "Oznámení služby", trackingNumber: "Sledovací Číslo", destinationCountry: "Cílová Země", postcode: "PSČ",
     orderNumber: "Číslo Objednávky (Příklad: DLTB1234567890)", fromDate: "Od Data (POŽADOVÁNO)", toDate: "Do Data (POŽADOVÁNO)",
     trackParcel: "Sledovat Balík", selectCourier: "-- Vybrat Kurýra / Zemi --", singaporeCouriers: "Singapurští Kurýři",
     topCountries: "Top 5 Zemí", otherCountries: "Jiné Země",
@@ -4085,7 +4102,7 @@ export const translations = {
   
   it: {
     home: "Home", blog: "Blog", aboutUs: "Chi Siamo", faq: "Domande Frequenti", contact: "Contatto", trackPackage: "Traccia Pacco",
-    parcelTracking: "Tracciamento Pacco", trackingNumber: "Numero di Tracciamento", destinationCountry: "Paese di Destinazione", postcode: "CAP",
+    parcelTracking: "Tracciamento Pacchi", usaStormAdvisory: "Una grave tempesta invernale sta colpendo diverse parti degli Stati Uniti. Questo influenzerà la consegna postale ed espressa dei pacchi verso gli Stati Uniti.", serviceAnnouncement: "Annuncio di Servizio", trackingNumber: "Numero di Tracciamento", destinationCountry: "Paese di Destinazione", postcode: "CAP",
     orderNumber: "Numero Ordine (Esempio: DLTB1234567890)", fromDate: "Da Data (RICHIESTO)", toDate: "A Data (RICHIESTO)",
     trackParcel: "Traccia Pacco", selectCourier: "-- Seleziona Corriere / Paese --", singaporeCouriers: "Corrieri Singapore",
     topCountries: "Top 5 Paesi", otherCountries: "Altri Paesi",
@@ -4293,7 +4310,7 @@ export const translations = {
   
   he: {
     home: "בית", blog: "בלוג", aboutUs: "אודות", faq: "שאלות נפוצות", contact: "צור קשר", trackPackage: "מעקב חבילה",
-    parcelTracking: "מעקב חבילות", trackingNumber: "מספר מעקב", destinationCountry: "מדינת יעד", postcode: "מיקוד",
+    parcelTracking: "מעקב חבילות", usaStormAdvisory: "סערת חורף קשה משפיעה על אזורים רבים בארה\"ב. הדבר ישפיע על משלוחי דואר ואקספרס של חבילות לארה\"ב.", serviceAnnouncement: "הודעת שירות", trackingNumber: "מספר מעקב", destinationCountry: "מדינת יעד", postcode: "מיקוד",
     orderNumber: "מספר הזמנה (דוגמה: DLTB1234567890)", fromDate: "מתאריך (נדרש)", toDate: "עד תאריך (נדרש)",
     trackParcel: "מעקב אחר חבילה", selectCourier: "-- בחר שליח / מדינה --", singaporeCouriers: "שליחים מסינגפור",
     topCountries: "5 המדינות המובילות", otherCountries: "מדינות אחרות",
@@ -4466,7 +4483,7 @@ export const translations = {
   
   ga: {
     home: "Baile", blog: "Blag", aboutUs: "Fúinn", faq: "Ceisteanna Coitianta", contact: "Teagmháil", trackPackage: "Rianú Pacáiste",
-    parcelTracking: "Rianú Pacáiste", trackingNumber: "Uimhir Rianaithe", destinationCountry: "Tír Ceann Scríbe", postcode: "Cód Poist",
+    parcelTracking: "Rianú Pacáiste", usaStormAdvisory: "Tá stoirme géara an gheimhridh ag cur isteach ar go leor réigiún de SAM. Cuirfidh sé seo isteach ar sheachadadh poist agus sainseachadadh do phacáistí chuig SAM.", serviceAnnouncement: "Fógra Seirbhíse", trackingNumber: "Uimhir Rianaithe", destinationCountry: "Tír Ceann Scríbe", postcode: "Cód Poist",
     orderNumber: "Uimhir Ordú (Sampla: DLTB1234567890)", fromDate: "Ó Dháta (RIACHTANACH)", toDate: "Go Dáta (RIACHTANACH)",
     trackParcel: "Rianú Pacáiste", selectCourier: "-- Roghnaigh Teachtaire / Tír --", singaporeCouriers: "Teachtairí Singeapór",
     topCountries: "5 Thír is Fearr", otherCountries: "Tíortha Eile",
@@ -4638,7 +4655,7 @@ export const translations = {
   
   pl: {
     home: "Strona Główna", blog: "Blog", aboutUs: "O Nas", faq: "Najczęściej Zadawane Pytania", contact: "Kontakt", trackPackage: "Śledź Paczkę",
-    parcelTracking: "Śledzenie Paczki", trackingNumber: "Numer Śledzenia", destinationCountry: "Kraj Docelowy", postcode: "Kod Pocztowy",
+    parcelTracking: "Śledzenie Paczki", usaStormAdvisory: "Silna burza zimowa dotyka kilka regionów USA. Wpłynie to na doręczanie przesyłek pocztowych i kurierskich do USA.", serviceAnnouncement: "Ogłoszenie Serwisowe", trackingNumber: "Numer Śledzenia", destinationCountry: "Kraj Docelowy", postcode: "Kod Pocztowy",
     orderNumber: "Numer Zamówienia (Przykład: DLTB1234567890)", fromDate: "Od Daty (WYMAGANE)", toDate: "Do Daty (WYMAGANE)",
     trackParcel: "Śledź Paczkę", selectCourier: "-- Wybierz Kuriera / Kraj --", singaporeCouriers: "Kurierzy z Singapuru",
     topCountries: "Top 5 Krajów", otherCountries: "Inne Kraje",
@@ -4845,7 +4862,7 @@ export const translations = {
   
   ko: {
     home: "홈", blog: "블로그", aboutUs: "회사 소개", faq: "자주 묻는 질문", contact: "문의", trackPackage: "소포 추적",
-    parcelTracking: "소포 추적", trackingNumber: "추적 번호", destinationCountry: "목적지 국가", postcode: "우편번호",
+    parcelTracking: "소포 추적", usaStormAdvisory: "미국 여러 지역에 심한 겨울 폭풍이 발생하고 있습니다. 미국으로 향하는 우편 및 특급 배송에 영향을 미칩니다.", serviceAnnouncement: "서비스 공지", trackingNumber: "추적 번호", destinationCountry: "목적지 국가", postcode: "우편번호",
     orderNumber: "주문 번호 (예: DLTB1234567890)", fromDate: "시작 날짜 (필수)", toDate: "종료 날짜 (필수)",
     trackParcel: "소포 추적", selectCourier: "-- 택배사 / 국가 선택 --", singaporeCouriers: "싱가포르 택배사",
     topCountries: "상위 5개 국가", otherCountries: "기타 국가", note: "참고", disclaimer: "면책 조항",
@@ -5034,7 +5051,7 @@ export const translations = {
   
   no: {
     home: "Hjem", blog: "Blogg", aboutUs: "Om Oss", faq: "Ofte Stilte Spørsmål", contact: "Kontakt", trackPackage: "Spor Pakke",
-    parcelTracking: "Pakkesporing", trackingNumber: "Sporingsnummer", destinationCountry: "Destinasjonsland", postcode: "Postnummer",
+    parcelTracking: "Pakkesporing", usaStormAdvisory: "En kraftig vinterstorm rammer flere deler av USA. Dette vil påvirke både post‑ og ekspresslevering av pakker til USA.", serviceAnnouncement: "Tjenestekunngjøring", trackingNumber: "Sporingsnummer", destinationCountry: "Destinasjonsland", postcode: "Postnummer",
     orderNumber: "Ordrenummer (Eksempel: DLTB1234567890)", fromDate: "Fra Dato (PÅKREVD)", toDate: "Til Dato (PÅKREVD)",
     trackParcel: "Spor Pakke", selectCourier: "-- Velg Kurir / Land --", singaporeCouriers: "Singapore Kurerer",
     topCountries: "Topp 5 Land", otherCountries: "Andre Land",
@@ -5157,7 +5174,7 @@ export const translations = {
   
   sv: {
     home: "Hem", blog: "Blogg", aboutUs: "Om Oss", faq: "Vanliga Frågor", contact: "Kontakt", trackPackage: "Spåra Paket",
-    parcelTracking: "Paketspårning", trackingNumber: "Spårningsnummer", destinationCountry: "Destinationsland", postcode: "Postnummer",
+    parcelTracking: "Paketspårning", usaStormAdvisory: "En kraftig vinterstorm påverkar flera delar av USA. Detta påverkar post‑ och expressleveranser av paket till USA.", serviceAnnouncement: "Servicemeddellande", trackingNumber: "Spårningsnummer", destinationCountry: "Destinationsland", postcode: "Postnummer",
     orderNumber: "Ordernummer (Exempel: DLTB1234567890)", fromDate: "Från Datum (KRÄVS)", toDate: "Till Datum (KRÄVS)",
     trackParcel: "Spåra Paket", selectCourier: "-- Välj Kurir / Land --", singaporeCouriers: "Singapore Kurirer",
     topCountries: "Topp 5 Länder", otherCountries: "Andra Länder",
@@ -5280,7 +5297,7 @@ export const translations = {
   
   tl: {
     home: "Home", blog: "Blog", aboutUs: "Tungkol sa Amin", faq: "FAQ", contact: "Contact", trackPackage: "Track Package",
-    parcelTracking: "Parcel Tracking", trackingNumber: "Tracking Number", destinationCountry: "Destination Country", postcode: "Postcode",
+    parcelTracking: "Parcel Tracking", serviceAnnouncement: "Patalastas ng Serbisyo", trackingNumber: "Tracking Number", destinationCountry: "Destination Country", postcode: "Postcode",
     orderNumber: "Order Number (Halimbawa: DLTB1234567890)", fromDate: "From Date (REQUIRED)", toDate: "To Date (REQUIRED)",
     trackParcel: "Track Parcel", selectCourier: "-- Pumili ng Courier / Bansa --", singaporeCouriers: "Singapore Couriers",
     optionSingPost: "🇸🇬 Singapore Post (SingPost)",
@@ -5439,7 +5456,7 @@ export const translations = {
   
   vi: {
     home: "Trang Chủ", blog: "Blog", aboutUs: "Về Chúng Tôi", faq: "Câu Hỏi Thường Gặp", contact: "Liên Hệ", trackPackage: "Theo Dõi Kiện Hàng",
-    parcelTracking: "Theo Dõi Kiện Hàng", trackingNumber: "Số Theo Dõi", destinationCountry: "Quốc Gia Đích", postcode: "Mã Bưu Chính",
+    parcelTracking: "Theo Dõi Kiện Hàng", usaStormAdvisory: "Bão mùa đông nghiêm trọng đang ảnh hưởng đến nhiều khu vực của Hoa Kỳ. Điều này sẽ ảnh hưởng đến việc chuyển phát bưu chính và chuyển phát nhanh các kiện hàng vào Hoa Kỳ.", serviceAnnouncement: "Thông Báo Dịch Vụ", trackingNumber: "Số Theo Dõi", destinationCountry: "Quốc Gia Đích", postcode: "Mã Bưu Chính",
     orderNumber: "Số Đơn Hàng (Ví dụ: DLTB1234567890)", fromDate: "Từ Ngày (BẮT BUỘC)", toDate: "Đến Ngày (BẮT BUỘC)",
     optionSingPost: "🇸🇬 Singapore Post (SingPost)",
     countryAU: "🇦🇺 Úc",
@@ -5473,6 +5490,11 @@ export const translations = {
     countryES: "🇪🇸 Tây Ban Nha",
     countrySE: "🇸🇪 Thụy Điển",
     countryCH: "🇨🇭 Thụy Sĩ",
+    // Service Announcement UI
+    filteredAllowedDestinations: "(Được lọc theo quốc gia điểm đến được phép)",
+    loadingAnnouncements: "Đang tải thông báo...",
+    unableToLoadAnnouncements: "Hiện không thể tải thông báo dịch vụ.",
+    viewOnSingPostWebsite: "Xem trên trang web SingPost →",
     countryTW: "🇹🇼 Đài Loan",
     countryTH: "🇹🇭 Thái Lan",
     countryVN: "🇻🇳 Việt Nam", note: "LƯU Ý", disclaimer: "TUYÊN BỐ MIỄN TRỪ TRÁCH NHIỆM",
@@ -5560,8 +5582,9 @@ export const translations = {
   },
 
   fi: {
+      usaStormAdvisory: "Kova talvimyrsky vaikuttaa Yhdysvaltojen useilla alueilla. Tämä vaikuttaa sekä postiin että pikakuljetuksiin Yhdysvaltoihin.",
     home: "Etusivu", blog: "Blogi", aboutUs: "Tietoa meistä", faq: "UKK", contact: "Ota yhteyttä", trackPackage: "Seuraa pakettia",
-    parcelTracking: "Paketin seuranta", trackingNumber: "Seurantanumero", destinationCountry: "Kohdemaa", postcode: "Postinumero",
+    parcelTracking: "Paketin seuranta", serviceAnnouncement: "Palveluilmoitus", trackingNumber: "Seurantanumero", destinationCountry: "Kohdemaa", postcode: "Postinumero",
     orderNumber: "Tilausnumero (Esimerkki: DLTB1234567890)", fromDate: "Alkaen (VAADITAAN)", toDate: "Päättyen (VAADITAAN)",
     trackParcel: "Seuraa pakettia", selectCourier: "-- Valitse kuriiri / maa --", singaporeCouriers: "Singaporen kuriirit",
     topCountries: "Top 5 maata", otherCountries: "Muut maat", note: "HUOMAUTUS", disclaimer: "VASTUUVAPAUSLAUSEKE",
@@ -5573,6 +5596,11 @@ export const translations = {
     postcodeRequired: "Postinumero vaaditaan tälle kohteelle.",
     invalidUSZip: "Virheellinen USA:n postinumero. Käytä 5 numeroa tai ZIP+4.",
     failedGenerateURL: "Seuranta-URL:n luominen epäonnistui. Tarkista syöte.",
+    // Service Announcement UI
+    filteredAllowedDestinations: "(Suodatettu sallittujen kohteiden mukaan)",
+    loadingAnnouncements: "Ladataan ilmoituksia...",
+    unableToLoadAnnouncements: "Palveluilmoituksia ei voida ladata tällä hetkellä.",
+    viewOnSingPostWebsite: "Näytä SingPostin verkkosivulla →",
     trackingValidationSG: "Singaporen seurantanumeroiden on oltava: LG123456789SG, LP123456789SG, LT123456789SG, EZ123456789SG tai PX123456789SG. DHL-lähetyksille käytä 10-numeroista numeroa.",
     invalidSingPostFormat: "Virheellinen SingPost-seurantanumeron muoto.\\nHyväksytyt muodot:\\n• PP123456789SG → Prepaid Tracked Label\\n• SPNDD0000001234 → SpeedPost Standard Tracking",
     welcomeTitle: "Tervetuloa Rhythm Nexuksen verkkosivustolle!", purchaseInfo: "Osta meiltä virallisten kanaviemme kautta tai liity",
@@ -5746,8 +5774,9 @@ export const translations = {
   },
 
   ru: {
+      usaStormAdvisory: "Сильная зимняя буря затрагивает несколько регионов США. Это повлияет на почтовую и экспресс‑доставку посылок в США.",
     home: "Главная", blog: "Блог", aboutUs: "О нас", faq: "FAQ", contact: "Контакты", trackPackage: "Отследить посылку",
-    parcelTracking: "Отслеживание посылки", trackingNumber: "Номер отслеживания", destinationCountry: "Страна назначения", postcode: "Почтовый индекс",
+    parcelTracking: "Отслеживание посылки", serviceAnnouncement: "Сервисное объявление", trackingNumber: "Номер отслеживания", destinationCountry: "Страна назначения", postcode: "Почтовый индекс",
     orderNumber: "Номер заказа (пример: DLTB1234567890)", fromDate: "С даты (ОБЯЗАТЕЛЬНО)", toDate: "По дату (ОБЯЗАТЕЛЬНО)",
     trackParcel: "Отследить посылку", selectCourier: "-- Выберите курьера / страну --", singaporeCouriers: "Курьеры Сингапура",
     topCountries: "Топ 5 стран", otherCountries: "Другие страны", note: "ПРИМЕЧАНИЕ", disclaimer: "ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ",
@@ -5761,6 +5790,11 @@ export const translations = {
     failedGenerateURL: "Не удалось сгенерировать ссылку для отслеживания. Проверьте ввод.",
     trackingValidationSG: "Номера отслеживания для Сингапура должны быть: LG123456789SG, LP123456789SG, LT123456789SG, EZ123456789SG или PX123456789SG. Для отправлений DHL используйте 10-значные номера.",
     invalidSingPostFormat: "Неверный формат номера отслеживания SingPost.\nПринятые форматы:\n• PP123456789SG → Предоплаченный отслеживаемый ярлык\n• SPNDD0000001234 → Стандартное отслеживание SpeedPost",
+    // Service Announcement UI
+    filteredAllowedDestinations: "(Отфильтровано по разрешённым направлениям)",
+    loadingAnnouncements: "Загрузка объявлений...",
+    unableToLoadAnnouncements: "Не удаётся загрузить объявления службы в данный момент.",
+    viewOnSingPostWebsite: "Смотреть на сайте SingPost →",
     welcomeTitle: "Добро пожаловать на сайт Rhythm Nexus!", purchaseInfo: "Покупайте у нас через официальные каналы или присоединяйтесь к нашей",
     telegramGroup: "группе Telegram", forUpdates: "для официальных обновлений.", ourStores: "Наши магазины",
     etsyStore: "Магазин Etsy", ebayStore: "Магазин eBay", shopeeStore: "Магазин Shopee", payhipStore: "Магазин Payhip",
@@ -5968,10 +6002,11 @@ export const translations = {
   },
 
   cy: {
+      usaStormAdvisory: "Storm aeaf ddifrifol yn effeithio ar sawl rhan o’r UDA. Bydd hyn yn effeithio ar wasanaethau post a chyflym ar becynnau i’r UDA.",
     // Navigation
     home: "Hafan", blog: "Blog", aboutUs: "Amdanom Ni", faq: "Cwestiynau Cyffredin", contact: "Cysylltu", trackPackage: "Olrhain Parsel",
     // Tracking
-    parcelTracking: "Olrhain Parsel", trackingNumber: "Rhif Olrhain", destinationCountry: "Gwlad Cyrchfan",
+    parcelTracking: "Olrhain Parsel", serviceAnnouncement: "Hysbysiad Gwasanaeth", trackingNumber: "Rhif Olrhain", destinationCountry: "Gwlad Cyrchfan",
     postcode: "Cod Post", orderNumber: "Rhif Archeb (Enghraifft: DLTB1234567890)",
     fromDate: "O Ddyddiad (GOFYNNOL ar gyfer gwirio DHL)", toDate: "I Ddyddiad (GOFYNNOL ar gyfer gwirio DHL)",
     trackParcel: "Olrhain Parsel", selectCourier: "-- Dewis Cwmni Cludo / Gwlad --",
@@ -6074,6 +6109,11 @@ export const translations = {
     orderNumberExample: "Rhif Archeb (yn dechrau gyda DLTB - enghraifft: DLTB1234567890):",
     deliveryRecordNote: "Nodwch unwaith y mae'r eitem wedi'i dosbarthu, dim ond am hyd at 7 diwrnod y bydd y cofnod yn cael ei storio a bydd yn cael ei ddileu.",
     copyrightAllRights: "Cedwir pob hawl.",
+    // Service Announcement UI
+    filteredAllowedDestinations: "(Wedi'i hidlo ar gyfer eich cyrchfannau a ganiateir)",
+    loadingAnnouncements: "Llwytho hysbysiadau...",
+    unableToLoadAnnouncements: "Methu llwytho hysbysiadau gwasanaeth ar hyn o bryd.",
+    viewOnSingPostWebsite: "Gweld ar Wefan SingPost →",
     // Access restriction messages
     accessRestricted: "Mynediad wedi'i Gyfyngu",
     vpnDetectedMessage: "Defnydd VPN wedi'i ganfod. Diffoddwch VPN i gael mynediad i'r gwasanaeth hwn.",

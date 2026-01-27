@@ -5,8 +5,8 @@ Migrating React parcel tracking website to Next.js 14 with App Router.
 
 ## Progress Tracking
 - [x] Create copilot-instructions.md file
-- [ ] Get Next.js project setup info
-- [ ] Scaffold Next.js project structure
+- [x] Get Next.js project setup info
+- [x] Scaffold Next.js project structure
 - [ ] Migrate components and pages
 - [ ] Migrate assets and public files
 - [ ] Install dependencies

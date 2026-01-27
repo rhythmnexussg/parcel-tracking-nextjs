@@ -15,6 +15,130 @@ import { useLanguage } from "../../LanguageContext";
 import { LanguageSelector } from "../../LanguageSelector";
 import { detectLanguageFromIPWithRestrictions, isAccessAllowedFromChina } from "../../ipGeolocation";
 
+// --- Service Announcement Component ---
+const ServiceAnnouncement = ({ allowedDestinations }) => {
+  const { t, tStrict, language: currentLanguage } = useLanguage();
+  const [content, setContent] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        // Build URL with country filter if restrictions apply
+        // Otherwise API will default to all 34 shipped countries
+        let url = '/api/singpost-announcements';
+        if (allowedDestinations && allowedDestinations.length > 0) {
+          url += `?countries=${allowedDestinations.join(',')}`;
+        }
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch announcements');
+        }
+        
+        const html = await response.text();
+        setContent(html);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error loading announcements:', error);
+        setHasError(true);
+        setIsLoading(false);
+      }
+    };
+
+    fetchAnnouncements();
+  }, [allowedDestinations]);
+
+  return (
+    <div className="service-announcement-container" style={{
+      marginBottom: '2rem',
+      border: '2px solid #0066cc',
+      borderRadius: '8px',
+      overflow: 'hidden',
+      backgroundColor: '#f8f9fa'
+    }}>
+      <div style={{
+        backgroundColor: '#0066cc',
+        color: 'white',
+        padding: '12px 20px',
+        fontWeight: 'bold',
+        fontSize: '1.1rem'
+      }}>
+        📢 {t('serviceAnnouncement')}
+        {allowedDestinations && allowedDestinations.length > 0 && (
+          <span style={{ 
+            fontSize: '0.85rem', 
+            marginLeft: '10px',
+            opacity: 0.9,
+            fontWeight: 'normal'
+          }}>
+            {t('filteredAllowedDestinations') || '(Filtered for your allowed destinations)'}
+          </span>
+        )}
+      </div>
+      
+      {isLoading && (
+        <div style={{ 
+          padding: '60px 20px',
+          textAlign: 'center',
+          backgroundColor: 'white'
+        }}>
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p style={{ marginTop: '15px', color: '#666' }}>{t('loadingAnnouncements') || 'Loading announcements...'}</p>
+        </div>
+      )}
+      
+      {hasError && (
+        <div style={{ 
+          padding: '30px 20px',
+          textAlign: 'center',
+          backgroundColor: 'white'
+        }}>
+          <p style={{ color: '#666', marginBottom: '20px' }}>
+            {t('unableToLoadAnnouncements') || 'Unable to load service announcements at this time.'}
+          </p>
+          <a 
+            href="https://www.singpost.com/send-receive/service-announcements" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-block',
+              backgroundColor: '#0066cc',
+              color: 'white',
+              padding: '12px 30px',
+              borderRadius: '5px',
+              textDecoration: 'none',
+              fontWeight: '600',
+              fontSize: '1rem',
+            }}
+          >
+            {t('viewOnSingPostWebsite') || 'View on SingPost Website →'}
+          </a>
+        </div>
+      )}
+      
+      {!isLoading && !hasError && content && (
+        <iframe
+          key={`announcements-${currentLanguage}-${allowedDestinations ? allowedDestinations.join('-') : 'all'}`}
+          src={`/api/singpost-announcements${allowedDestinations && allowedDestinations.length > 0 ? '?countries=' + allowedDestinations.join(',') + '&' : '?'}lang=${currentLanguage}&_ts=${Date.now()}`}
+          style={{
+            width: '100%',
+            minHeight: '500px',
+            border: 'none',
+            backgroundColor: 'white'
+          }}
+          title="SingPost Service Announcements"
+          sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+        />
+      )}
+    </div>
+  );
+};
+
 // --- Navigation Component ---
 const Navigation = () => {
   const { t } = useLanguage();
@@ -265,8 +389,42 @@ const countryNameMap = {
   SG: "Singapore",
 };
 
+// Postal operator display names by destination country code
+const postalOperatorNames = {
+  US: "USPS",
+  GB: "Royal Mail",
+  CA: "Canada Post",
+  NZ: "NZ Post",
+  DE: "Deutsche Post",
+  FR: "La Poste",
+  CH: "Swiss Post",
+  SE: "PostNord",
+  NL: "PostNL",
+  BE: "bpost",
+  AT: "Österreichische Post",
+  HK: "Hongkong Post",
+  IN: "India Post",
+  ID: "Pos Indonesia",
+  IE: "An Post",
+  IL: "Israel Post",
+  IT: "Poste Italiane",
+  JP: "Japan Post",
+  MO: "Macau Post",
+  MY: "Pos Malaysia",
+  NO: "Posten Norge",
+  PH: "PHLPost",
+  PL: "Poczta Polska",
+  PT: "CTT Portugal Post",
+  KR: "Korea Post",
+  ES: "Correos",
+  TW: "Chunghwa Post",
+  TH: "Thailand Post",
+  VN: "VNPost",
+  BN: "PosBru",
+};
+
 function App() {
-  const { t } = useLanguage();
+  const { t, tStrict, language: currentLanguage } = useLanguage();
 
   const [trackingNumber, setTrackingNumber] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
@@ -287,8 +445,9 @@ function App() {
   // Use epacKnownAs in JSX now
   const [epacKnownAs, setEpacKnownAs] = useState("");
   const [isTrackParcelMode] = useState(false); 
+  const [activeEmbed, setActiveEmbed] = useState('dest');
   
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const [autoSubmit, setAutoSubmit] = useState(false);
   const router = useRouter();
   
@@ -308,14 +467,24 @@ function App() {
 ///     }
 ///   };
 
-  const setCountrySpecificMessage = useCallback((selectedCountry) => {
+  const setCountrySpecificMessage = (selectedCountry) => {
     let message = "";
     const countryMsgKey = `countryMsg${selectedCountry}`;
-    if (t(countryMsgKey) && t(countryMsgKey) !== countryMsgKey) {
-      message = t(countryMsgKey);
+
+    // Prefer only current-language translation; avoid English fallback unless language is 'en'
+    const localized = typeof tStrict === 'function' ? tStrict(countryMsgKey) : undefined;
+    if (localized) {
+      message = localized;
+    } else if (currentLanguage === 'en') {
+      // Show English only when current language is English
+      const fallback = t(countryMsgKey);
+      if (fallback && fallback !== countryMsgKey) {
+        message = fallback;
+      }
     }
+
     setAdditionalMessage(message);
-  }, [t]); 
+  }; 
 
   const handleSearchOrder = async (e) => {
     e.preventDefault();
@@ -345,6 +514,13 @@ function App() {
     setToDate("");
     setCountrySpecificMessage(selectedCountry);
   };
+
+  // Recompute country-specific important info when language or destination changes
+  useEffect(() => {
+    if (destinationCountry) {
+      setCountrySpecificMessage(destinationCountry);
+    }
+  }, [currentLanguage, destinationCountry, tStrict, setCountrySpecificMessage]);
 
   useEffect(() => {
     try {
@@ -448,6 +624,22 @@ function App() {
     };
 
     checkLocationAndAccess();
+  }, []);
+
+  const formatLabel = useCallback((key) => {
+    const label = t(key) || key;
+    return /[:：]\s*$/.test(label) ? label : `${label}:`;
+  }, [t]);
+
+  const formatLabelNoExample = useCallback((key) => {
+    const raw = t(key) || key;
+    const base = raw.replace(/\s*\(.*?\)\s*$/, '').trim();
+    return /[:：]\s*$/.test(base) ? base : `${base}:`;
+  }, [t]);
+
+  const scrollToEmbed = useCallback(() => {
+    const el = document.querySelector('.tracking-embed');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 
 
@@ -575,6 +767,8 @@ function App() {
     setTrackingUrl(url);
   }, [trackingNumber, destinationCountry, postcode, orderNumber, fromDate, toDate, router, setCountrySpecificMessage, userCountry, allowedDestinations, t]); 
   
+  const operatorName = postalOperatorNames[destinationCountry] || (countryNameMap[destinationCountry] ? `${countryNameMap[destinationCountry]} Post` : "");
+
   return (
     <>
       <Navigation />
@@ -597,6 +791,27 @@ function App() {
             
             <h1 className="mt-4">{t('parcelTracking')}</h1>
         </div>
+
+        {/* Critical Advisory (Top of Page, not in Service Announcements) */}
+        <div
+          className="critical-advisory-card"
+          style={{
+            border: '2px solid #b30000',
+            backgroundColor: '#ffe5e5',
+            color: '#660000',
+            borderRadius: '8px',
+            padding: '16px',
+            marginTop: '16px',
+            marginBottom: '16px'
+          }}
+        >
+          <h3 style={{ marginTop: 0, color: '#b30000' }}>
+            {t('usaStormAdvisory') || 'Severe winter storm is affecting several parts of USA. This will affect both postal and express delivery for packages into USA.'}
+          </h3>
+        </div>
+
+    {/* Service Announcement Section */}
+    <ServiceAnnouncement allowedDestinations={allowedDestinations} />
 
     {/* Wrapped Form in .modern-form-container */}
     <div className="modern-form-container">
@@ -635,48 +850,46 @@ function App() {
             disabled={accessBlocked}
           >
             <option value="" disabled>{t('selectCourier')}</option>
-            <optgroup label={t('singaporeCouriers')}>
-              <option value="SG">{t('optionSingPost')}</option>
-            </optgroup>
-            <optgroup label={t('topCountries')}>
-              <option value="AU">{t('countryAU')}</option>
-              <option value="CA">{t('countryCA')}</option>
-              <option value="DE">{t('countryDE')}</option>
-              <option value="GB">{t('countryGB')}</option>
-              <option value="US">{t('countryUS')}</option>
-            </optgroup>
-            <optgroup label={t('otherCountries')}>
-              <option value="AT">{t('countryAT')}</option>
-              <option value="BE">{t('countryBE')}</option>
-              <option value="BN">{t('countryBN')}</option>
-              <option value="CN">{t('countryCN')}</option>
-              <option value="CZ">{t('countryCZ')}</option>
-              <option value="FI">{t('countryFI')}</option>
-              <option value="FR">{t('countryFR')}</option>
-              <option value="HK">{t('countryHK')}</option>
-              <option value="IN">{t('countryIN')}</option>
-              <option value="ID">{t('countryID')}</option>
-              <option value="IE">{t('countryIE')}</option>
-              <option value="IL">{t('countryIL')}</option>
-              <option value="IT">{t('countryIT')}</option>
-              <option value="JP">{t('countryJP')}</option>
-              <option value="MO">{t('countryMO')}</option>
-              <option value="MY">{t('countryMY')}</option>
-              <option value="NL">{t('countryNL')}</option>
-              <option value="NZ">{t('countryNZ')}</option>
-              <option value="NO">{t('countryNO')}</option>
-              <option value="PH">{t('countryPH')}</option>
-              <option value="PL">{t('countryPL')}</option>
-              <option value="PT">{t('countryPT')}</option>
-              <option value="KR">{t('countryKR')}</option>
-              <option value="ES">{t('countryES')}</option>
-              <option value="SE">{t('countrySE')}</option>
-              <option value="CH">{t('countryCH')}</option>
-              <option value="TW">{t('countryTW')}</option>
-              <option value="TH">{t('countryTH')}</option>
-              <option value="VN">{t('countryVN')}</option>
-            </optgroup>
-            </select>
+            
+            {/* Singapore - always show unless restricted */}
+            {(!allowedDestinations || allowedDestinations.includes('SG')) && (
+              <optgroup label={t('singaporeCouriers')}>
+                <option value="SG">{t('optionSingPost')}</option>
+              </optgroup>
+            )}
+            
+            {/* Top Countries - filter if restrictions apply */}
+            {(() => {
+              const topCountries = ['AU', 'CA', 'DE', 'GB', 'US'];
+              const filteredTop = allowedDestinations 
+                ? topCountries.filter(c => allowedDestinations.includes(c))
+                : topCountries;
+              
+              return filteredTop.length > 0 && (
+                <optgroup label={t('topCountries')}>
+                  {filteredTop.map(code => (
+                    <option key={code} value={code}>{t(`country${code}`)}</option>
+                  ))}
+                </optgroup>
+              );
+            })()}
+            
+            {/* Other Countries - filter if restrictions apply */}
+            {(() => {
+              const otherCountries = ['AT', 'BE', 'BN', 'CN', 'CZ', 'FI', 'FR', 'HK', 'IN', 'ID', 'IE', 'IL', 'IT', 'JP', 'MO', 'MY', 'NL', 'NZ', 'NO', 'PH', 'PL', 'PT', 'KR', 'ES', 'SE', 'CH', 'TW', 'TH', 'VN'];
+              const filteredOther = allowedDestinations 
+                ? otherCountries.filter(c => allowedDestinations.includes(c))
+                : otherCountries;
+              
+              return filteredOther.length > 0 && (
+                <optgroup label={t('otherCountries')}>
+                  {filteredOther.map(code => (
+                    <option key={code} value={code}>{t(`country${code}`)}</option>
+                  ))}
+                </optgroup>
+              );
+            })()}
+          </select>
           </div>
 
         <div className="mb-4">
@@ -803,108 +1016,167 @@ function App() {
         <div className="tracking-results-card">
           <h3>{t('trackingResult')}</h3>
           <div className="tracking-details">
-            <p><strong>{t('trackingNumber')}</strong> {trackingNumber}</p>
-            {postcode && <p><strong>{t('postcode')}</strong> {postcode}</p>}
-            <p><strong>{t('destinationCountry')}</strong> {destinationCountry}</p>
-            <p><strong>{t('orderNumber')}</strong> {orderNumber}</p>
-            <p><strong>{t('postedDate')}</strong> {postedDate}</p>
-            <p><strong>{t('status')}</strong> {status}</p>
-            <p><strong>{t('shippedVia')}</strong> {shippedVia}</p>
+            <p><strong>{formatLabel('trackingNumber')}</strong> {trackingNumber}</p>
+            {postcode && <p><strong>{formatLabel('postcode')}</strong> {postcode}</p>}
+            <p><strong>{formatLabel('destinationCountry')}</strong> {destinationCountry}</p>
+            <p><strong>{formatLabelNoExample('orderNumber')}</strong> {orderNumber}</p>
+            <p><strong>{formatLabel('postedDate')}</strong> {postedDate}</p>
+            <p><strong>{formatLabel('status')}</strong> {status}</p>
+            <p><strong>{formatLabel('shippedVia')}</strong> {shippedVia}</p>
             
             {/* FIXED: Using epacKnownAs instead of calculating it again */}
             {epacKnownAs && (
               <div className="info-box">
                 <p>
-                  {t('thisServiceKnownAs')}{" "}
-                  <strong>{epacKnownAs}</strong> {t('in')}{" "}
+                  {t('thisServiceKnownAs')} {""}
+                  <strong>{epacKnownAs}</strong> {t('in')} {""}
                   {countryNameMap[destinationCountry]}.
                 </p>
               </div>
             )}
-          </div>
-          
-          <div className="tracking-links">
-            {/* 1️⃣ DHL Express ONLY (10-digit number) */}
-            {/^\d{10}$/.test(trackingNumber) && (
-              <p>
-                <a
-                  href={`${postalTrackingUrls.DHL}${trackingNumber}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="tracking-link"
-                >
-                  {t('viewTrackingDHL')}
-                </a>
-              </p>
+
+          {/* Tracking link buttons (SingPost / SpeedPost / DHL / Destination) */}
+          <div className="tracking-links" style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+            {/^(\d{10})$/.test(trackingNumber) && (
+              <button
+                type="button"
+                className="btn-secondary"
+                style={{ backgroundColor: '#e60000', color: '#fff' }}
+                onClick={() => { setActiveEmbed('dhl'); scrollToEmbed(); }}
+              >
+                View Tracking Information from DHL Express
+              </button>
             )}
 
-            {/* 2️⃣ SpeedPost Express (PX → SingPost + DHL last-mile) */}
             {/^(PX\d{9}SG)$/.test(trackingNumber) && (
               <>
-                <p>
-                  <a
-                    href={`https://www.speedpost.com.sg/track-and-trace?tnt=${trackingNumber}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="tracking-link"
-                  >
-                    {t('viewTrackingSingPostSpeedPost')}
-                  </a>
-                </p>
-
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  style={{ backgroundColor: '#ff7f00', color: '#fff' }}
+                  onClick={() => { setActiveEmbed('speedpost'); scrollToEmbed(); }}
+                >
+                  View Tracking Information from Singapore SpeedPost
+                </button>
                 {fromDate && toDate && (
-                  <p>
-                    <a
-                      href={`https://mydhl.express.dhl/sg/en/tracking.html#/results?shipperReference=${trackingNumber}&fromDate=${fromDate}&toDate=${toDate}&destinationCountryCode=${destinationCountry}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="tracking-link"
-                    >
-                      {t('viewTrackingDHLLastMile')}
-                    </a>
-                  </p>
-                )}
-              </>
-            )}
-
-            {/* 3️⃣ Normal postal items (NOT DHL / NOT PX) */}
-            {!/^\d{10}$/.test(trackingNumber) &&
-             !/^PX\d{9}SG$/.test(trackingNumber) && (
-              <>
-                <p>
-                  <a
-                    href={`https://www.singpost.com/track-items?trackingid=${trackingNumber}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="tracking-link"
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    style={{ backgroundColor: '#e60000', color: '#fff' }}
+                    onClick={() => { setActiveEmbed('dhl'); scrollToEmbed(); }}
                   >
-                    {t('viewTrackingSingPost')}
-                  </a>
-                </p>
-
-                {destinationCountry !== "SG" && (
-                  <p>
-                    <a
-                      href={trackingUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="tracking-link"
-                    >
-                      {t('viewTrackingDestPost')} {countryNameMap[destinationCountry]} {t('post')}
-                    </a>
-                  </p>
+                    View Tracking Information from DHL Express (Shipper Reference)
+                  </button>
                 )}
               </>
             )}
+          </div>
+
+          {/* Embedded tracker: mount a single iframe to avoid repeated loads */}
+          <div className="tracking-embed" style={{ marginTop: '20px' }}>
+            {/^\d{10}$/.test(trackingNumber) && (
+              <iframe
+                key={`dhl-${trackingNumber}-${currentLanguage}`}
+                src={`/api/proxy-dhl?trackingNumber=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
+                title="DHL Tracking"
+                sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+              />
+            )}
+
+            {/^PX\d{9}SG$/.test(trackingNumber) && (
+              <iframe
+                key={`speedpost-${trackingNumber}-${currentLanguage}`}
+                src={`/api/proxy-destination?url=${encodeURIComponent(`https://www.speedpost.com.sg/track-and-trace?tnt=${trackingNumber}`)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
+                title="SpeedPost Tracking"
+                sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+              />
+            )}
+
+            {/* Normal postal: toggle between SingPost and Destination */}
+            {!/^\d{10}$/.test(trackingNumber) && !/^PX\d{9}SG$/.test(trackingNumber) && trackingUrl && (
+              <>
+                <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                  <button
+                    className={activeEmbed === 'singpost' ? 'btn-primary' : 'btn-secondary'}
+                    onClick={() => setActiveEmbed('singpost')}
+                    style={{ padding: '6px 10px' }}
+                  >
+                    View Tracking Information from Singapore Post
+                  </button>
+                  <button
+                    className={activeEmbed === 'dest' ? 'btn-primary' : 'btn-secondary'}
+                    onClick={() => setActiveEmbed('dest')}
+                    style={{ padding: '6px 10px' }}
+                  >
+                    View Tracking Information from {operatorName}
+                  </button>
+                </div>
+
+                {activeEmbed === 'singpost' && (
+                  <iframe
+                    key={`singpost-${trackingNumber}-${currentLanguage}`}
+                    src={`/api/proxy-singpost?trackingid=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                    style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
+                    title="SingPost Tracking"
+                    sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+                  />
+                )}
+
+                {activeEmbed === 'dest' && (() => {
+                  try {
+                    const u = new URL(trackingUrl);
+                    const allowed = [
+                      'www.usps.com', 'tools.usps.com', 'www.royalmail.com', 'www.nzpost.co.nz', 'www.canadapost-postescanada.ca',
+                      'jouw.postnl.nl', 'track.bpost.cloud', 'www.deutschepost.de', 'www.laposte.fr', 'service.post.ch', 'www.postnord.se',
+                      'auspost.com.au', 'www.post.at', 'www.hongkongpost.hk', 'emonitoring.poczta-polska.pl', 'www.correos.es',
+                      'service.epost.go.kr', 'trackings.post.japanpost.jp',
+                      // Additional destinations requested
+                      'bn.postglobal.online', 'www.posindonesia.co.id', 'www.anpost.com', 'israelpost.co.il',
+                      'www.ctt.gov.mo', 'www.pos.com.my', 'sporing.posten.no', 'tracking.phlpost.gov.ph',
+                      'postserv.post.gov.tw', 'track.thailandpost.com', 'vnpost.vn', 'www.ems.com.cn',
+                      'www.posti.fi', 'www.postaonline.cz'
+                    ];
+                    if (destinationCountry === 'US') {
+                      const usUrl = `https://tools.usps.com/go/TrackConfirmAction?tLabels=${trackingNumber}`;
+                      return (
+                        <iframe
+                          key={`dest-${trackingNumber}-${destinationCountry}-${currentLanguage}`}
+                          src={`/api/proxy-destination?url=${encodeURIComponent(usUrl)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                          style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
+                          title="USPS Tracking"
+                          sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+                          onError={(e) => { console.warn('USPS tracking embed failed:', e); }}
+                        />
+                      );
+                    } else if (allowed.includes(u.hostname)) {
+                      return (
+                        <iframe
+                          key={`dest-${trackingNumber}-${destinationCountry}-${currentLanguage}`}
+                          src={`/api/proxy-destination?url=${encodeURIComponent(trackingUrl)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                          style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
+                          title="Destination Post Tracking"
+                          sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+                          onError={(e) => { console.warn('Destination tracking embed failed:', e); }}
+                        />
+                      );
+                    }
+                  } catch {}
+                  return (
+                    <div style={{ padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
+                      {t('cannotUseEmbed')}
+                    </div>
+                  );
+                })()}
+              </>
+            )}
+          </div>
           </div>
         </div>
       )}
 
-      <p className="mt-4">{t('cannotUseEmbed') || 'We are not able to use embed for tracking as most postal service websites do not support it.'}</p>
-      <br />
-      <p>{t('clickLinkAbove') || 'Please click on the link above to track your parcel.'}</p>
-      <h2><u>{t('trackingDetailsNote') || 'Note that tracking details may not show up in search results, so it\'s recommended to paste the tracking number into the system to track the item.'}</u></h2>
-      <br />
+      {/* Removed outdated non-embed messaging per request */}
       <p>{t('thirdPartyWebsites') || 'You may also track your parcels on these third-party websites as well:'}</p>
 
       <div className="logo-container">
@@ -953,13 +1225,13 @@ function App() {
 
             {searchResults.map((order, idx) => (
               <div key={idx} className="search-result-item">
-                <p><strong>{t('orderNumberExample')}</strong> {order.orderNumber}</p>
-                <p><strong>{t('trackingNumber')}</strong> {order.trackingNumber}</p>
-                <p><strong>{t('destinationCountry')}</strong> {order.destinationCountry}</p>
-                <p><strong>{t('postcode')}</strong> {order.postcode}</p>
-                <p><strong>{t('status')}</strong> {order.status}</p>
-                <p><strong>{t('postedDate')}</strong> {order.postedDate}</p>
-                <p><strong>{t('shippedVia')}</strong> {order.shippedVia}</p>
+                <p><strong>{formatLabelNoExample('orderNumber')}</strong> {order.orderNumber}</p>
+                <p><strong>{formatLabel('trackingNumber')}</strong> {order.trackingNumber}</p>
+                <p><strong>{formatLabel('destinationCountry')}</strong> {order.destinationCountry}</p>
+                <p><strong>{formatLabel('postcode')}</strong> {order.postcode}</p>
+                <p><strong>{formatLabel('status')}</strong> {order.status}</p>
+                <p><strong>{formatLabel('postedDate')}</strong> {order.postedDate}</p>
+                <p><strong>{formatLabel('shippedVia')}</strong> {order.shippedVia}</p>
                 {/* For list items, we must access the map directly as epacKnownAs state is single-value */}
                 {order.shippedVia === "SingPost ePAC (aka SpeedPost Saver International)" &&
                   epacMapping[order.destinationCountry] && (

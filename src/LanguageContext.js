@@ -87,7 +87,13 @@ export const LanguageProvider = ({ children }) => {
         console.log('✓ Language Options:', ipResult.languageOptions);
         
         setDetectedCountry(ipResult.countryCode);
-        setLanguage(ipResult.languageCode);
+        const normalizeLang = (code) => {
+          const c = (code || 'en').toLowerCase();
+          if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
+          if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+          return c;
+        };
+        setLanguage(normalizeLang(ipResult.languageCode));
         
         // Show modal for ALL visitors with a detected country who haven't set a language
         if (ipResult.countryCode) {
@@ -111,7 +117,13 @@ export const LanguageProvider = ({ children }) => {
       } else {
         console.warn('❌ IP detection failed, falling back to browser language');
         const browserLang = detectLanguageFromBrowser();
-        setLanguage(browserLang);
+        const normalizeLang = (code) => {
+          const c = (code || 'en').toLowerCase();
+          if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
+          if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+          return c;
+        };
+        setLanguage(normalizeLang(browserLang));
         setShowLanguageModal(false);
       }
       
@@ -122,14 +134,36 @@ export const LanguageProvider = ({ children }) => {
   }, [isMounted]);
 
   const handleLanguageSelect = (langCode) => {
-    setLanguage(langCode);
+    const normalizeLang = (code) => {
+      const c = (code || 'en').toLowerCase();
+      if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
+      if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+      return c;
+    };
+    setLanguage(normalizeLang(langCode));
     // No localStorage - language only persists during current session
     setShowLanguageModal(false);
   };
 
   // Simple language change without any storage
   const changeLanguage = (langCode) => {
-    setLanguage(langCode);
+    const normalizeLang = (code) => {
+      const c = (code || 'en').toLowerCase();
+      if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
+      if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+      return c;
+    };
+    setLanguage(normalizeLang(langCode));
+  };
+
+  const hasTranslation = (key) => {
+    const langPack = translations[language] || {};
+    return Object.prototype.hasOwnProperty.call(langPack, key);
+  };
+
+  // Strict translator: returns only current-language value, no English fallback
+  const tStrict = (key) => {
+    return hasTranslation(key) ? translations[language][key] : undefined;
   };
 
   const t = (key) => {
@@ -137,7 +171,7 @@ export const LanguageProvider = ({ children }) => {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: changeLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage: changeLanguage, t, tStrict, hasTranslation }}>
       {children}
       <LanguageModal
         isOpen={showLanguageModal}
