@@ -99,7 +99,24 @@ header.sticky, .cookie-banner, .cookie-consent, .consent-banner { position: stat
         break;
       case 'www.canadapost-postescanada.ca':
         hostCss = `
-cp-header, cp-footer, .cookie-consent { display: none !important; }
+/* Hide all headers, footers, navigation, branding */
+cp-header, cp-footer, header, footer, .header, .footer, nav, .nav, .navigation, .navbar { display: none !important; }
+.cookie-consent, .cookie-banner, .cookie-notice { display: none !important; }
+/* Hide Canada Post footer sections */
+div[class*="footer"], div[class*="Footer"], section[class*="footer"] { display: none !important; }
+/* Hide menu, logo, search in header area */
+.menu, .Menu, [class*="menu"], [class*="Menu"] { display: none !important; }
+[class*="logo"], [class*="Logo"], img[alt*="Canada Post"] { display: none !important; }
+/* Hide "Connect with us", "Support", "Blogs" sections */
+h2, h3, h4 { display: none !important; }
+/* Hide social media links and footer content */
+[class*="social"], [class*="Social"], a[href*="facebook"], a[href*="twitter"], a[href*="instagram"] { display: none !important; }
+/* Ensure tracking content is visible */
+.track-results, .tracking-content, .tracking, [class*="track"], [class*="Track"] { display: block !important; visibility: visible !important; }
+main, #app, #root, [role="main"] { min-height: 600px !important; display: block !important; }
+body { padding-top: 0 !important; margin-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; }
+/* Force white background on tracking area */
+body, html, #app, #root { background: white !important; }
 `;
         break;
       case 'www.nzpost.co.nz':
@@ -123,6 +140,12 @@ header, footer, .cookie-banner { display: none !important; }
 #c-header, #c-footer, .cookie { display: none !important; }
 `;
         break;
+      case 'www.dhl.com':
+        hostCss = `
+/* Hide cookie banners */
+.cookie-banner, .cookie-consent, [class*="cookie"], [class*="Cookie"], [id*="cookie"] { display: none !important; }
+`;
+        break;
       case 'www.laposte.fr':
         hostCss = `
 header, footer, .sticky-consent { display: none !important; }
@@ -136,6 +159,12 @@ header, footer, .cookie-banner { display: none !important; }
       case 'www.postnord.se':
         hostCss = `
 header, footer, .cookie-consent { display: none !important; }
+`;
+        break;
+      case 'auspost.com.au':
+        hostCss = `
+ap-header, header, footer, .cookie-banner, .ap-cookie-banner { display: none !important; }
+.tracking-results, .track-details, main { min-height: 600px !important; display: block !important; }
 `;
         break;
       default:

@@ -4,14 +4,24 @@ import { sanitizeAndRewrite } from '../proxy-utils';
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const url = searchParams.get('url');
+    const urlParam = searchParams.get('url');
     const lang = searchParams.get('lang');
-    if (!url) {
+    if (!urlParam) {
       return NextResponse.json({ error: 'Missing url' }, { status: 400 });
     }
 
     // Only allow http/https and a whitelist of hostnames to reduce abuse.
-    const parsed = new URL(url);
+    let parsed;
+    try {
+      // Prefer already-decoded value (URLSearchParams decodes), but handle double-encoded inputs
+      parsed = new URL(urlParam);
+    } catch {
+      try {
+        parsed = new URL(decodeURIComponent(urlParam));
+      } catch (e) {
+        return NextResponse.json({ error: 'Invalid url parameter' }, { status: 400 });
+      }
+    }
     if (!['http:', 'https:'].includes(parsed.protocol)) {
       return NextResponse.json({ error: 'Invalid protocol' }, { status: 400 });
     }
@@ -35,7 +45,7 @@ export async function GET(request) {
     }
 
     const baseUrl = `${parsed.protocol}//${parsed.hostname}`;
-    const target = url;
+    const target = parsed.href;
     // Pin Accept-Language to English to keep base content predictable; Google Translate handles the target language via injection
     const clientUA = request.headers.get('user-agent') || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0 Safari/537.36';
 

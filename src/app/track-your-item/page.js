@@ -124,7 +124,7 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
       {!isLoading && !hasError && content && (
         <iframe
           key={`announcements-${currentLanguage}-${allowedDestinations ? allowedDestinations.join('-') : 'all'}`}
-          src={`/api/singpost-announcements${allowedDestinations && allowedDestinations.length > 0 ? '?countries=' + allowedDestinations.join(',') + '&' : '?'}lang=${currentLanguage}&_ts=${Date.now()}`}
+          src={`/api/singpost-announcements${allowedDestinations && allowedDestinations.length > 0 ? '?countries=' + allowedDestinations.join(',') + '&' : '?'}lang=${currentLanguage}`}
           style={{
             width: '100%',
             minHeight: '500px',
@@ -173,12 +173,12 @@ const postalTrackingUrls = {
   AT: 'https://www.post.at/s/sendungsdetails?snr=',
   BE: 'https://track.bpost.cloud/btr/web/#/search?lang=fr&itemCode=',
   BN: 'https://bn.postglobal.online/vpo/tracking/',
-  CA: 'https://www.canadapost-postescanada.ca/track-reperage/en#/search?searchFor=',
+  CA: 'https://www.canadapost-postescanada.ca/track-reperage/{lang}#/search?searchFor=',
   CN: 'https://www.ems.com.cn/qps/yjcx/',
   CZ: 'https://www.postaonline.cz/trackandtrace/-/zasilka/cislo?parcelNumbers=',
   FI: 'https://www.posti.fi/fi/seuranta#/lahetys/',
   FR: 'https://www.laposte.fr/outils/track-a-parcel?code=',
-  DE: 'https://www.deutschepost.de/sendung/simpleQuery.html?lang=en&extendedSearch=true&locale=en_GB&localesite=glo&consignmentnumber=',
+  DE: 'https://www.dhl.com/{lang}/home/{path}.html?tracking-id=',
   HK: 'https://www.hongkongpost.hk/en/mail_tracking/index.html?trackcode=',
   IN: 'https://www.indiapost.gov.in/track-result/article-number/',
   ID: 'https://www.posindonesia.co.id/id/tracking?key=',
@@ -200,7 +200,7 @@ const postalTrackingUrls = {
   CH: 'https://service.post.ch/ekp-web/ui/entry/search/',
   TW: 'https://postserv.post.gov.tw/pstmail/main_mail.jsp?MAILNO=',
   TH: 'http://track.thailandpost.com/tracking/default.aspx?lang=en&trackno=',
-  GB: 'https://www.royalmail.com/track-your-item#/tracking-results/',
+  GB: 'https://www.royalmail.com/{lang}track-your-item#/tracking-results/',
   US: 'https://tools.usps.com/go/TrackConfirmAction?tLabels=',
   VN: 'https://vnpost.vn/ca-nhan/chuyen-phat/chuyen-phat-trong-nuoc?code=',
   PX: 'https://www.speedpost.com.sg/track-and-trace?tnt=',
@@ -722,13 +722,30 @@ function App() {
     }
     else {
       if (/^PX\d{9}SG$/.test(trackingNumber)) {
-        url = postalTrackingUrls.PX + encodeURIComponent(trackingNumber);
+        url = postalTrackingUrls.PX + trackingNumber;
       } else if (/^(LG|LP|LT)\d{9}SG$/.test(trackingNumber)) {
-        url = postalTrackingUrls[destinationCountry] + encodeURIComponent(trackingNumber);
+        // Don't encode alphanumeric tracking numbers to avoid unnecessary % in URLs
+        url = postalTrackingUrls[destinationCountry] + trackingNumber;
+        // Canada Post: replace {lang} with current language (en or fr)
+        if (destinationCountry === 'CA') {
+          const canadaLang = currentLanguage === 'fr' ? 'fr' : 'en';
+          url = url.replace('{lang}', canadaLang);
+        }
+        // Germany DHL: replace {lang} and {path} based on current language
+        if (destinationCountry === 'DE') {
+          const deLang = currentLanguage === 'de' ? 'de-de' : 'de-en';
+          const dePath = currentLanguage === 'de' ? 'sendungsverfolgung' : 'tracking';
+          url = url.replace('{lang}', deLang).replace('{path}', dePath) + '&submit=1';
+        }
+        // Royal Mail GB: replace {lang} (cy/ for Welsh, empty for English)
+        if (destinationCountry === 'GB') {
+          const gbLang = currentLanguage === 'cy' ? 'cy/' : '';
+          url = url.replace('{lang}', gbLang);
+        }
       } else if (/^EZ\d{9}SG$/i.test(trackingNumber)) {
-        url = postalTrackingUrls[destinationCountry] + encodeURIComponent(trackingNumber);
+        url = postalTrackingUrls[destinationCountry] + trackingNumber;
       } else if ( /^\d{10}$/.test(trackingNumber)) {
-        url = postalTrackingUrls.DHL + encodeURIComponent(trackingNumber);
+        url = postalTrackingUrls.DHL + trackingNumber;
       } else {
         alert(t('trackingValidationSG'));
         return;
@@ -1077,7 +1094,7 @@ function App() {
             {/^\d{10}$/.test(trackingNumber) && (
               <iframe
                 key={`dhl-${trackingNumber}-${currentLanguage}`}
-                src={`/api/proxy-dhl?trackingNumber=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                src={`/api/proxy-dhl?trackingNumber=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}`}
                 style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
                 title="DHL Tracking"
                 sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
@@ -1087,7 +1104,7 @@ function App() {
             {/^PX\d{9}SG$/.test(trackingNumber) && (
               <iframe
                 key={`speedpost-${trackingNumber}-${currentLanguage}`}
-                src={`/api/proxy-destination?url=${encodeURIComponent(`https://www.speedpost.com.sg/track-and-trace?tnt=${trackingNumber}`)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                src={`/api/proxy-destination?url=${encodeURIComponent(`https://www.speedpost.com.sg/track-and-trace?tnt=${trackingNumber}`)}&lang=${currentLanguage}`}
                 style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
                 title="SpeedPost Tracking"
                 sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
@@ -1117,7 +1134,7 @@ function App() {
                 {activeEmbed === 'singpost' && (
                   <iframe
                     key={`singpost-${trackingNumber}-${currentLanguage}`}
-                    src={`/api/proxy-singpost?trackingid=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                    src={`/api/proxy-singpost?trackingid=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}`}
                     style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
                     title="SingPost Tracking"
                     sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
@@ -1128,9 +1145,9 @@ function App() {
                   try {
                     const u = new URL(trackingUrl);
                     const allowed = [
-                      'www.usps.com', 'tools.usps.com', 'www.royalmail.com', 'www.nzpost.co.nz', 'www.canadapost-postescanada.ca',
-                      'jouw.postnl.nl', 'track.bpost.cloud', 'www.deutschepost.de', 'www.laposte.fr', 'service.post.ch', 'www.postnord.se',
-                      'auspost.com.au', 'www.post.at', 'www.hongkongpost.hk', 'emonitoring.poczta-polska.pl', 'www.correos.es',
+                      'www.usps.com', 'tools.usps.com', 'www.nzpost.co.nz',
+                      'jouw.postnl.nl', 'track.bpost.cloud', 'www.dhl.com', 'www.laposte.fr', 'service.post.ch', 'www.postnord.se',
+                      'www.post.at', 'www.hongkongpost.hk', 'emonitoring.poczta-polska.pl', 'www.correos.es',
                       'service.epost.go.kr', 'trackings.post.japanpost.jp',
                       // Additional destinations requested
                       'bn.postglobal.online', 'www.posindonesia.co.id', 'www.anpost.com', 'israelpost.co.il',
@@ -1143,7 +1160,7 @@ function App() {
                       return (
                         <iframe
                           key={`dest-${trackingNumber}-${destinationCountry}-${currentLanguage}`}
-                          src={`/api/proxy-destination?url=${encodeURIComponent(usUrl)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                          src={`/api/proxy-destination?url=${encodeURIComponent(usUrl)}&lang=${currentLanguage}`}
                           style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
                           title="USPS Tracking"
                           sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
@@ -1151,10 +1168,14 @@ function App() {
                         />
                       );
                     } else if (allowed.includes(u.hostname)) {
+                      // Canada Post, Germany, UK: don't append &lang parameter (already in URL path)
+                      const proxyUrl = (destinationCountry === 'CA' || destinationCountry === 'DE' || destinationCountry === 'GB')
+                        ? `/api/proxy-destination?url=${trackingUrl}`
+                        : `/api/proxy-destination?url=${trackingUrl}&lang=${currentLanguage}`;
                       return (
                         <iframe
                           key={`dest-${trackingNumber}-${destinationCountry}-${currentLanguage}`}
-                          src={`/api/proxy-destination?url=${encodeURIComponent(trackingUrl)}&lang=${currentLanguage}&_ts=${Date.now()}`}
+                          src={proxyUrl}
                           style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
                           title="Destination Post Tracking"
                           sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
@@ -1165,7 +1186,11 @@ function App() {
                   } catch {}
                   return (
                     <div style={{ padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
-                      {t('cannotUseEmbed')}
+                      {operatorName} does not support tracking via embed. Please{' '}
+                      <a href={trackingUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc', fontWeight: 'bold' }}>
+                        click here
+                      </a>
+                      {' '}to track (opens in new tab).
                     </div>
                   );
                 })()}
