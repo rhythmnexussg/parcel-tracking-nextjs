@@ -544,7 +544,7 @@ function App() {
         setEpacKnownAs("");
       }
     }
-  }, [searchResults]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchResults, currentLanguage, t]);
 
   useEffect(() => {
     if (!isTrackParcelMode) {
@@ -559,7 +559,7 @@ function App() {
 
     const knownName = getEpacName(destinationCountry, t) || "";
     setEpacKnownAs(knownName);
-  }, [destinationCountry, isTrackParcelMode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [destinationCountry, isTrackParcelMode, currentLanguage, t]);
 
   useEffect(() => {
     if (!searchParams) return;
@@ -1153,7 +1153,7 @@ function App() {
                 style={{ backgroundColor: '#e60000', color: '#fff' }}
                 onClick={() => { setActiveEmbed('dhl'); scrollToEmbed(); }}
               >
-                View Tracking Information from DHL Express
+                {t('viewTrackingDHL')}
               </button>
             )}
 
@@ -1165,7 +1165,7 @@ function App() {
                   style={{ backgroundColor: '#ff7f00', color: '#fff' }}
                   onClick={() => { setActiveEmbed('speedpost'); scrollToEmbed(); }}
                 >
-                  View Tracking Information from Singapore SpeedPost
+                  {t('viewTrackingSingPostSpeedPost')}
                 </button>
                 {fromDate && toDate && (
                   <a
@@ -1175,7 +1175,7 @@ function App() {
                     className="btn-secondary"
                     style={{ backgroundColor: '#e60000', color: '#fff', }}
                   >
-                    View Tracking Information from DHL Express (Shipper Reference)
+                    {t('viewTrackingDHLShipperRef')}
                   </a>
                 )}
               </>
@@ -1187,21 +1187,21 @@ function App() {
 
             {/^\d{10}$/.test(trackingNumber) && (
               <div style={{ padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
-                DHL Express does not support tracking via embed. Please{' '}
+                {t('dhlNoEmbed')}{' '}
                 <a href={`https://mydhl.express.dhl/sg/en/tracking.html#/results?id=${trackingNumber}`}
                   target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc', fontWeight: 'bold' }}>
-                  click here
-                </a>{' '}to track (opens in new tab).
+                  {t('clickHere')}
+                </a>{' '}{t('toTrackNewTab')}
               </div>
             )}
 
             {/^PX\d{9}SG$/.test(trackingNumber) && (
               <div style={{ padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
-                SpeedPost Singapore does not support tracking via embed. Please{' '}
+                {t('speedPostNoEmbed')}{' '}
                 <a href={`https://www.speedpost.com.sg/track-and-trace?tnt=${trackingNumber}`}
                   target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc', fontWeight: 'bold' }}>
-                  click here
-                </a>{' '}to track (opens in new tab).
+                  {t('clickHere')}
+                </a>{' '}{t('toTrackNewTab')}
               </div>
             )}
 
@@ -1214,7 +1214,7 @@ function App() {
                     onClick={() => setActiveEmbed('singpost')}
                     style={{ padding: '6px 10px' }}
                   >
-                    View Tracking Information from Singapore Post
+                    {t('viewTrackingSingPost')}
                   </button>
                   {destinationCountry !== 'SG' && (
                     <button
@@ -1222,7 +1222,7 @@ function App() {
                       onClick={() => setActiveEmbed('dest')}
                       style={{ padding: '6px 10px' }}
                     >
-                      View Tracking Information from {operatorName}
+                      {t('viewTrackingDestPost')} {operatorName}
                     </button>
                   )}
                 </div>
@@ -1291,11 +1291,11 @@ function App() {
                   } catch {}
                   return (
                     <div style={{ padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
-                      {operatorName} does not support tracking via embed. Please{' '}
+                      {operatorName} {t('operatorNoEmbed')}{' '}
                       <a href={trackingUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc', fontWeight: 'bold' }}>
-                        click here
+                        {t('clickHere')}
                       </a>
-                      {' '}to track (opens in new tab).
+                      {' '}{t('toTrackNewTab')}
                     </div>
                   );
                 })()}
