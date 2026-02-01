@@ -1137,8 +1137,8 @@ function App() {
             {epacKnownAs && (
               <div className="info-box">
                 <p>
-                  {t('thisServiceKnownAs')} {""}
-                  <strong>{epacKnownAs}</strong> {t('in')} {""}
+                  {t('thisServiceKnownAs')}{" "}
+                  <strong>{epacKnownAs}</strong> {t('in')}{" "}
                   {getCountryName(destinationCountry)}.
                 </p>
               </div>
