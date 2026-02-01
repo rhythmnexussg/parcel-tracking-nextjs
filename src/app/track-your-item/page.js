@@ -377,54 +377,11 @@ const AdBlock = () => {
   );
 };
 
-const epacMapping = {
-  US: "First-Class Package International Service",
-  CH: "Priority Plus",
-  GB: "International Tracked",
-  MY: "International Tracked/Express",
-  CA: "International Inbound Express",
-  AU: "Pack and Track International", 
-  NZ: "International Economy Tracked",
-  DE: "Warenpost International",
-  FR: "Lettre internationale avec suivi",
-  NL: "International Packet Tracked",
-  PL: "GLOBAL Expres",
-  BE: "International Prime Inbound",
-  AT: "International Verfolgt Paket",
-  IN: "International Tracked Packet",
-  FI: "International Tracked Letter",
-  SE: "International Tracked Letter (PostNord MyPack Home)",
-  NO: "PRIME Exprès",
-  IT: "Express",
-  IL: "Express",
-  ES: "Paquete Internacional Light",
-  PT: "Correio Azul Internacional",
-  CZ: "Sledovaná zásilka do zahraničí",
-  BN: "International ePacket",
-  CN: "International ePacket",
-  HK: "International ePacket",
-  ID: "International ePacket",
-  MO: "International ePacket",
-  PH: "International ePacket",
-  TW: "International ePacket",
-  TH: "International ePacket",
-  VN: "International ePacket (ASEAN Packet)",
-  KR: "K-Packet",
-  JP: "International ePacket Light",
-  IE: "International Express Post"
-};
-
-const countryNameMap = {
-  AU: "Australia", AT: "Austria", BE: "Belgium", BN: "Brunei", 
-  CA: "Canada", CN: "China", CZ: "Czechia", FI: "Finland", FR: "France",
-  DE: "Germany", HK: "Hong Kong SAR China", IN: "India", ID: "Indonesia", 
-  IE: "Ireland", IL: "Israel", IT: "Italy", JP: "Japan",
-  MO: "Macau SAR China", MY: "Malaysia", NO: "Norway",
-  NL: "Netherlands", NZ: "New Zealand", PH: "Philippines", PL: "Poland",
-  PT: "Portugal", KR: "South Korea", ES: "Spain", SE: "Sweden",
-  CH: "Switzerland", TW: "Taiwan", TH: "Thailand", 
-  GB: "United Kingdom", US: "United States", VN: "Vietnam",
-  SG: "Singapore",
+// Helper function to get epac service name by country code using translations
+const getEpacName = (countryCode, t) => {
+  if (!countryCode || !t) return "";
+  const epacKey = `epac${countryCode}`;
+  return t(epacKey) || "";
 };
 
 // Postal operator display names by destination country code
@@ -464,6 +421,15 @@ const postalOperatorNames = {
 
 function App() {
   const { t, tStrict, language: currentLanguage } = useLanguage();
+
+  // Helper function to get translated country name
+  const getCountryName = (countryCode) => {
+    if (!countryCode) return "";
+    const translationKey = `country${countryCode}`;
+    const translated = t(translationKey);
+    // Remove flag emoji (2 characters) and space if present
+    return translated.replace(/^[\uD800-\uDBFF][\uDC00-\uDFFF]\s*/, '');
+  };
 
   const [trackingNumber, setTrackingNumber] = useState("");
   const [destinationCountry, setDestinationCountry] = useState("");
@@ -573,12 +539,12 @@ function App() {
     if (searchResults.length > 0) {
       const firstResult = searchResults[0];
       if (firstResult.shippedVia === "SingPost ePAC (aka SpeedPost Saver International)") {
-        setEpacKnownAs(epacMapping[firstResult.destinationCountry] || "");
+        setEpacKnownAs(getEpacName(firstResult.destinationCountry, t) || "");
       } else {
         setEpacKnownAs("");
       }
     }
-  }, [searchResults]);
+  }, [searchResults]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!isTrackParcelMode) {
@@ -591,9 +557,9 @@ function App() {
       return;
     }
 
-    const knownName = epacMapping[destinationCountry] || "";
+    const knownName = getEpacName(destinationCountry, t) || "";
     setEpacKnownAs(knownName);
-  }, [destinationCountry, isTrackParcelMode]);
+  }, [destinationCountry, isTrackParcelMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!searchParams) return;
@@ -687,6 +653,19 @@ function App() {
     setTrackingUrl(""); 
     setStatus(""); 
 
+    if (!trackingNumber || !destinationCountry || !orderNumber || !postcode) {
+      console.warn("Please fill in all required fields.");
+      alert(t('fillAllFields'));
+      return;
+    }
+
+    // Check access restrictions for China users
+    if (userCountry === 'CN' && allowedDestinations && !isAccessAllowedFromChina(destinationCountry)) {
+      alert(t('destinationNotAllowed'));
+      return;
+    }
+
+    // Only update URL after validation passes
     const params = new URLSearchParams({
       trackingNumber,
       destinationCountry,
@@ -700,18 +679,6 @@ function App() {
     }
 
     router.push(`/track-your-item?${params.toString()}`);
-
-    if (!trackingNumber || !destinationCountry || !orderNumber || !postcode) {
-      console.warn("Please fill in all required fields.");
-      alert(t('fillAllFields'));
-      return;
-    }
-
-    // Check access restrictions for China users
-    if (userCountry === 'CN' && allowedDestinations && !isAccessAllowedFromChina(destinationCountry)) {
-      alert(t('destinationNotAllowed'));
-      return;
-    }
 
     const results = await fetchOrderInfo(""); 
 
@@ -742,14 +709,14 @@ function App() {
 
      setEpacKnownAs(
       matchedOrder.shippedVia === "SingPost ePAC (aka SpeedPost Saver International)"
-        ? epacMapping[matchedOrder.destinationCountry] || ""
+        ? getEpacName(matchedOrder.destinationCountry, t) || ""
         : ""
     );
 
     setCountrySpecificMessage(matchedOrder.destinationCountry);
 
     
-    const countryNameDisplay = countryNameMap[destinationCountry] || "this country";
+    const countryNameDisplay = getCountryName(destinationCountry) || t('thisCountry') || "this country";
     let url = ""; 
 
     if (destinationCountry === "SG") {
@@ -909,7 +876,7 @@ function App() {
     setTrackingUrl(url);
   }, [trackingNumber, destinationCountry, postcode, orderNumber, fromDate, toDate, router, setCountrySpecificMessage, userCountry, allowedDestinations, t]); 
   
-  const operatorName = postalOperatorNames[destinationCountry] || (countryNameMap[destinationCountry] ? `${countryNameMap[destinationCountry]} Post` : "");
+  const operatorName = postalOperatorNames[destinationCountry] || (getCountryName(destinationCountry) ? `${getCountryName(destinationCountry)} Post` : "");
 
   return (
     <>
@@ -1055,7 +1022,7 @@ function App() {
             value={orderNumber} 
             onChange={(e) => setOrderNumber(e.target.value)} 
             required
-            placeholder="RTNX1234567890"
+            placeholder="RTNX1234567890 or DLTB3958994670"
             disabled={accessBlocked}
           />
         </div>
@@ -1172,7 +1139,7 @@ function App() {
                 <p>
                   {t('thisServiceKnownAs')} {""}
                   <strong>{epacKnownAs}</strong> {t('in')} {""}
-                  {countryNameMap[destinationCountry]}.
+                  {getCountryName(destinationCountry)}.
                 </p>
               </div>
             )}
@@ -1395,14 +1362,14 @@ function App() {
                 <p><strong>{formatLabel('status')}</strong> {order.status}</p>
                 <p><strong>{formatLabel('postedDate')}</strong> {order.postedDate}</p>
                 <p><strong>{formatLabel('shippedVia')}</strong> {order.shippedVia}</p>
-                {/* For list items, we must access the map directly as epacKnownAs state is single-value */}
+                {/* For list items, we must use getEpacName to get translated service name */}
                 {order.shippedVia === "SingPost ePAC (aka SpeedPost Saver International)" &&
-                  epacMapping[order.destinationCountry] && (
+                  getEpacName(order.destinationCountry, t) && (
                     <div className="info-box">
                       <p>
                         {t('thisServiceKnownAs')}{" "}
-                        <strong>{epacMapping[order.destinationCountry]}</strong> {t('in')}{" "}
-                        {countryNameMap[order.destinationCountry]}.
+                        <strong>{getEpacName(order.destinationCountry, t)}</strong> {t('in')}{" "}
+                        {getCountryName(order.destinationCountry)}.
                       </p>
                     </div>
                 )}
