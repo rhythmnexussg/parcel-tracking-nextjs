@@ -1132,17 +1132,18 @@ function App() {
             <p><strong>{formatLabel('postedDate')}</strong> {postedDate}</p>
             <p><strong>{formatLabel('status')}</strong> {status}</p>
             <p><strong>{formatLabel('shippedVia')}</strong> {shippedVia}</p>
+          </div>
             
-            {/* FIXED: Using epacKnownAs instead of calculating it again */}
-            {epacKnownAs && (
-              <div className="info-box">
-                <p>
-                  {t('thisServiceKnownAs')}{" "}
-                  <strong>{epacKnownAs}</strong> {t('in')}{" "}
-                  {getCountryName(destinationCountry)}.
-                </p>
-              </div>
-            )}
+          {/* Show epac service name if it's ePAC */}
+          {shippedVia === "SingPost ePAC (aka SpeedPost Saver International)" && epacKnownAs && (
+            <div className="info-box">
+              <p>
+                {t('thisServiceKnownAs')}{" "}
+                <strong>{epacKnownAs}</strong> {t('in')}{" "}
+                {getCountryName(destinationCountry)}.
+              </p>
+            </div>
+          )}
 
           {/* Tracking link buttons (SingPost / SpeedPost / DHL / Destination) */}
           <div className="tracking-links" style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
