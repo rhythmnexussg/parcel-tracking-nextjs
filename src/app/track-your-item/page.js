@@ -456,6 +456,9 @@ function App() {
   const [autoSubmit, setAutoSubmit] = useState(false);
   const router = useRouter();
   
+  // Track if we're currently loading from URL params to prevent router.push loop
+  const [isLoadingFromUrl, setIsLoadingFromUrl] = useState(false);
+  
   // Geolocation and access control state
   const [userCountry, setUserCountry] = useState(null);
   const [accessBlocked, setAccessBlocked] = useState(false);
@@ -576,6 +579,7 @@ function App() {
       setDestinationCountry(c);
       setPostcode(p);
       setOrderNumber(o);
+      setIsLoadingFromUrl(true);
       setAutoSubmit(true);
     }
 
@@ -589,6 +593,7 @@ function App() {
     if (autoSubmit) {
       handleSubmit({ preventDefault: () => {} });
       setAutoSubmit(false);
+      setIsLoadingFromUrl(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoSubmit]); 
@@ -638,7 +643,8 @@ function App() {
 
   const formatLabelNoExample = useCallback((key) => {
     const raw = t(key) || key;
-    const base = raw.replace(/\s*\(.*?\)\s*$/, '').trim();
+    // Remove examples in both English () and Japanese （） parentheses
+    const base = raw.replace(/\s*[\(（].*?[\)）]\s*$/, '').trim();
     return /[:：]\s*$/.test(base) ? base : `${base}:`;
   }, [t]);
 
@@ -665,20 +671,22 @@ function App() {
       return;
     }
 
-    // Only update URL after validation passes
-    const params = new URLSearchParams({
-      trackingNumber,
-      destinationCountry,
-      postcode,
-      orderNumber
-    });
-    
-    if (/^PX\d{9}SG$/.test(trackingNumber)) {
-      params.append("fromDate", fromDate);
-      params.append("toDate", toDate);
-    }
+    // Only update URL after validation passes (but skip if we're loading from URL to prevent infinite loop)
+    if (!isLoadingFromUrl) {
+      const params = new URLSearchParams({
+        trackingNumber,
+        destinationCountry,
+        postcode,
+        orderNumber
+      });
+      
+      if (/^PX\d{9}SG$/.test(trackingNumber)) {
+        params.append("fromDate", fromDate);
+        params.append("toDate", toDate);
+      }
 
-    router.push(`/track-your-item?${params.toString()}`);
+      router.push(`/track-your-item?${params.toString()}`);
+    }
 
     const results = await fetchOrderInfo(""); 
 
@@ -874,7 +882,7 @@ function App() {
     }
 
     setTrackingUrl(url);
-  }, [trackingNumber, destinationCountry, postcode, orderNumber, fromDate, toDate, router, setCountrySpecificMessage, userCountry, allowedDestinations, t]); 
+  }, [trackingNumber, destinationCountry, postcode, orderNumber, fromDate, toDate, router, setCountrySpecificMessage, userCountry, allowedDestinations, t, isLoadingFromUrl]); 
   
   const operatorName = postalOperatorNames[destinationCountry] || (getCountryName(destinationCountry) ? `${getCountryName(destinationCountry)} Post` : "");
 
