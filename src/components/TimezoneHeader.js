@@ -194,21 +194,22 @@ const TimezoneHeader = ({ userCountry, t }) => {
     }}>
       {userLocalInfo && (
         Array.isArray(userLocalInfo) ? (
-          // Multiple timezones - compact horizontal layout on mobile
+          // Multiple timezones - horizontal row layout
           <div style={{
             display: 'flex',
-            flexDirection: isMobile ? 'row' : 'column',
-            gap: isMobile ? '6px' : '8px',
+            flexDirection: 'row',
+            gap: isMobile ? '6px' : '10px',
             overflowX: isMobile ? 'auto' : 'visible',
             maxWidth: isMobile ? '100%' : 'none',
             paddingBottom: isMobile ? '4px' : '0',
+            flexWrap: isMobile ? 'nowrap' : 'wrap',
           }}>
             {userLocalInfo.map((info, index) => (
               <div key={index} style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '2px',
+                gap: '3px',
                 minWidth: isMobile ? '110px' : 'auto',
               }}>
                 <div style={{
@@ -222,10 +223,8 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   flexDirection: isMobile ? 'column' : 'row',
                   whiteSpace: 'nowrap',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                    <span style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
-                    {!isMobile && <span style={{ fontSize: '0.7rem', color: '#5a6c7d' }}>{info.name}</span>}
-                  </div>
+                  <span style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+                  {!isMobile && <span style={{ fontSize: '0.7rem', color: '#5a6c7d' }}>{info.name}</span>}
                   <span style={{ fontSize: isMobile ? '0.7rem' : '0.85rem' }}>{info.localTime}</span>
                 </div>
                 {isMobile && (

@@ -3,54 +3,75 @@
 import React, { useState, useEffect } from 'react';
 
 // Timezone mappings for each destination country
-// Note: Some countries have multiple timezones - primary/capital timezone shown
+// Countries with multiple timezones use array format: [{ name, timezone }]
 const countryTimezones = {
   SG: 'Asia/Singapore',
-  AU: 'Australia/Sydney', // Multiple zones: Sydney (UTC+10/+11 DST), Perth (UTC+8, same as SG)
+  AU: [
+    { name: 'Sydney/Melbourne (AEST)', timezone: 'Australia/Sydney' },
+    { name: 'Adelaide (ACST)', timezone: 'Australia/Adelaide' },
+    { name: 'Perth (AWST)', timezone: 'Australia/Perth' },
+  ],
   AT: 'Europe/Vienna',
   BE: 'Europe/Brussels',
-  BN: 'Asia/Brunei', // UTC+8, same as Singapore
-  CA: 'America/Toronto', // Multiple zones: Toronto (UTC-5/-4 DST), Vancouver (UTC-8/-7 DST)
-  CN: 'Asia/Shanghai', // UTC+8, same as Singapore
+  BN: 'Asia/Brunei',
+  CA: [
+    { name: 'Newfoundland (NST)', timezone: 'America/St_Johns' },
+    { name: 'Atlantic (AST)', timezone: 'America/Halifax' },
+    { name: 'Eastern (EST)', timezone: 'America/Toronto' },
+    { name: 'Central (CST)', timezone: 'America/Winnipeg' },
+    { name: 'Mountain (MST)', timezone: 'America/Edmonton' },
+    { name: 'Pacific (PST)', timezone: 'America/Vancouver' },
+  ],
+  CN: 'Asia/Shanghai',
   CZ: 'Europe/Prague',
   FI: 'Europe/Helsinki',
   FR: 'Europe/Paris',
   DE: 'Europe/Berlin',
-  HK: 'Asia/Hong_Kong', // UTC+8, same as Singapore
+  HK: 'Asia/Hong_Kong',
   IN: 'Asia/Kolkata',
-  ID: 'Asia/Makassar', // Central Indonesia UTC+8, same as Singapore (Jakarta is UTC+7)
+  ID: 'Asia/Makassar',
   IE: 'Europe/Dublin',
   IL: 'Asia/Jerusalem',
   IT: 'Europe/Rome',
   JP: 'Asia/Tokyo',
-  MO: 'Asia/Macau', // UTC+8, same as Singapore
-  MY: 'Asia/Kuala_Lumpur', // UTC+8, same as Singapore
+  MO: 'Asia/Macau',
+  MY: 'Asia/Kuala_Lumpur',
   NO: 'Europe/Oslo',
   NL: 'Europe/Amsterdam',
   NZ: 'Pacific/Auckland',
-  PH: 'Asia/Manila', // UTC+8, same as Singapore
+  PH: 'Asia/Manila',
   PL: 'Europe/Warsaw',
   PT: 'Europe/Lisbon',
   KR: 'Asia/Seoul',
   ES: 'Europe/Madrid',
   SE: 'Europe/Stockholm',
   CH: 'Europe/Zurich',
-  TW: 'Asia/Taipei', // UTC+8, same as Singapore
+  TW: 'Asia/Taipei',
   TH: 'Asia/Bangkok',
   GB: 'Europe/London',
-  US: 'America/New_York', // Multiple zones: Eastern (UTC-5/-4 DST), Central, Mountain, Pacific, etc.
+  US: [
+    { name: 'Eastern (EST)', timezone: 'America/New_York' },
+    { name: 'Central (CST)', timezone: 'America/Chicago' },
+    { name: 'Mountain (MST)', timezone: 'America/Denver' },
+    { name: 'Pacific (PST)', timezone: 'America/Los_Angeles' },
+    { name: 'Alaska (AKST)', timezone: 'America/Anchorage' },
+    { name: 'Hawaii (HST)', timezone: 'Pacific/Honolulu' },
+  ],
   VN: 'Asia/Ho_Chi_Minh',
 };
 
-// Countries with multiple timezones - show note
-const multiTimezoneCountries = {
-  US: 'Eastern Time (Multiple timezones across USA)',
-  CA: 'Eastern Time (Multiple timezones across Canada)',
-  AU: 'Sydney Time (Multiple timezones across Australia)',
+const countryFlags = {
+  SG: '🇸🇬', AU: '🇦🇺', AT: '🇦🇹', BE: '🇧🇪', BN: '🇧🇳', CA: '🇨🇦',
+  CN: '🇨🇳', CZ: '🇨🇿', FI: '🇫🇮', FR: '🇫🇷', DE: '🇩🇪', HK: '🇭🇰',
+  IN: '🇮🇳', ID: '🇮🇩', IE: '🇮🇪', IL: '🇮🇱', IT: '🇮🇹', JP: '🇯🇵',
+  MO: '🇲🇴', MY: '🇲🇾', NO: '🇳🇴', NL: '🇳🇱', NZ: '🇳🇿', PH: '🇵🇭',
+  PL: '🇵🇱', PT: '🇵🇹', KR: '🇰🇷', ES: '🇪🇸', SE: '🇸🇪', CH: '🇨🇭',
+  TW: '🇹🇼', TH: '🇹🇭', GB: '🇬🇧', US: '🇺🇸', VN: '🇻🇳',
 };
 
 const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isMobile, setIsMobile] = useState(false);
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -58,6 +79,17 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
     }, 1000);
     
     return () => clearInterval(timer);
+  }, []);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
   // If no destination country selected, don't show anything
@@ -106,155 +138,267 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
     }
   };
   
+  const getTimeDifference = (timezone) => {
+    const singaporeOffset = new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore', timeZoneName: 'short' }).match(/GMT([+-]\d+)/);
+    const destOffset = new Date().toLocaleString('en-US', { timeZone: timezone, timeZoneName: 'short' }).match(/GMT([+-]\d+)/);
+    
+    if (!singaporeOffset || !destOffset) return 0;
+    
+    const sgHours = parseInt(singaporeOffset[1]);
+    const destHours = parseInt(destOffset[1]);
+    
+    return destHours - sgHours;
+  };
+
   const singaporeTime = formatTime('Asia/Singapore', 'SG');
   const destinationTimezone = countryTimezones[destinationCountry];
-  const destinationTime = destinationTimezone ? formatTime(destinationTimezone, destinationCountry) : null;
   
-  // Check if times are the same (same UTC offset)
-  const isSameTimeAsSingapore = destinationTime && destinationTime.time === singaporeTime.time;
+  const getTimeDiffText = (diffHours) => {
+    if (diffHours === 0) {
+      return t ? t('sameTimeAsSingapore') : 'Same time as Singapore';
+    }
+    const hours = Math.abs(diffHours);
+    if (diffHours > 0) {
+      const hourText = hours === 1 ? (t ? t('hourAhead') : 'hour ahead of Singapore') : (t ? t('hoursAhead') : 'hours ahead of Singapore');
+      return `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
+    }
+    const hourText = hours === 1 ? (t ? t('hourBehind') : 'hour behind Singapore') : (t ? t('hoursBehind') : 'hours behind Singapore');
+    return `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
+  };
   
   return (
     <div style={{
       backgroundColor: '#f0f8ff',
       border: '2px solid #4a90e2',
-      borderRadius: '8px',
-      padding: '16px',
+      borderRadius: isMobile ? '6px' : '8px',
+      padding: isMobile ? '12px' : '16px',
       marginBottom: '20px',
       textAlign: 'center'
     }}>
       <h4 style={{ 
         marginTop: 0, 
-        marginBottom: '12px',
+        marginBottom: isMobile ? '10px' : '12px',
         color: '#2c3e50',
-        fontSize: '1.1rem'
+        fontSize: isMobile ? '1rem' : '1.1rem'
       }}>
         🕐 {t ? t('currentTime') : 'Current Time'}
       </h4>
       
       <div style={{
         display: 'flex',
-        flexDirection: 'column',
-        gap: '12px',
-        alignItems: 'center'
+        flexDirection: isMobile ? 'row' : 'column',
+        gap: isMobile ? '8px' : '12px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflowX: isMobile ? 'auto' : 'visible',
+        flexWrap: isMobile ? 'nowrap' : 'wrap',
+        paddingBottom: isMobile ? '4px' : '0',
       }}>
         {isUserInSingapore ? (
-          // Show only Singapore time if user is in Singapore
           singaporeTime && (
             <div style={{
-              fontSize: '1.3rem',
+              fontSize: isMobile ? '1.1rem' : '1.3rem',
               fontWeight: 'bold',
               color: '#2c3e50',
-              padding: '10px 20px',
+              padding: isMobile ? '8px 16px' : '10px 20px',
               backgroundColor: '#ffffff',
               borderRadius: '6px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              whiteSpace: 'nowrap',
             }}>
-              {singaporeTime.country}: {singaporeTime.time}
+              <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>🇸🇬</span>
+              {!isMobile && <span>{singaporeTime.country}:</span>}
+              <span>{singaporeTime.time}</span>
             </div>
           )
-        ) : (
-          // Show destination and/or Singapore time based on whether they're the same
+        ) : Array.isArray(destinationTimezone) ? (
           <>
-            {destinationCountry === 'SG' ? (
-              // Destination is Singapore
-              singaporeTime && (
-                <div style={{
-                  fontSize: '1.3rem',
-                  fontWeight: 'bold',
-                  color: '#2c3e50',
-                  padding: '10px 20px',
-                  backgroundColor: '#ffffff',
-                  borderRadius: '6px',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            {destinationTimezone.map((tz, index) => {
+              const destTime = formatTime(tz.timezone, destinationCountry);
+              const diffHours = getTimeDifference(tz.timezone);
+              const timeDiffText = getTimeDiffText(diffHours);
+              
+              return (
+                <div key={index} style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '4px',
+                  minWidth: isMobile ? '140px' : 'auto',
                 }}>
-                  {singaporeTime.country}: {singaporeTime.time}
-                </div>
-              )
-            ) : isSameTimeAsSingapore ? (
-              // Destination has same time as Singapore
-              <>
-                <div style={{
-                  fontSize: '1.3rem',
-                  fontWeight: 'bold',
-                  color: '#2c3e50',
-                  padding: '10px 20px',
-                  backgroundColor: '#ffffff',
-                  borderRadius: '6px',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}>
-                  {destinationTime.country}: {destinationTime.time}
-                </div>
-                <div style={{
-                  fontSize: '0.95rem',
-                  color: '#27ae60',
-                  padding: '8px 16px',
-                  backgroundColor: '#e8f8f5',
-                  borderRadius: '6px',
-                  fontWeight: '500'
-                }}>
-                  ✓ {t ? t('sameTimeAsSingapore') : 'Same time as Singapore'}
-                </div>
-              </>
-            ) : (
-              // Different time zones
-              <>
-                {destinationTime && (
                   <div style={{
-                    fontSize: '1.3rem',
+                    fontSize: isMobile ? '0.9rem' : '1.2rem',
                     fontWeight: 'bold',
                     color: '#2c3e50',
-                    padding: '10px 20px',
+                    padding: isMobile ? '6px 12px' : '10px 20px',
                     backgroundColor: '#ffffff',
                     borderRadius: '6px',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: isMobile ? '4px' : '6px',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    whiteSpace: 'nowrap',
                   }}>
-                    {destinationTime.country}: {destinationTime.time}
-                    {isDST(destinationTimezone) && (
-                      <span style={{ fontSize: '0.75rem', marginLeft: '8px', color: '#e67e22' }}>
-                        (DST)
-                      </span>
-                    )}
+                    <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>{countryFlags[destinationCountry] || '🌍'}</span>
+                    {!isMobile && <span style={{ fontSize: '0.8rem', color: '#5a6c7d' }}>{tz.name}</span>}
+                    <span style={{ fontSize: isMobile ? '0.85rem' : '1rem' }}>{destTime?.time}</span>
                   </div>
-                )}
-                
-                {singaporeTime && (
-                  <div style={{
-                    fontSize: '1.1rem',
-                    color: '#5a6c7d',
-                    padding: '8px 16px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '6px'
-                  }}>
-                    {singaporeTime.country}: {singaporeTime.time}
-                  </div>
-                )}
-              </>
-            )}
+                  {isMobile && (
+                    <span style={{
+                      fontSize: '0.6rem',
+                      color: '#5a6c7d',
+                      textAlign: 'center',
+                      maxWidth: '140px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}>
+                      {tz.name.replace(/\(.*?\)/g, '').trim()}
+                    </span>
+                  )}
+                  {!isMobile && (
+                    <span style={{
+                      fontSize: '0.75rem',
+                      color: diffHours === 0 ? '#27ae60' : '#7f8c8d',
+                      fontWeight: diffHours === 0 ? '600' : '500',
+                      fontStyle: 'italic',
+                    }}>
+                      {timeDiffText}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+            <div style={{
+              fontSize: isMobile ? '0.9rem' : '1.1rem',
+              color: '#5a6c7d',
+              padding: isMobile ? '6px 12px' : '8px 16px',
+              backgroundColor: '#f8f9fa',
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: isMobile ? '4px' : '6px',
+              whiteSpace: 'nowrap',
+              minWidth: isMobile ? '110px' : 'auto',
+            }}>
+              <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>🇸🇬</span>
+              {!isMobile && <span>Singapore:</span>}
+              <span style={{ fontSize: isMobile ? '0.85rem' : '1rem' }}>{singaporeTime?.time}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            {destinationCountry === 'SG' ? (
+              singaporeTime && (
+                <div style={{
+                  fontSize: isMobile ? '1.1rem' : '1.3rem',
+                  fontWeight: 'bold',
+                  color: '#2c3e50',
+                  padding: isMobile ? '8px 16px' : '10px 20px',
+                  backgroundColor: '#ffffff',
+                  borderRadius: '6px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  whiteSpace: 'nowrap',
+                }}>
+                  <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>🇸🇬</span>
+                  {!isMobile && <span>{singaporeTime.country}:</span>}
+                  <span>{singaporeTime.time}</span>
+                </div>
+              )
+            ) : (() => {
+              const destTime = formatTime(destinationTimezone, destinationCountry);
+              const diffHours = getTimeDifference(destinationTimezone);
+              const timeDiffText = getTimeDiffText(diffHours);
+              const isSameTime = diffHours === 0;
+              
+              return (
+                <>
+                  {destTime && (
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '6px',
+                    }}>
+                      <div style={{
+                        fontSize: isMobile ? '1.1rem' : '1.3rem',
+                        fontWeight: 'bold',
+                        color: '#2c3e50',
+                        padding: isMobile ? '8px 16px' : '10px 20px',
+                        backgroundColor: '#ffffff',
+                        borderRadius: '6px',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>{countryFlags[destinationCountry] || '🌍'}</span>
+                        {!isMobile && <span>{destTime.country}:</span>}
+                        <span>{destTime.time}</span>
+                      </div>
+                      {isSameTime && (
+                        <div style={{
+                          fontSize: isMobile ? '0.8rem' : '0.95rem',
+                          color: '#27ae60',
+                          padding: isMobile ? '6px 12px' : '8px 16px',
+                          backgroundColor: '#e8f8f5',
+                          borderRadius: '6px',
+                          fontWeight: '500'
+                        }}>
+                          ✓ {timeDiffText}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {!isSameTime && singaporeTime && (
+                    <div style={{
+                      fontSize: isMobile ? '0.9rem' : '1.1rem',
+                      color: '#5a6c7d',
+                      padding: isMobile ? '6px 12px' : '8px 16px',
+                      backgroundColor: '#f8f9fa',
+                      borderRadius: '6px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: isMobile ? '4px' : '6px',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>🇸🇬</span>
+                      {!isMobile && <span>{singaporeTime.country}:</span>}
+                      <span style={{ fontSize: isMobile ? '0.85rem' : '1rem' }}>{singaporeTime.time}</span>
+                    </div>
+                  )}
+                  {!isSameTime && !isMobile && (
+                    <div style={{
+                      fontSize: '0.85rem',
+                      color: '#7f8c8d',
+                      fontStyle: 'italic',
+                      marginTop: '4px',
+                    }}>
+                      {timeDiffText}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </>
         )}
       </div>
       
-      {/* Show multi-timezone note if applicable */}
-      {multiTimezoneCountries[destinationCountry] && !isSameTimeAsSingapore && (
-        <p style={{
-          marginTop: '12px',
-          marginBottom: '4px',
-          fontSize: '0.85rem',
-          color: '#7f8c8d',
-          fontStyle: 'italic'
-        }}>
-          📍 {multiTimezoneCountries[destinationCountry]}
-        </p>
-      )}
-      
       <p style={{
-        marginTop: multiTimezoneCountries[destinationCountry] && !isSameTimeAsSingapore ? '4px' : '12px',
+        marginTop: isMobile ? '8px' : '12px',
         marginBottom: 0,
-        fontSize: '0.85rem',
+        fontSize: isMobile ? '0.75rem' : '0.85rem',
         color: '#7f8c8d',
         fontStyle: 'italic'
       }}>
-        {t ? t('timezoneNote') : 'Time shown in 24-hour format'}
+        {t ? t('timezoneNote') : 'Time shown in 12-hour format'}
       </p>
     </div>
   );
