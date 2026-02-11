@@ -2,6 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 
+// Country flag emojis
+const countryFlags = {
+  SG: '🇸🇬', AU: '🇦🇺', AT: '🇦🇹', BE: '🇧🇪', BN: '🇧🇳', CA: '🇨🇦',
+  CN: '🇨🇳', CZ: '🇨🇿', FI: '🇫🇮', FR: '🇫🇷', DE: '🇩🇪', HK: '🇭🇰',
+  IN: '🇮🇳', ID: '🇮🇩', IE: '🇮🇪', IL: '🇮🇱', IT: '🇮🇹', JP: '🇯🇵',
+  MO: '🇲🇴', MY: '🇲🇾', NO: '🇳🇴', NL: '🇳🇱', NZ: '🇳🇿', PH: '🇵🇭',
+  PL: '🇵🇱', PT: '🇵🇹', KR: '🇰🇷', ES: '🇪🇸', SE: '🇸🇪', CH: '🇨🇭',
+  TW: '🇹🇼', TH: '🇹🇭', GB: '🇬🇧', US: '🇺🇸', VN: '🇻🇳',
+};
+
 // Timezone mappings for each destination country
 const countryTimezones = {
   SG: 'Asia/Singapore',
@@ -68,21 +78,48 @@ const TimezoneHeader = ({ userCountry }) => {
     }
   };
   
-  const singaporeTime = formatTime('Asia/Singapore');
+  // Get UTC offset for a timezone in minutes
+  const getUTCOffset = (timezone) => {
+    try {
+      const date = new Date();
+      const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+      const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+      return Math.round((tzDate - utcDate) / (1000 * 60)); // difference in minutes
+    } catch (error) {
+      return 0;
+    }
+  };
   
-  // Get user's local time if they're not in Singapore
-  const getUserLocalTime = () => {
+  const singaporeTime = formatTime('Asia/Singapore');
+  const singaporeOffset = getUTCOffset('Asia/Singapore');
+  
+  // Get user's local time and time difference
+  const getUserLocalInfo = () => {
     if (!userCountry || userCountry === 'SG') return null;
     
     const timezone = countryTimezones[userCountry];
     if (!timezone) return null;
     
     const localTime = formatTime(timezone);
-    // Check if it's the same as Singapore
-    return localTime === singaporeTime ? null : localTime;
+    const localOffset = getUTCOffset(timezone);
+    const diffMinutes = localOffset - singaporeOffset;
+    const diffHours = diffMinutes / 60;
+    
+    let timeDiffText = '';
+    if (diffHours === 0) {
+      timeDiffText = 'Same time as Singapore';
+    } else if (diffHours > 0) {
+      const hours = Math.abs(diffHours);
+      timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} hour${hours !== 1 ? 's' : ''} ahead of Singapore`;
+    } else {
+      const hours = Math.abs(diffHours);
+      timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} hour${hours !== 1 ? 's' : ''} behind Singapore`;
+    }
+    
+    return { localTime, timeDiffText, isSameTime: diffHours === 0 };
   };
   
-  const userLocalTime = getUserLocalTime();
+  const userLocalInfo = getUserLocalInfo();
   
   return (
     <div style={{
@@ -93,18 +130,33 @@ const TimezoneHeader = ({ userCountry }) => {
       fontWeight: '600',
       color: '#2c3e50',
     }}>
-      {userLocalTime && (
+      {userLocalInfo && (
         <div style={{
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          gap: '6px',
-          padding: '6px 12px',
-          backgroundColor: '#e8f4f8',
-          borderRadius: '8px',
-          border: '1px solid #b3d9e6',
+          gap: '4px',
         }}>
-          <span style={{ fontSize: '1.1rem' }}>🌍</span>
-          <span>{userLocalTime}</span>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '6px 12px',
+            backgroundColor: '#e8f4f8',
+            borderRadius: '8px',
+            border: '1px solid #b3d9e6',
+          }}>
+            <span style={{ fontSize: '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+            <span>{userLocalInfo.localTime}</span>
+          </div>
+          <span style={{
+            fontSize: '0.75rem',
+            color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d',
+            fontWeight: userLocalInfo.isSameTime ? '600' : '500',
+            fontStyle: 'italic',
+          }}>
+            {userLocalInfo.timeDiffText}
+          </span>
         </div>
       )}
       

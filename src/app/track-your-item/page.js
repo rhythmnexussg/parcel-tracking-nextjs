@@ -594,14 +594,27 @@ function App() {
 
         setUserCountry(geoData.countryCode);
         
+        // List of all shipped destination countries
+        const shippedDestinations = ['AU', 'AT', 'BE', 'BN', 'CA', 'CN', 'CZ', 'FI', 'FR', 'DE', 'HK', 'IN', 'ID', 'IE', 'IL', 'IT', 'JP', 'MO', 'MY', 'NL', 'NZ', 'NO', 'PH', 'PL', 'PT', 'KR', 'SG', 'ES', 'SE', 'CH', 'TW', 'TH', 'GB', 'US', 'VN'];
+        
         // Special handling for China access restrictions
         if (geoData.countryCode === 'CN') {
+          // Allow VPN if the actual/estimated country is a valid shipped destination
           if (geoData.isVPNDetected) {
-            setAccessBlocked(true);
-            setBlockMessage("VPN usage detected. Please disable VPN to access this service.");
-            return;
+            const estimatedCountry = geoData.estimatedActualCountry || geoData.countryCode;
+            if (!shippedDestinations.includes(estimatedCountry)) {
+              setAccessBlocked(true);
+              setBlockMessage("VPN usage detected. Please disable VPN to access this service.");
+              return;
+            }
           }
           setAllowedDestinations(geoData.accessRestrictions?.allowedDestinations || []);
+        }
+        
+        // For non-China users with VPN: Allow access if detected country is a shipped destination
+        if (geoData.countryCode !== 'CN' && geoData.isVPNDetected && !shippedDestinations.includes(geoData.countryCode)) {
+          // VPN detected but not to a shipped destination - could be suspicious
+          console.warn('VPN detected to non-shipped destination:', geoData.countryCode);
         }
         
         console.log(`User location: ${geoData.countryCode}, VPN detected: ${geoData.isVPNDetected}`);
