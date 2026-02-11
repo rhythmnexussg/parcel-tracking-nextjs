@@ -77,6 +77,10 @@ export const translations = {
     trackingNumberExample: "e.g. LG123456789SG",
     trackingCaseSensitive: "TRACKING LETTERS ARE CASE SENSITIVE AND MUST BE IN CAPITAL LETTERS.",
     usaPostcodeNote: "For USA Postcode, you may need to provide the full zip code if the error of \"No order found matching all fields\" is triggered. 5 digit postcode should be fine, but for most eBay orders and some Etsy ones it may require the full ZIP code. For countries without postcodes, such as Hong Kong & Macau, please put 999077 (Hong Kong) or 999078 (Macau).",
+    // Timezone display
+    currentTime: "Current Time",
+    timezoneNote: "Time shown in 12-hour format",
+    sameTimeAsSingapore: "Same time as Singapore",
     epacDeliveryNote: "Please KINDLY note that all ePAC items sent to the destination should all be delivered to your mailbox, doorstep, parcel locker or left in a safe place!",
     countriesNoMailbox: "Countries known to have mailbox/letterbox delivery unavailable: Brunei, China, India, Israel, Macau SAR China, Philippines, Poland and Vietnam.",
     rhythmNexusNotResponsible: "Rhythm Nexus is NOT RESPONSIBLE for handling the deliveries as it is out of our control and we would kindly prefer for you to track your item status instead.",

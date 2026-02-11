@@ -1,14 +1,32 @@
 'use client';
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "../assets/images/logo.jpg";
 import { useLanguage } from "../LanguageContext";
 import { LanguageSelector } from "../LanguageSelector";
+import TimezoneHeader from "./TimezoneHeader";
+import { detectLanguageFromIPWithRestrictions } from "../ipGeolocation";
 
 export const Navigation = () => {
   const { t } = useLanguage();
+  const [userCountry, setUserCountry] = useState(null);
+  
+  useEffect(() => {
+    const detectUserLocation = async () => {
+      try {
+        const geoData = await detectLanguageFromIPWithRestrictions();
+        if (geoData && geoData.countryCode) {
+          setUserCountry(geoData.countryCode);
+        }
+      } catch (error) {
+        console.error('Failed to detect user location:', error);
+      }
+    };
+    
+    detectUserLocation();
+  }, []);
   
   return (
     <nav className="navbar">
@@ -17,6 +35,11 @@ export const Navigation = () => {
           <Image src={logo} alt="Rhythm Nexus" />
         </Link>
       </div>
+      
+      <div className="navbar-center">
+        <TimezoneHeader userCountry={userCountry} />
+      </div>
+      
       <div className="navbar-links">
         <Link href="/" className="nav-link">{t('home')}</Link>
         <Link href="/blog" className="nav-link">{t('blog')}</Link>

@@ -56,6 +56,10 @@ html, body {
   transition: all 0.3s ease;
 }
 
+.navbar-brand {
+  flex: 0 0 auto;
+}
+
 .navbar-brand img {
   /* UPDATED: Made logo significantly bigger */
   height: 110px; 
@@ -70,7 +74,15 @@ html, body {
   transform: scale(1.05);
 }
 
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .navbar-links {
+  flex: 0 0 auto;
   display: flex;
   gap: 30px; 
   align-items: center;
@@ -475,7 +487,12 @@ a:hover { text-decoration: underline; color: #006bb5; }
     height: 90px; /* Still large, but fit for mobile */
   }
 
+  .navbar-center {
+    order: 2; /* Show timezone after logo */
+  }
+
   .navbar-links {
+    order: 3; /* Show links last */
     flex-wrap: wrap;
     justify-content: center;
     gap: 15px;

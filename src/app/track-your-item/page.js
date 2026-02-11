@@ -14,6 +14,8 @@ import { useSearchParams } from "next/navigation";
 import { useLanguage } from "../../LanguageContext";
 import { LanguageSelector } from "../../LanguageSelector";
 import { detectLanguageFromIPWithRestrictions, isAccessAllowedFromChina } from "../../ipGeolocation";
+import TimezoneDisplay from "../../components/TimezoneDisplay";
+import { Navigation } from "../../components/Navigation";
 
 // --- Service Announcement Component ---
 const ServiceAnnouncement = ({ allowedDestinations }) => {
@@ -136,30 +138,6 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
         />
       )}
     </div>
-  );
-};
-
-// --- Navigation Component ---
-const Navigation = () => {
-  const { t } = useLanguage();
-  
-  return (
-    <nav className="navbar">
-      <div className="navbar-brand">
-        <Link href="/">
-          <Image src={logo} alt="Rhythm Nexus" />
-        </Link>
-      </div>
-      <div className="navbar-links">
-        <Link href="/" className="nav-link">{t('home')}</Link>
-        <Link href="/blog" className="nav-link">{t('blog')}</Link>
-        <Link href="/about" className="nav-link">{t('aboutUs')}</Link>
-        <Link href="/FAQ" className="nav-link">{t('faq')}</Link>
-        <Link href="/contact" className="nav-link">{t('contact')}</Link>
-        <Link href="/track-your-item" className="nav-link highlight">{t('trackPackage')}</Link>
-        <LanguageSelector />
-      </div>
-    </nav>
   );
 };
 
@@ -986,6 +964,14 @@ function App() {
 
     {/* Service Announcement Section */}
     <ServiceAnnouncement allowedDestinations={allowedDestinations} />
+
+    {/* Timezone Display */}
+    <TimezoneDisplay 
+      destinationCountry={destinationCountry}
+      userCountry={userCountry}
+      t={t}
+      getCountryName={getCountryName}
+    />
 
     {/* Wrapped Form in .modern-form-container */}
     <div className="modern-form-container">
