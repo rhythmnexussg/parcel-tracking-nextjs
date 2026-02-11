@@ -185,119 +185,90 @@ const TimezoneHeader = ({ userCountry, t }) => {
     <div style={{
       display: 'flex',
       alignItems: 'center',
-      gap: isMobile ? '10px' : '20px',
-      fontSize: isMobile ? '0.75rem' : '0.9rem',
-      fontWeight: '600',
+      gap: isMobile ? '6px' : '8px',
+      fontSize: isMobile ? '0.7rem' : '0.75rem',
+      fontWeight: '500',
       color: '#2c3e50',
-      flexWrap: 'wrap',
+      flexWrap: 'nowrap',
       justifyContent: 'center',
+      overflowX: isMobile ? 'auto' : 'visible',
+      maxWidth: '100%',
     }}>
       {userLocalInfo && (
         Array.isArray(userLocalInfo) ? (
-          // Multiple timezones - horizontal row layout
-          <div style={{
-            display: 'flex',
-            flexDirection: 'row',
-            gap: isMobile ? '6px' : '10px',
-            overflowX: isMobile ? 'auto' : 'visible',
-            maxWidth: isMobile ? '100%' : 'none',
-            paddingBottom: isMobile ? '4px' : '0',
-            flexWrap: isMobile ? 'nowrap' : 'wrap',
-          }}>
+          // Multiple timezones - compact inline layout
+          <>
             {userLocalInfo.map((info, index) => (
               <div key={index} style={{
                 display: 'flex',
-                flexDirection: 'column',
                 alignItems: 'center',
-                gap: '3px',
-                minWidth: isMobile ? '110px' : 'auto',
+                gap: '4px',
+                padding: isMobile ? '3px 6px' : '4px 8px',
+                backgroundColor: '#e8f4f8',
+                borderRadius: '4px',
+                border: '1px solid #b3d9e6',
+                whiteSpace: 'nowrap',
+                minWidth: isMobile ? '85px' : 'auto',
               }}>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: isMobile ? '3px' : '6px',
-                  padding: isMobile ? '4px 8px' : '6px 12px',
-                  backgroundColor: '#e8f4f8',
-                  borderRadius: '6px',
-                  border: '1px solid #b3d9e6',
-                  flexDirection: isMobile ? 'column' : 'row',
-                  whiteSpace: 'nowrap',
-                }}>
-                  <span style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
-                  {!isMobile && <span style={{ fontSize: '0.7rem', color: '#5a6c7d' }}>{info.name}</span>}
-                  <span style={{ fontSize: isMobile ? '0.7rem' : '0.85rem' }}>{info.localTime}</span>
-                </div>
-                {isMobile && (
-                  <span style={{
-                    fontSize: '0.55rem',
-                    color: '#5a6c7d',
-                    textAlign: 'center',
-                    maxWidth: '110px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}>
-                    {info.name.replace(/\(.*?\)/g, '').trim()}
-                  </span>
-                )}
+                <span style={{ fontSize: isMobile ? '0.8rem' : '0.9rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                 {!isMobile && (
-                  <span style={{
-                    fontSize: '0.7rem',
-                    color: info.isSameTime ? '#27ae60' : '#7f8c8d',
-                    fontWeight: info.isSameTime ? '600' : '500',
-                    fontStyle: 'italic',
-                  }}>
-                    {info.timeDiffText}
+                  <span style={{ fontSize: '0.65rem', color: '#5a6c7d', fontWeight: '600' }}>
+                    {info.name.split('(')[1]?.replace(')', '') || info.name.split(' ')[0]}
                   </span>
                 )}
+                <span style={{ fontSize: isMobile ? '0.65rem' : '0.7rem', fontWeight: '600' }}>{info.localTime}</span>
               </div>
             ))}
-          </div>
-        ) : (
-          // Single timezone
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: isMobile ? '2px' : '4px',
-          }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: isMobile ? '4px' : '6px',
-              padding: isMobile ? '4px 8px' : '6px 12px',
-              backgroundColor: '#e8f4f8',
-              borderRadius: isMobile ? '6px' : '8px',
-              border: '1px solid #b3d9e6',
+              gap: '4px',
+              padding: isMobile ? '3px 6px' : '4px 8px',
+              backgroundColor: '#fff3e0',
+              borderRadius: '4px',
+              border: '1px solid #ffcc80',
+              whiteSpace: 'nowrap',
+              minWidth: isMobile ? '85px' : 'auto',
             }}>
-              <span style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
-              <span style={{ fontSize: isMobile ? '0.75rem' : '0.9rem' }}>{userLocalInfo.localTime}</span>
+              <span style={{ fontSize: isMobile ? '0.8rem' : '0.9rem' }}>🇸🇬</span>
+              {!isMobile && <span style={{ fontSize: '0.65rem', color: '#5a6c7d', fontWeight: '600' }}>SG</span>}
+              <span style={{ fontSize: isMobile ? '0.65rem' : '0.7rem', fontWeight: '600' }}>{singaporeTime}</span>
             </div>
-            {!isMobile && (
-              <span style={{
-                fontSize: '0.75rem',
-                color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d',
-                fontWeight: userLocalInfo.isSameTime ? '600' : '500',
-                fontStyle: 'italic',
+          </>
+        ) : (
+          // Single timezone
+          <>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: isMobile ? '3px 6px' : '4px 8px',
+              backgroundColor: '#e8f4f8',
+              borderRadius: '4px',
+              border: '1px solid #b3d9e6',
+              whiteSpace: 'nowrap',
+            }}>
+              <span style={{ fontSize: isMobile ? '0.8rem' : '0.9rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+              <span style={{ fontSize: isMobile ? '0.65rem' : '0.7rem', fontWeight: '600' }}>{userLocalInfo.localTime}</span>
+            </div>
+            {!userLocalInfo.isSameTime && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: isMobile ? '3px 6px' : '4px 8px',
+                backgroundColor: '#fff3e0',
+                borderRadius: '4px',
+                border: '1px solid #ffcc80',
+                whiteSpace: 'nowrap',
               }}>
-                {userLocalInfo.timeDiffText}
-              </span>
+                <span style={{ fontSize: isMobile ? '0.8rem' : '0.9rem' }}>🇸🇬</span>
+                <span style={{ fontSize: isMobile ? '0.65rem' : '0.7rem', fontWeight: '600' }}>{singaporeTime}</span>
+              </div>
             )}
-          </div>
+          </>
         )
       )}
-      
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: isMobile ? '4px' : '6px',
-        padding: isMobile ? '4px 8px' : '6px 12px',
-        backgroundColor: '#fff3e0',
-        borderRadius: isMobile ? '6px' : '8px',
-        border: '1px solid #ffcc80',
-      }}>
-        <span style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>🇸🇬</span>
-        <span style={{ fontSize: isMobile ? '0.75rem' : '0.9rem' }}>{singaporeTime}</span>
-      </div>
     </div>
   );
 };
