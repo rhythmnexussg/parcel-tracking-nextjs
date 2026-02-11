@@ -72,6 +72,7 @@ const countryTimezones = {
 
 const TimezoneHeader = ({ userCountry, t }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isMobile, setIsMobile] = useState(false);
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -79,6 +80,17 @@ const TimezoneHeader = ({ userCountry, t }) => {
     }, 1000);
     
     return () => clearInterval(timer);
+  }, []);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
   const formatTime = (timezone) => {
@@ -173,47 +185,71 @@ const TimezoneHeader = ({ userCountry, t }) => {
     <div style={{
       display: 'flex',
       alignItems: 'center',
-      gap: '20px',
-      fontSize: '0.9rem',
+      gap: isMobile ? '10px' : '20px',
+      fontSize: isMobile ? '0.75rem' : '0.9rem',
       fontWeight: '600',
       color: '#2c3e50',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
     }}>
       {userLocalInfo && (
         Array.isArray(userLocalInfo) ? (
-          // Multiple timezones
+          // Multiple timezones - compact horizontal layout on mobile
           <div style={{
             display: 'flex',
-            flexDirection: 'column',
-            gap: '8px',
+            flexDirection: isMobile ? 'row' : 'column',
+            gap: isMobile ? '6px' : '8px',
+            overflowX: isMobile ? 'auto' : 'visible',
+            maxWidth: isMobile ? '100%' : 'none',
+            paddingBottom: isMobile ? '4px' : '0',
           }}>
             {userLocalInfo.map((info, index) => (
               <div key={index} style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '4px',
+                gap: '2px',
+                minWidth: isMobile ? '110px' : 'auto',
               }}>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 12px',
+                  gap: isMobile ? '3px' : '6px',
+                  padding: isMobile ? '4px 8px' : '6px 12px',
                   backgroundColor: '#e8f4f8',
-                  borderRadius: '8px',
+                  borderRadius: '6px',
                   border: '1px solid #b3d9e6',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  whiteSpace: 'nowrap',
                 }}>
-                  <span style={{ fontSize: '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
-                  <span style={{ fontSize: '0.75rem', color: '#5a6c7d', marginRight: '4px' }}>{info.name}</span>
-                  <span>{info.localTime}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                    <span style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+                    {!isMobile && <span style={{ fontSize: '0.7rem', color: '#5a6c7d' }}>{info.name}</span>}
+                  </div>
+                  <span style={{ fontSize: isMobile ? '0.7rem' : '0.85rem' }}>{info.localTime}</span>
                 </div>
-                <span style={{
-                  fontSize: '0.7rem',
-                  color: info.isSameTime ? '#27ae60' : '#7f8c8d',
-                  fontWeight: info.isSameTime ? '600' : '500',
-                  fontStyle: 'italic',
-                }}>
-                  {info.timeDiffText}
-                </span>
+                {isMobile && (
+                  <span style={{
+                    fontSize: '0.55rem',
+                    color: '#5a6c7d',
+                    textAlign: 'center',
+                    maxWidth: '110px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}>
+                    {info.name.replace(/\(.*?\)/g, '').trim()}
+                  </span>
+                )}
+                {!isMobile && (
+                  <span style={{
+                    fontSize: '0.7rem',
+                    color: info.isSameTime ? '#27ae60' : '#7f8c8d',
+                    fontWeight: info.isSameTime ? '600' : '500',
+                    fontStyle: 'italic',
+                  }}>
+                    {info.timeDiffText}
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -223,28 +259,30 @@ const TimezoneHeader = ({ userCountry, t }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '4px',
+            gap: isMobile ? '2px' : '4px',
           }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              padding: '6px 12px',
+              gap: isMobile ? '4px' : '6px',
+              padding: isMobile ? '4px 8px' : '6px 12px',
               backgroundColor: '#e8f4f8',
-              borderRadius: '8px',
+              borderRadius: isMobile ? '6px' : '8px',
               border: '1px solid #b3d9e6',
             }}>
-              <span style={{ fontSize: '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
-              <span>{userLocalInfo.localTime}</span>
+              <span style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+              <span style={{ fontSize: isMobile ? '0.75rem' : '0.9rem' }}>{userLocalInfo.localTime}</span>
             </div>
-            <span style={{
-              fontSize: '0.75rem',
-              color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d',
-              fontWeight: userLocalInfo.isSameTime ? '600' : '500',
-              fontStyle: 'italic',
-            }}>
-              {userLocalInfo.timeDiffText}
-            </span>
+            {!isMobile && (
+              <span style={{
+                fontSize: '0.75rem',
+                color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d',
+                fontWeight: userLocalInfo.isSameTime ? '600' : '500',
+                fontStyle: 'italic',
+              }}>
+                {userLocalInfo.timeDiffText}
+              </span>
+            )}
           </div>
         )
       )}
@@ -252,14 +290,14 @@ const TimezoneHeader = ({ userCountry, t }) => {
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '6px',
-        padding: '6px 12px',
+        gap: isMobile ? '4px' : '6px',
+        padding: isMobile ? '4px 8px' : '6px 12px',
         backgroundColor: '#fff3e0',
-        borderRadius: '8px',
+        borderRadius: isMobile ? '6px' : '8px',
         border: '1px solid #ffcc80',
       }}>
-        <span style={{ fontSize: '1.1rem' }}>🇸🇬</span>
-        <span>{singaporeTime}</span>
+        <span style={{ fontSize: isMobile ? '0.9rem' : '1.1rem' }}>🇸🇬</span>
+        <span style={{ fontSize: isMobile ? '0.75rem' : '0.9rem' }}>{singaporeTime}</span>
       </div>
     </div>
   );
