@@ -51,7 +51,7 @@ const countryTimezones = {
   VN: 'Asia/Ho_Chi_Minh',
 };
 
-const TimezoneHeader = ({ userCountry }) => {
+const TimezoneHeader = ({ userCountry, t }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   
   useEffect(() => {
@@ -107,13 +107,15 @@ const TimezoneHeader = ({ userCountry }) => {
     
     let timeDiffText = '';
     if (diffHours === 0) {
-      timeDiffText = 'Same time as Singapore';
+      timeDiffText = t ? t('sameTimeAsSingapore') : 'Same time as Singapore';
     } else if (diffHours > 0) {
       const hours = Math.abs(diffHours);
-      timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} hour${hours !== 1 ? 's' : ''} ahead of Singapore`;
+      const hourText = hours === 1 ? (t ? t('hourAhead') : 'hour ahead of Singapore') : (t ? t('hoursAhead') : 'hours ahead of Singapore');
+      timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
     } else {
       const hours = Math.abs(diffHours);
-      timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} hour${hours !== 1 ? 's' : ''} behind Singapore`;
+      const hourText = hours === 1 ? (t ? t('hourBehind') : 'hour behind Singapore') : (t ? t('hoursBehind') : 'hours behind of Singapore');
+      timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
     }
     
     return { localTime, timeDiffText, isSameTime: diffHours === 0 };

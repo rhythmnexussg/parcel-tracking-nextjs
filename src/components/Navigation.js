@@ -37,7 +37,7 @@ export const Navigation = () => {
       </div>
       
       <div className="navbar-center">
-        <TimezoneHeader userCountry={userCountry} />
+        <TimezoneHeader userCountry={userCountry} t={t} />
       </div>
       
       <div className="navbar-links">
