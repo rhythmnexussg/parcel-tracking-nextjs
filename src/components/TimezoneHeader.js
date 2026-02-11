@@ -13,13 +13,25 @@ const countryFlags = {
 };
 
 // Timezone mappings for each destination country
+// Countries with multiple timezones use array format: [{ name, timezone }]
 const countryTimezones = {
   SG: 'Asia/Singapore',
-  AU: 'Australia/Sydney',
+  AU: [
+    { name: 'AEST (Sydney/Melbourne)', timezone: 'Australia/Sydney' },
+    { name: 'ACST (Adelaide)', timezone: 'Australia/Adelaide' },
+    { name: 'AWST (Perth)', timezone: 'Australia/Perth' },
+  ],
   AT: 'Europe/Vienna',
   BE: 'Europe/Brussels',
   BN: 'Asia/Brunei',
-  CA: 'America/Toronto',
+  CA: [
+    { name: 'NST (Newfoundland)', timezone: 'America/St_Johns' },
+    { name: 'AST (Atlantic)', timezone: 'America/Halifax' },
+    { name: 'EST (Eastern)', timezone: 'America/Toronto' },
+    { name: 'CST (Central)', timezone: 'America/Winnipeg' },
+    { name: 'MST (Mountain)', timezone: 'America/Edmonton' },
+    { name: 'PST (Pacific)', timezone: 'America/Vancouver' },
+  ],
   CN: 'Asia/Shanghai',
   CZ: 'Europe/Prague',
   FI: 'Europe/Helsinki',
@@ -47,7 +59,14 @@ const countryTimezones = {
   TW: 'Asia/Taipei',
   TH: 'Asia/Bangkok',
   GB: 'Europe/London',
-  US: 'America/New_York',
+  US: [
+    { name: 'EST (Eastern)', timezone: 'America/New_York' },
+    { name: 'CST (Central)', timezone: 'America/Chicago' },
+    { name: 'MST (Mountain)', timezone: 'America/Denver' },
+    { name: 'PST (Pacific)', timezone: 'America/Los_Angeles' },
+    { name: 'AKST (Alaska)', timezone: 'America/Anchorage' },
+    { name: 'HST (Hawaii)', timezone: 'Pacific/Honolulu' },
+  ],
   VN: 'Asia/Ho_Chi_Minh',
 };
 
@@ -97,9 +116,36 @@ const TimezoneHeader = ({ userCountry, t }) => {
   const getUserLocalInfo = () => {
     if (!userCountry || userCountry === 'SG') return null;
     
-    const timezone = countryTimezones[userCountry];
-    if (!timezone) return null;
+    const timezoneData = countryTimezones[userCountry];
+    if (!timezoneData) return null;
     
+    // Handle countries with multiple timezones
+    if (Array.isArray(timezoneData)) {
+      return timezoneData.map(({ name, timezone }) => {
+        const localTime = formatTime(timezone);
+        const localOffset = getUTCOffset(timezone);
+        const diffMinutes = localOffset - singaporeOffset;
+        const diffHours = diffMinutes / 60;
+        
+        let timeDiffText = '';
+        if (diffHours === 0) {
+          timeDiffText = t ? t('sameTimeAsSingapore') : 'Same time as Singapore';
+        } else if (diffHours > 0) {
+          const hours = Math.abs(diffHours);
+          const hourText = hours === 1 ? (t ? t('hourAhead') : 'hour ahead of Singapore') : (t ? t('hoursAhead') : 'hours ahead of Singapore');
+          timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
+        } else {
+          const hours = Math.abs(diffHours);
+          const hourText = hours === 1 ? (t ? t('hourBehind') : 'hour behind Singapore') : (t ? t('hoursBehind') : 'hours behind Singapore');
+          timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
+        }
+        
+        return { name, localTime, timeDiffText, isSameTime: diffHours === 0 };
+      });
+    }
+    
+    // Handle countries with single timezone
+    const timezone = timezoneData;
     const localTime = formatTime(timezone);
     const localOffset = getUTCOffset(timezone);
     const diffMinutes = localOffset - singaporeOffset;
@@ -114,7 +160,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
       timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
     } else {
       const hours = Math.abs(diffHours);
-      const hourText = hours === 1 ? (t ? t('hourBehind') : 'hour behind Singapore') : (t ? t('hoursBehind') : 'hours behind of Singapore');
+      const hourText = hours === 1 ? (t ? t('hourBehind') : 'hour behind Singapore') : (t ? t('hoursBehind') : 'hours behind Singapore');
       timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
     }
     
@@ -133,33 +179,74 @@ const TimezoneHeader = ({ userCountry, t }) => {
       color: '#2c3e50',
     }}>
       {userLocalInfo && (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '4px',
-        }}>
+        Array.isArray(userLocalInfo) ? (
+          // Multiple timezones
           <div style={{
             display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            backgroundColor: '#e8f4f8',
-            borderRadius: '8px',
-            border: '1px solid #b3d9e6',
+            flexDirection: 'column',
+            gap: '8px',
           }}>
-            <span style={{ fontSize: '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
-            <span>{userLocalInfo.localTime}</span>
+            {userLocalInfo.map((info, index) => (
+              <div key={index} style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 12px',
+                  backgroundColor: '#e8f4f8',
+                  borderRadius: '8px',
+                  border: '1px solid #b3d9e6',
+                }}>
+                  <span style={{ fontSize: '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+                  <span style={{ fontSize: '0.75rem', color: '#5a6c7d', marginRight: '4px' }}>{info.name}</span>
+                  <span>{info.localTime}</span>
+                </div>
+                <span style={{
+                  fontSize: '0.7rem',
+                  color: info.isSameTime ? '#27ae60' : '#7f8c8d',
+                  fontWeight: info.isSameTime ? '600' : '500',
+                  fontStyle: 'italic',
+                }}>
+                  {info.timeDiffText}
+                </span>
+              </div>
+            ))}
           </div>
-          <span style={{
-            fontSize: '0.75rem',
-            color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d',
-            fontWeight: userLocalInfo.isSameTime ? '600' : '500',
-            fontStyle: 'italic',
+        ) : (
+          // Single timezone
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '4px',
           }}>
-            {userLocalInfo.timeDiffText}
-          </span>
-        </div>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              backgroundColor: '#e8f4f8',
+              borderRadius: '8px',
+              border: '1px solid #b3d9e6',
+            }}>
+              <span style={{ fontSize: '1.1rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+              <span>{userLocalInfo.localTime}</span>
+            </div>
+            <span style={{
+              fontSize: '0.75rem',
+              color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d',
+              fontWeight: userLocalInfo.isSameTime ? '600' : '500',
+              fontStyle: 'italic',
+            }}>
+              {userLocalInfo.timeDiffText}
+            </span>
+          </div>
+        )
       )}
       
       <div style={{
