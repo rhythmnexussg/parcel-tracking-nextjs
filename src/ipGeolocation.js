@@ -294,6 +294,12 @@ export async function detectLanguageFromIP() {
         console.log('✓ Using geolocation-db.com (fallback)');
       } catch (fallbackError) {
         console.error('All geolocation APIs failed');
+        const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const fallback = buildFallbackGeoResult({ browserTimezone });
+        if (fallback) {
+          console.warn('Using timezone-based fallback geolocation:', fallback);
+          return fallback;
+        }
         return null;
       }
     }
@@ -310,6 +316,12 @@ export async function detectLanguageFromIP() {
     if (!detectedCountryCode) {
       console.error('CRITICAL: No country_code in IP response!');
       console.log('Response keys:', Object.keys(data));
+      const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const fallback = buildFallbackGeoResult({ browserTimezone });
+      if (fallback) {
+        console.warn('Using timezone-based fallback geolocation:', fallback);
+        return fallback;
+      }
       return null;
     }
     
@@ -410,6 +422,54 @@ export function detectLanguageFromBrowser() {
   return browserLangMap[langCode] || 'en';
 }
 
+function inferCountryCodeFromBrowserTimezone(browserTimezone) {
+  if (!browserTimezone) return null;
+
+  const timezoneToCountry = {
+    // China
+    'Asia/Shanghai': 'CN',
+    'Asia/Chongqing': 'CN',
+    'Asia/Urumqi': 'CN',
+    'Asia/Harbin': 'CN',
+
+    // Taiwan
+    'Asia/Taipei': 'TW',
+
+    // Hong Kong / Macau
+    'Asia/Hong_Kong': 'HK',
+    'Asia/Macau': 'MO',
+    'Asia/Macao': 'MO',
+  };
+
+  return timezoneToCountry[browserTimezone] || null;
+}
+
+function buildFallbackGeoResult({ browserTimezone, detectedCountryCode = null }) {
+  const inferredCountryCode = inferCountryCodeFromBrowserTimezone(browserTimezone);
+  if (!inferredCountryCode) return null;
+
+  const languageCode = countryToLanguageMap[inferredCountryCode] || detectLanguageFromBrowser();
+  const browserLanguages = (typeof navigator !== 'undefined' && navigator.languages)
+    ? navigator.languages
+    : (typeof navigator !== 'undefined' ? [navigator.language] : []);
+
+  return {
+    countryCode: inferredCountryCode,
+    detectedCountryCode,
+    languageCode,
+    isMultiLingual: isMultiLanguageCountry(inferredCountryCode),
+    languageOptions: isMultiLanguageCountry(inferredCountryCode) ? getLanguageOptions(inferredCountryCode) : null,
+    isVPNDetected: false,
+    vpnLikelihood: 0,
+    vpnIndicators: [],
+    estimatedActualCountry: inferredCountryCode,
+    browserTimezone,
+    browserLanguages,
+    accessRestrictions: inferredCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null,
+    detectionMethod: 'timezone_fallback',
+  };
+}
+
 // List of 35 allowed countries that can access from China (based on track-your-item.js country list)
 const allowedCountriesFromChina = [
   'AU', 'AT', 'BE', 'BN', 'CA', 'CN', 'CZ', 'FI', 'FR', 'DE', 'HK', 'IN', 
@@ -460,8 +520,11 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
       'Asia/Shanghai': 'CN',
       'Asia/Chongqing': 'CN',
       'Asia/Urumqi': 'CN',
+      'Asia/Harbin': 'CN',
       'Asia/Hong_Kong': 'HK',
       'Asia/Taipei': 'TW',
+      'Asia/Macau': 'MO',
+      'Asia/Macao': 'MO',
       'Asia/Singapore': 'SG',
       'Asia/Tokyo': 'JP',
       'Asia/Seoul': 'KR',
@@ -587,6 +650,12 @@ export async function detectLanguageFromIPWithRestrictions() {
       if (!response || !response.ok) {
         clearTimeout(timeoutId);
         console.warn('IP geolocation service unavailable');
+        const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const fallback = buildFallbackGeoResult({ browserTimezone });
+        if (fallback) {
+          console.warn('Using timezone-based fallback geolocation:', fallback);
+          return fallback;
+        }
         return { error: 'service_unavailable' };
       }
 
@@ -652,6 +721,16 @@ export async function detectLanguageFromIPWithRestrictions() {
     return result;
   } catch (error) {
     console.error('Error in enhanced IP detection:', error);
+    try {
+      const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const fallback = buildFallbackGeoResult({ browserTimezone });
+      if (fallback) {
+        console.warn('Using timezone-based fallback geolocation:', fallback);
+        return fallback;
+      }
+    } catch (_) {
+      // ignore
+    }
     return { error: 'detection_failed' };
   }
 }

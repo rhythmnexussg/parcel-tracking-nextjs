@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 // Country flag emojis
 const countryFlags = {
@@ -103,6 +103,114 @@ const TimezoneHeader = ({ userCountry, t }) => {
     const words = regionPart.split(/\s+/);
     return words[0]; // Return first word (main city/region name)
   };
+
+  const getBoundedDiffTextStyle = (baseStyle) => ({
+    ...baseStyle,
+    maxWidth: '100%',
+    textAlign: 'center',
+    whiteSpace: 'normal',
+    lineHeight: '1.15',
+    overflowWrap: 'anywhere',
+    wordBreak: 'break-word',
+  });
+
+  const getUTCOffsetAt = (timezone, date) => {
+    try {
+      const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+      const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+      return Math.round((tzDate - utcDate) / (1000 * 60));
+    } catch (error) {
+      return 0;
+    }
+  };
+
+  const getNextDSTStartDate = (timezone) => {
+    try {
+      const now = new Date();
+
+      // Quick check: if offsets don't differ between Jan and Jul, DST is likely not observed.
+      const year = now.getUTCFullYear();
+      const jan = new Date(Date.UTC(year, 0, 15, 12, 0, 0));
+      const jul = new Date(Date.UTC(year, 6, 15, 12, 0, 0));
+      const janOffset = getUTCOffsetAt(timezone, jan);
+      const julOffset = getUTCOffsetAt(timezone, jul);
+      if (janOffset === julOffset) return null;
+
+      // Scan forward up to ~14 months to find the next offset increase (DST start).
+      const scanDays = 430;
+      const todayNoonUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0));
+      let prevOffset = getUTCOffsetAt(timezone, todayNoonUTC);
+
+      for (let dayIndex = 1; dayIndex <= scanDays; dayIndex += 1) {
+        const candidate = new Date(todayNoonUTC.getTime() + dayIndex * 24 * 60 * 60 * 1000);
+        const offset = getUTCOffsetAt(timezone, candidate);
+
+        // DST start typically means offset increases (e.g. UTC-5 -> UTC-4).
+        if (offset > prevOffset) {
+          return candidate;
+        }
+
+        prevOffset = offset;
+      }
+
+      return null;
+    } catch (_) {
+      return null;
+    }
+  };
+
+  const nextDstStartDate = useMemo(() => {
+    if (!userCountry || userCountry === 'SG') return null;
+
+    const timezoneData = countryTimezones[userCountry];
+    if (!timezoneData) return null;
+
+    // Multiple timezones: pick the earliest upcoming DST start date among them.
+    if (Array.isArray(timezoneData)) {
+      let earliest = null;
+      for (const { timezone } of timezoneData) {
+        const startDate = getNextDSTStartDate(timezone);
+        if (!startDate) continue;
+        if (!earliest || startDate.getTime() < earliest.getTime()) {
+          earliest = startDate;
+        }
+      }
+      return earliest;
+    }
+
+    // Single timezone
+    return getNextDSTStartDate(timezoneData);
+  }, [userCountry]);
+
+  const daylightTimeNotice = useMemo(() => {
+    if (!nextDstStartDate) return null;
+
+    const formattedDate = new Intl.DateTimeFormat(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(nextDstStartDate);
+
+    if (userCountry === 'AU') {
+      return `Daylight time starts: ${formattedDate} (NSW, VIC, SA, TAS, ACT)`;
+    }
+
+    if (userCountry === 'NZ') {
+      return `Daylight time starts: ${formattedDate} (New Zealand)`;
+    }
+
+    // European countries we support that commonly observe daylight time.
+    // (We only show this line if DST is detected for the timezone anyway.)
+    const europeCountries = new Set([
+      'AT', 'BE', 'CH', 'CZ', 'DE', 'ES', 'FI', 'FR', 'GB', 'IE',
+      'IT', 'NL', 'NO', 'PL', 'PT', 'SE',
+    ]);
+    if (europeCountries.has(userCountry)) {
+      return `Daylight time starts: ${formattedDate} (Europe)`;
+    }
+
+    return `Daylight time starts: ${formattedDate}`;
+  }, [nextDstStartDate, userCountry]);
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -287,7 +395,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                         </span>
                       </div>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{info.localTime}</span>
-                      <span style={{ fontSize: isMobile ? '0.5rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' }}>
+                      <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.5rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
                         {info.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
                       </span>
                     </div>
@@ -315,7 +423,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                         </span>
                       </div>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{info.localTime}</span>
-                      <span style={{ fontSize: isMobile ? '0.5rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' }}>
+                      <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.5rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
                         {info.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
                       </span>
                     </div>
@@ -341,7 +449,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{userLocalInfo[10].localTime}</span>
-                    <span style={{ fontSize: isMobile ? '0.5rem' : '0.5rem', color: userLocalInfo[10].isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' }}>
+                    <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.5rem' : '0.5rem', color: userLocalInfo[10].isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
                       {userLocalInfo[10].timeDiffText.replace('hours', 'h').replace('hour', 'h')}
                     </span>
                   </div>
@@ -387,7 +495,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
-                    <span style={{ fontSize: isMobile ? '0.6rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' }}>
+                    <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.6rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
                       {info.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
                     </span>
                   </div>
@@ -415,7 +523,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
-                    <span style={{ fontSize: isMobile ? '0.6rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' }}>
+                    <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.6rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
                       {info.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
                     </span>
                   </div>
@@ -467,7 +575,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   </div>
                   <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
                   {!isMobile && (
-                    <span style={{ fontSize: '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' }}>
+                    <span style={getBoundedDiffTextStyle({ fontSize: '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
                       {info.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
                     </span>
                   )}
@@ -510,7 +618,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
               <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
               <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{userLocalInfo.localTime}</span>
               {!isMobile && (
-                <span style={{ fontSize: '0.5rem', color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic', marginLeft: '4px' }}>
+                <span style={getBoundedDiffTextStyle({ fontSize: '0.5rem', color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic', marginLeft: '4px' })}>
                   {userLocalInfo.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
                 </span>
               )}
@@ -531,6 +639,18 @@ const TimezoneHeader = ({ userCountry, t }) => {
             </div>
           </>
         )
+      )}
+
+      {daylightTimeNotice && (
+        <div style={getBoundedDiffTextStyle({
+          fontSize: isMobile ? '0.55rem' : '0.5rem',
+          color: '#5a6c7d',
+          fontWeight: '600',
+          fontStyle: 'italic',
+          marginTop: shouldUseGridLayout ? (isMobile ? '2px' : '4px') : '0',
+        })}>
+          {daylightTimeNotice}
+        </div>
       )}
     </div>
   );
