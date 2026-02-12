@@ -7,7 +7,7 @@ export async function GET(request) {
     const shippedCountries = [
       'AT', 'AU', 'BE', 'BN', 'CA', 'CN', 'CZ', 'DE', 'FI', 'FR',
       'GB', 'HK', 'ID', 'IE', 'IL', 'IN', 'IT', 'JP', 'KR', 'MO',
-      'MY', 'NL', 'NO', 'NZ', 'PH', 'PL', 'PT', 'SE', 'ES', 'CH',
+      'MY', 'NL', 'NO', 'NZ', 'PH', 'PL', 'PT', 'RU', 'SE', 'ES', 'CH',
       'TW', 'TH', 'US', 'VN'
     ];
     
@@ -49,7 +49,7 @@ export async function GET(request) {
         GB: 'United Kingdom', HK: 'Hong Kong', ID: 'Indonesia', IE: 'Ireland', IL: 'Israel', 
         IN: 'India', IT: 'Italy', JP: 'Japan', KR: 'Korea', MO: 'Macau',
         MY: 'Malaysia', NL: 'Netherlands', NO: 'Norway', NZ: 'New Zealand', PH: 'Philippines', 
-        PL: 'Poland', PT: 'Portugal', SE: 'Sweden', ES: 'Spain', CH: 'Switzerland',
+        PL: 'Poland', PT: 'Portugal', RU: 'Russia', SE: 'Sweden', ES: 'Spain', CH: 'Switzerland',
         TW: 'Taiwan', TH: 'Thailand', US: 'United States', VN: 'Vietnam'
       };
       

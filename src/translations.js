@@ -100,6 +100,7 @@ export const translations = {
     thirdPartyWebsites: "You may also track your parcels on these third-party websites as well:",
     enterEmailOrPhone: "Enter email or phone",
     collectAtPostOffice: "However, if your country does not have mailbox as a standard available, you will have to collect it at the post office.",
+    russiaServiceSuspended: "⚠️ IMPORTANT NOTICE: In view of the 2022 Russian Invasion of Ukraine, SingPost has suspended all shipments to Russia along with DHL. We currently do not serve Russia at this point until there is announcement of resumption of services to the country.",
     reviewShippingRates: "Review our current shipping rates",
     here: "here",
     contactUsForm: "Please contact us through this",
@@ -227,7 +228,7 @@ export const translations = {
     countryFI: "🇫🇮 Finland", countryFR: "🇫🇷 France", countryHK: "🇭🇰 Hong Kong SAR China", countryIN: "🇮🇳 India", countryID: "🇮🇩 Indonesia",
     countryIE: "🇮🇪 Ireland", countryIL: "🇮🇱 Israel", countryIT: "🇮🇹 Italy", countryJP: "🇯🇵 Japan", countryMO: "🇲🇴 Macau SAR China",
     countryMY: "🇲🇾 Malaysia", countryNL: "🇳🇱 Netherlands", countryNZ: "🇳🇿 New Zealand", countryNO: "🇳🇴 Norway", countryPH: "🇵🇭 Philippines",
-    countryPL: "🇵🇱 Poland", countryPT: "🇵🇹 Portugal", countryKR: "🇰🇷 South Korea", countryES: "🇪🇸 Spain", countrySE: "🇸🇪 Sweden",
+    countryPL: "🇵🇱 Poland", countryPT: "🇵🇹 Portugal", countryRU: "🇷🇺 Russia", countryKR: "🇰🇷 South Korea", countryES: "🇪🇸 Spain", countrySE: "🇸🇪 Sweden",
     countryCH: "🇨🇭 Switzerland", countryTW: "🇹🇼 Taiwan", countryTH: "🇹🇭 Thailand", countryVN: "🇻🇳 Vietnam", countrySG: "🇸🇬 Singapore",
     // Country-specific messages
     countryMsgNL: "If the status reflects 'Held by Customs', please contact the Netherlands Customs Information Line for assistance:\n0800 0143 (free of charge), Mon to Fri from 7 a.m. to 11 p.m.\nOn Sat & Sun from 8 a.m. to 4:30 p.m.\n\nYou are encouraged to register an account with PostNL for instant push notification of your packages:\n\nhttps://www.postnl.nl/campagnes/online-pakket-volgen/ \n\nIf it is being delivered to a PostNL point or the status tells you to collect at the post office, you will have to pay 7 EUR at the counter. At most 4 EUR if paid online.",
@@ -479,8 +480,9 @@ export const translations = {
     countryFI: "🇫🇮 Finnland", countryFR: "🇫🇷 Frankreich", countryHK: "🇭🇰 Hongkong SAR China", countryIN: "🇮🇳 Indien", countryID: "🇮🇩 Indonesien",
     countryIE: "🇮🇪 Irland", countryIL: "🇮🇱 Israel", countryIT: "🇮🇹 Italien", countryJP: "🇯🇵 Japan", countryMO: "🇲🇴 Macau SAR China",
     countryMY: "🇲🇾 Malaysia", countryNL: "🇳🇱 Niederlande", countryNZ: "🇳🇿 Neuseeland", countryNO: "🇳🇴 Norwegen", countryPH: "🇵🇭 Philippinen",
-    countryPL: "🇵🇱 Polen", countryPT: "🇵🇹 Portugal", countryKR: "🇰🇷 Südkorea", countryES: "🇪🇸 Spanien", countrySE: "🇸🇪 Schweden",
+    countryPL: "🇵🇱 Polen", countryPT: "🇵🇹 Portugal", countryRU: "🇷🇺 Russland", countryKR: "🇰🇷 Südkorea", countryES: "🇪🇸 Spanien", countrySE: "🇸🇪 Schweden",
     countryCH: "🇨🇭 Schweiz", countryTW: "🇹🇼 Taiwan", countryTH: "🇹🇭 Thailand", countryVN: "🇻🇳 Vietnam", countrySG: "🇸🇬 Singapur",
+    russiaServiceSuspended: "⚠️ WICHTIGER HINWEIS: Angesichts der russischen Invasion in der Ukraine im Jahr 2022 hat SingPost zusammen mit DHL alle Sendungen nach Russland eingestellt. Wir bedienen Russland derzeit nicht, bis die Wiederaufnahme der Dienste in das Land angekündigt wird.",
   },
   
   fr: {
@@ -703,8 +705,9 @@ export const translations = {
     countryFI: "🇫🇮 Finlande", countryFR: "🇫🇷 France", countryHK: "🇭🇰 Hong Kong R.A.S. Chine", countryIN: "🇮🇳 Inde", countryID: "🇮🇩 Indonésie",
     countryIE: "🇮🇪 Irlande", countryIL: "🇮🇱 Israël", countryIT: "🇮🇹 Italie", countryJP: "🇯🇵 Japon", countryMO: "🇲🇴 Macao R.A.S. Chine",
     countryMY: "🇲🇾 Malaisie", countryNL: "🇳🇱 Pays-Bas", countryNZ: "🇳🇿 Nouvelle-Zélande", countryNO: "🇳🇴 Norvège", countryPH: "🇵🇭 Philippines",
-    countryPL: "🇵🇱 Pologne", countryPT: "🇵🇹 Portugal", countryKR: "🇰🇷 Corée du Sud", countryES: "🇪🇸 Espagne", countrySE: "🇸🇪 Suède",
+    countryPL: "🇵🇱 Pologne", countryPT: "🇵🇹 Portugal", countryRU: "🇷🇺 Russie", countryKR: "🇰🇷 Corée du Sud", countryES: "🇪🇸 Espagne", countrySE: "🇸🇪 Suède",
     countryCH: "🇨🇭 Suisse", countryTW: "🇹🇼 Taïwan", countryTH: "🇹🇭 Thaïlande", countryVN: "🇻🇳 Vietnam", countrySG: "🇸🇬 Singapour",
+    russiaServiceSuspended: "⚠️ AVIS IMPORTANT: En raison de l'invasion russe de l'Ukraine en 2022, SingPost a suspendu tous les envois vers la Russie ainsi que DHL. Nous ne desservons actuellement pas la Russie jusqu'à ce qu'il y ait une annonce de reprise des services vers le pays.",
   },
   
   es: {
@@ -927,8 +930,9 @@ export const translations = {
     countryFI: "🇫🇮 Finlandia", countryFR: "🇫🇷 Francia", countryHK: "🇭🇰 Hong Kong RAE China", countryIN: "🇮🇳 India", countryID: "🇮🇩 Indonesia",
     countryIE: "🇮🇪 Irlanda", countryIL: "🇮🇱 Israel", countryIT: "🇮🇹 Italia", countryJP: "🇯🇵 Japón", countryMO: "🇲🇴 Macao RAE China",
     countryMY: "🇲🇾 Malasia", countryNL: "🇳🇱 Países Bajos", countryNZ: "🇳🇿 Nueva Zelanda", countryNO: "🇳🇴 Noruega", countryPH: "🇵🇭 Filipinas",
-    countryPL: "🇵🇱 Polonia", countryPT: "🇵🇹 Portugal", countryKR: "🇰🇷 Corea del Sur", countryES: "🇪🇸 España", countrySE: "🇸🇪 Suecia",
+    countryPL: "🇵🇱 Polonia", countryPT: "🇵🇹 Portugal", countryRU: "🇷🇺 Rusia", countryKR: "🇰🇷 Corea del Sur", countryES: "🇪🇸 España", countrySE: "🇸🇪 Suecia",
     countryCH: "🇨🇭 Suiza", countryTW: "🇹🇼 Taiwán", countryTH: "🇹🇭 Tailandia", countryVN: "🇻🇳 Vietnam", countrySG: "🇸🇬 Singapur",
+    russiaServiceSuspended: "⚠️ AVISO IMPORTANTE: En vista de la invasión rusa de Ucrania en 2022, SingPost ha suspendido todos los envíos a Rusia junto con DHL. Actualmente no servimos a Rusia hasta que se anuncie la reanudación de servicios al país.",
   },
   
   ja: {
@@ -1141,8 +1145,9 @@ export const translations = {
     countryFI: "🇫🇮 フィンランド", countryFR: "🇫🇷 フランス", countryHK: "🇭🇰 香港特別行政区", countryIN: "🇮🇳 インド", countryID: "🇮🇩 インドネシア",
     countryIE: "🇮🇪 アイルランド", countryIL: "🇮🇱 イスラエル", countryIT: "🇮🇹 イタリア", countryJP: "🇯🇵 日本", countryMO: "🇲🇴 マカオ特別行政区",
     countryMY: "🇲🇾 マレーシア", countryNL: "🇳🇱 オランダ", countryNZ: "🇳🇿 ニュージーランド", countryNO: "🇳🇴 ノルウェー", countryPH: "🇵🇭 フィリピン",
-    countryPL: "🇵🇱 ポーランド", countryPT: "🇵🇹 ポルトガル", countryKR: "🇰🇷 韓国", countryES: "🇪🇸 スペイン", countrySE: "🇸🇪 スウェーデン",
+    countryPL: "🇵🇱 ポーランド", countryPT: "🇵🇹 ポルトガル", countryRU: "🇷🇺 ロシア", countryKR: "🇰🇷 韓国", countryES: "🇪🇸 スペイン", countrySE: "🇸🇪 スウェーデン",
     countryCH: "🇨🇭 スイス", countryTW: "🇹🇼 台湾", countryTH: "🇹🇭 タイ", countryVN: "🇻🇳 ベトナム", countrySG: "🇸🇬 シンガポール",
+    russiaServiceSuspended: "⚠️ 重要なお知らせ：2022年のロシアのウクライナ侵攻を受けて、SingPostはDHLと共にロシアへのすべての配送を停止しました。同国へのサービス再開が発表されるまで、現在ロシアにはサービスを提供していません。",
   },
   
   zh: {
@@ -1461,7 +1466,7 @@ export const translations = {
     countryQA: "卡塔尔",
     countryRE: "留尼汪",
     countryRO: "罗马尼亚",
-    countryRU: "俄罗斯",
+    countryRU: "🇷🇺 俄罗斯",
     countryRW: "卢旺达",
     countrySH: "圣赫勒拿",
     countryKN: "圣基茨和尼维斯",
@@ -1603,6 +1608,7 @@ export const translations = {
     operatorNoEmbed: "不支持通过嵌入方式进行跟踪。请",
     clickHere: "点击此处",
     toTrackNewTab: "进行跟踪（在新标签页中打开）。",
+    russiaServiceSuspended: "⚠️ 重要通知：鉴于2022年俄罗斯入侵乌克兰，新加坡邮政已与DHL一起暂停所有运往俄罗斯的货物。在宣布恢复对该国的服务之前，我们目前不为俄罗斯提供服务。",
   },
 
   "zh-hant": {
@@ -1926,7 +1932,7 @@ export const translations = {
     "countryQA": "卡達",
     "countryRE": "留尼旺",
     "countryRO": "羅馬尼亞",
-    "countryRU": "俄羅斯",
+    "countryRU": "🇷🇺 俄羅斯",
     "countryRW": "盧安達",
     "countrySH": "聖赫勒拿",
     "countryKN": "聖克里斯多福及尼維斯",
@@ -2063,6 +2069,7 @@ export const translations = {
     operatorNoEmbed: "不支援透過嵌入方式進行追蹤。請",
     clickHere: "按此處",
     toTrackNewTab: "進行追蹤（在新分頁中開啟）。",
+    russiaServiceSuspended: "⚠️ 重要通知：鑑於2022年俄羅斯入侵烏克蘭，新加坡郵政已與DHL一起暫停所有運往俄羅斯的貨物。在宣佈恢復對該國的服務之前，我們目前不為俄羅斯提供服務。",
   },
   
   pt: {
@@ -2381,7 +2388,7 @@ export const translations = {
     "countryQA": "Catar",
     "countryRE": "Reunião",
     "countryRO": "Romênia",
-    "countryRU": "Rússia",
+    "countryRU": "🇷🇺 Rússia",
     "countryRW": "Ruanda",
     "countrySH": "Santa Helena",
     "countryKN": "São Cristóvão e Neves",
@@ -2523,6 +2530,7 @@ export const translations = {
     operatorNoEmbed: "não suporta rastreamento via incorporação. Por favor",
     clickHere: "clique aqui",
     toTrackNewTab: "para rastrear (abre em nova aba).",
+    russiaServiceSuspended: "⚠️ AVISO IMPORTANTE: Tendo em vista a invasão russa da Ucrânia em 2022, a SingPost suspendeu todas as remessas para a Rússia junto com a DHL. Atualmente não servimos a Rússia até que haja anúncio de retomada dos serviços para o país.",
   },
   
   hi: {
@@ -2782,6 +2790,8 @@ export const translations = {
     operatorNoEmbed: "एम्बेड के माध्यम से ट्रैकिंग का समर्थन नहीं करता है। कृपया",
     clickHere: "यहाँ क्लिक करें",
     toTrackNewTab: "ट्रैक करने के लिए (नए टैब में खुलता है)।",
+    countryRU: "🇷🇺 रूस",
+    russiaServiceSuspended: "⚠️ महत्वपूर्ण सूचना: 2022 में यूक्रेन पर रूसी आक्रमण के कारण, SingPost ने DHL के साथ रूस के लिए सभी शिपमेंट निलंबित कर दिया है। देश में सेवाओं की बहाली की घोषणा होने तक हम वर्तमान में रूस की सेवा नहीं कर रहे हैं।",
   },
   
   th: {
@@ -3041,6 +3051,8 @@ export const translations = {
     operatorNoEmbed: "ไม่รองรับการติดตามผ่านการฝังตัว กรุณา",
     clickHere: "คลิกที่นี่",
     toTrackNewTab: "เพื่อติดตาม (เปิดในแท็บใหม่)",
+    countryRU: "🇷🇺 รัสเซีย",
+    russiaServiceSuspended: "⚠️ ประกาศสำคัญ: เนื่องจากการรุกรานยูเครนของรัสเซียในปี 2022 SingPost ได้ระงับการจัดส่งทั้งหมดไปยังรัสเซียพร้อมกับ DHL ขณะนี้เราไม่ให้บริการรัสเซียจนกว่าจะมีการประกาศการกลับมาให้บริการในประเทศดังกล่าว",
   },
   
   ms: {
@@ -3280,6 +3292,8 @@ export const translations = {
     operatorNoEmbed: "tidak menyokong penjejakan melalui embed. Sila",
     clickHere: "klik di sini",
     toTrackNewTab: "untuk menjejak (buka dalam tab baru).",
+    countryRU: "🇷🇺 Rusia",
+    russiaServiceSuspended: "⚠️ NOTIS PENTING: Memandangkan pencerobohan Rusia ke Ukraine pada tahun 2022, SingPost bersama DHL telah menggantung semua penghantaran ke Rusia. Kami pada masa ini tidak berkhidmat untuk Rusia sehingga ada pengumuman pemulihan perkhidmatan ke negara tersebut.",
   },
   
   nl: {
@@ -3698,6 +3712,8 @@ export const translations = {
     operatorNoEmbed: "ondersteunt geen tracking via embed. Gelieve",
     clickHere: "hier te klikken",
     toTrackNewTab: "om te volgen (opent in nieuw tabblad).",
+    countryRU: "🇷🇺 Rusland",
+    russiaServiceSuspended: "⚠️ BELANGRIJKE KENNISGEVING: Gezien de Russische invasie van Oekraïne in 2022 heeft SingPost alle zendingen naar Rusland samen met DHL opgeschort. We bedienen momenteel geen Rusland tot er een aankondiging is van hervatting van diensten naar het land.",
   },
   
   id: {
@@ -4108,6 +4124,8 @@ export const translations = {
     operatorNoEmbed: "tidak mendukung pelacakan melalui embed. Silakan",
     clickHere: "klik di sini",
     toTrackNewTab: "untuk melacak (buka di tab baru).",
+    countryRU: "🇷🇺 Rusia",
+    russiaServiceSuspended: "⚠️ PEMBERITAHUAN PENTING: Mengingat invasi Rusia ke Ukraina pada tahun 2022, SingPost telah menangguhkan semua pengiriman ke Rusia bersama dengan DHL. Kami saat ini tidak melayani Rusia sampai ada pengumuman pemulihan layanan ke negara tersebut.",
   },
   
   cs: {
@@ -4525,6 +4543,8 @@ export const translations = {
     operatorNoEmbed: "nepodporuje sledování prostřednictvím vložení. Prosím",
     clickHere: "klikněte zde",
     toTrackNewTab: "pro sledování (otevře se v nové kartě).",
+    countryRU: "🇷🇺 Rusko",
+    russiaServiceSuspended: "⚠️ DŮLEŽITÉ OZNÁMENÍ: V důsledku ruské invaze na Ukrajinu v roce 2022 SingPost společně s DHL pozastavil všechny zásilky do Ruska. V současné době Rusko neobsluhujeme, dokud nebude oznámeno obnovení služeb do této země.",
   },
   
   it: {
@@ -4763,6 +4783,8 @@ export const translations = {
     operatorNoEmbed: "non supporta il tracciamento tramite incorporamento. Per favore",
     clickHere: "clicca qui",
     toTrackNewTab: "per tracciare (si apre in una nuova scheda).",
+    countryRU: "🇷🇺 Russia",
+    russiaServiceSuspended: "⚠️ AVVISO IMPORTANTE: In vista dell'invasione russa dell'Ucraina nel 2022, SingPost ha sospeso tutte le spedizioni verso la Russia insieme a DHL. Attualmente non serviamo la Russia fino a quando non ci sarà un annuncio di ripresa dei servizi nel paese.",
   },
   
   he: {
@@ -4966,6 +4988,8 @@ export const translations = {
     operatorNoEmbed: "לא תומכת במעקב דרך שילוב. אנא",
     clickHere: "לחץ כאן",
     toTrackNewTab: "למעקב (נפתח בלשונית חדשה).",
+    countryRU: "🇷🇺 רוסיה",
+    russiaServiceSuspended: "⚠️ הודעה חשובה: לאור הפלישה הרוסית לאוקראינה ב-2022, SingPost השעתה את כל המשלוחים לרוסיה יחד עם DHL. אנחנו לא משרתים כיום את רוסיה עד שיהיה הכרזה על חידוש השירותים למדינה.",
   },
   
   ga: {
@@ -5168,6 +5192,8 @@ export const translations = {
     operatorNoEmbed: "ní thacaíonn leis an rianú trí leabaithe. Le do thoil",
     clickHere: "cliceáil anseo",
     toTrackNewTab: "chun rianú (osclaíonn i gcárta nua).",
+    countryRU: "🇷🇺 An Rúis",
+    russiaServiceSuspended: "⚠️ FÓGRA TÁBHACHTACH: I bhfianaise ionsaí na Rúise ar an Úcáin in 2022, tá SingPost tar éis gach seachadadh chuig an Rúis a chur ar fíonraí in éineacht le DHL. Níl muid ag freastal ar an Rúis faoi láthair go dtí go mbeidh fógra faoi athchúrsáil seirbhísí chuig an tír.",
   },
   
   pl: {
@@ -5405,6 +5431,8 @@ export const translations = {
     operatorNoEmbed: "nie obsługuje śledzenia poprzez osadzenie. Proszę",
     clickHere: "kliknij tutaj",
     toTrackNewTab: "aby śledzić (otwiera się w nowej karcie).",
+    countryRU: "🇷🇺 Rosja",
+    russiaServiceSuspended: "⚠️ WAŻNE POWIADOMIENIE: W związku z rosyjską inwazją na Ukrainę w 2022 roku, SingPost zawiesiła wszystkie przesyłki do Rosji wraz z DHL. Obecnie nie obsługujemy Rosji do czasu ogłoszenia wznowienia usług do tego kraju.",
   },
   
   ko: {
@@ -5625,6 +5653,7 @@ export const translations = {
     countryGB: "🇬🇧 영국", countryUS: "🇺🇸 미국", countryUM: "🇺🇲 미국령 군소 제도", countryUY: "🇺🇾 우루과이", countryUZ: "🇺🇿 우즈베키스탄",
     countryVU: "🇻🇺 바누아투", countryVE: "🇻🇪 베네수엘라", countryVN: "🇻🇳 베트남", countryVG: "🇻🇬 영국령 버진아일랜드", countryVI: "🇻🇮 미국령 버진아일랜드",
     countryWF: "🇼🇫 왈리스 푸투나", countryEH: "🇪🇭 서사하라", countryYE: "🇾🇪 예멘", countryZM: "🇿🇲 잠비아", countryZW: "🇿🇼 짐바브웨",
+    russiaServiceSuspended: "⚠️ 중요 공지: 2022년 러시아의 우크라이나 침공에 따라 SingPost는 DHL과 함께 러시아로의 모든 배송을 중단했습니다. 해당 국가로의 서비스 재개가 발표될 때까지 현재 러시아 서비스를 제공하지 않습니다.",
   },
   
   no: {
@@ -5820,6 +5849,8 @@ export const translations = {
     viewTrackingSingPost: "Vis sporingsinformasjon fra Singapore Post",
     viewTrackingDestPost: "Vis sporingsinformasjon fra",
     post: "Post",
+    countryRU: "🇷🇺 Russland",
+    russiaServiceSuspended: "⚠️ VIKTIG MELDING: På grunn av den russiske invasjonen av Ukraina i 2022 har SingPost suspendert alle forsendelser til Russland sammen med DHL. Vi betjener for øyeblikket ikke Russland inntil det er kunngjort gjenopptagelse av tjenester til landet.",
   },
   
   sv: {
@@ -6016,6 +6047,8 @@ export const translations = {
     viewTrackingSingPost: "Visa spårningsinformation från Singapore Post",
     viewTrackingDestPost: "Visa spårningsinformation från",
     post: "Post",
+    countryRU: "🇷🇺 Ryssland",
+    russiaServiceSuspended: "⚠️ VIKTIGT MEDDELANDE: Med anledning av den ryska invasionen av Ukraina 2022 har SingPost suspenderat alla försändelser till Ryssland tillsammans med DHL. Vi betjänar för närvarande inte Ryssland tills det finns ett tillkännagivande om återupptande av tjänster till landet.",
   },
   
   tl: {
@@ -6213,6 +6246,8 @@ export const translations = {
     aka: "kilala rin bilang",
     thisServiceKnownAs: "Ang serbisyong ito ay kilala bilang",
     in: "sa",
+    countryRU: "🇷🇺 Russia",
+    russiaServiceSuspended: "⚠️ MAHALAGANG ABISO: Dahil sa Russian invasion ng Ukraine noong 2022, ang SingPost kasama ng DHL ay nagsuspinde ng lahat ng shipments sa Russia. Hindi namin sineseserbisyuhan ang Russia sa ngayon hanggang may anunsyo ng pagbabalik ng mga serbisyo sa bansang iyon.",
   },
   
   vi: {
@@ -6412,6 +6447,8 @@ export const translations = {
     epacKR: "K-Packet",
     epacJP: "e-Packet Light quốc tế",
     epacIE: "Bưu phẩm Express quốc tế",
+    countryRU: "🇷🇺 Nga",
+    russiaServiceSuspended: "⚠️ THÔNG BÁO QUAN TRỌNG: Trong bối cảnh cuộc xâm lăng Ukraine của Nga năm 2022, SingPost cùng với DHL đã tạm dừng tất cả các lô hàng đến Nga. Chúng tôi hiện không phục vụ Nga cho đến khi có thông báo về việc khôi phục dịch vụ đến quốc gia này.",
   },
 
   fi: {
@@ -6668,6 +6705,8 @@ export const translations = {
     operatorNoEmbed: "ei tue upotettua seurantaa. Ole hyvä",
     clickHere: "napsauta tästä",
     toTrackNewTab: "seurataksesi (avautuu uuteen välilehteen).",
+    countryRU: "🇷🇺 Venäjä",
+    russiaServiceSuspended: "⚠️ TÄRKEÄ ILMOITUS: Venäjän Ukrainaan hyökkäyksen johdosta vuonna 2022 SingPost on DHL:n kanssa keskeyttänyt kaikki lähetykset Venäjälle. Emme tällä hetkellä palvele Venäjää ennen kuin maahan palveluiden jatkamisesta ilmoitetaan.",
   },
 
   ru: {
@@ -6926,6 +6965,7 @@ export const translations = {
     countryMsgKR: "De minimis составляет 180000KRW (150 USD) для всех заказов, отправленных в Южную Корею. Заказы свыше этой суммы могут быть обложены сборами.",
     countryMsgVN: "Для Вьетнама, пожалуйста, оставайтесь НА СВЯЗИ во время доставки, так как с вас могут взиматься сборы за обработку при доставке. De minimis составляет 1000000 (35 USD) для всех заказов, отправленных во Вьетнам. Заказы свыше этой суммы могут быть обложены сборами. Поскольку Vietnam Post НЕ доставляет в почтовый ящик по стандарту, вам МОЖЕТ потребоваться быть дома или уполномоченный представитель для получения вашей посылки или получения на почте.",
     countryMsgPP: "Элементы Tracked Label будут отправлены через POPDrop/POPStop на почте. Элементы SpeedPost Standard обычно отправляются через POPStop или POPStation. Обратите внимание, что доставка элементов Tracked Label осуществляется ТОЛЬКО с понедельника по пятницу с 9:00 до 18:00. За исключением выходных и праздничных дней.",
+    russiaServiceSuspended: "⚠️ ВАЖНОЕ УВЕДОМЛЕНИЕ: В связи с российским вторжением в Украину в 2022 году, SingPost приостановила все отправления в Россию вместе с DHL. В настоящее время мы не обслуживаем Россию до объявления о возобновлении услуг в страну.",
   },
 
   cy: {
@@ -7178,6 +7218,8 @@ export const translations = {
     operatorNoEmbed: "nid yw'n cefnogi olrhain mewnol. Os gwelwch yn dda",
     clickHere: "cliciwch yma",
     toTrackNewTab: "i olrhain (yn agor mewn tab newydd).",
+    countryRU: "🇷🇺 Rwsia",
+    russiaServiceSuspended: "⚠️ HYSBYSIAD PWYSIG: Yn sgil goresgyniad Rwsia o Wcrain yn 2022, mae SingPost ynghyd â DHL wedi atal pob anfoniad i Rwsia. Nid ydym yn gwasanaethu Rwsia ar hyn o bryd tan fod cyhoeddiad am ailgychwyn gwasanaethau i'r wlad.",
   },
 };
 

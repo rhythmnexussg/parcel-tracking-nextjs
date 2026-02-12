@@ -189,6 +189,10 @@ const multiLanguageCountries = {
     { code: 'pt', name: 'Português (Portuguese)', flag: '🇧🇷' }
   ],
   'RU': [
+    { code: 'ru', name: 'Русский (Russian)', flag: '🇷🇺' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
+  ],
+  'RU': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'ru', name: 'Русский (Russian)', flag: '🇷🇺' }
   ],

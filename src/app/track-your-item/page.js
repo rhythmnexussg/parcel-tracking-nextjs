@@ -14,7 +14,6 @@ import { useSearchParams } from "next/navigation";
 import { useLanguage } from "../../LanguageContext";
 import { LanguageSelector } from "../../LanguageSelector";
 import { detectLanguageFromIPWithRestrictions, isAccessAllowedFromChina } from "../../ipGeolocation";
-import TimezoneDisplay from "../../components/TimezoneDisplay";
 import { Navigation } from "../../components/Navigation";
 
 // --- Service Announcement Component ---
@@ -198,6 +197,10 @@ const postalTrackingUrls = {
   NL: 'https://jouw.postnl.nl/track-and-trace/',
   NZ: 'https://www.nzpost.co.nz/tools/tracking?trackid=',
   PH: 'https://tracking.phlpost.gov.ph/?trackcode=',
+  PL: 'https://emonitoring.poczta-polska.pl/?numer=',
+  PT: 'https://appserver.ctt.pt/CustomerArea/PublicArea_Detail?ObjectCodeInput=',
+  RU: 'https://www.pochta.ru/tracking#',
+  KR: 'https://service.epost.go.kr/trace.RetrieveEmsRigiTraceList.comm?POST_CODE=',
   PL: 'https://emonitoring.poczta-polska.pl/?numer=',
   PT: 'https://appserver.ctt.pt/CustomerArea/PublicArea_Detail?ObjectCodeInput=',
   KR: 'https://service.epost.go.kr/trace.RetrieveEmsRigiTraceList.comm?POST_CODE=',
@@ -455,22 +458,32 @@ function App() {
 
   const setCountrySpecificMessage = (selectedCountry) => {
     let message = "";
-    const countryMsgKey = `countryMsg${selectedCountry}`;
+    
+    // Check if Russia is selected and show suspension notice
+    if (selectedCountry === 'RU') {
+      const russiaNotice = t('russiaServiceSuspended');
+      if (russiaNotice && russiaNotice !== 'russiaServiceSuspended') {
+        message = russiaNotice;
+      }
+    } else {
+      // Regular country-specific messages
+      const countryMsgKey = `countryMsg${selectedCountry}`;
 
-    // Prefer only current-language translation; avoid English fallback unless language is 'en'
-    const localized = typeof tStrict === 'function' ? tStrict(countryMsgKey) : undefined;
-    if (localized) {
-      message = localized;
-    } else if (currentLanguage === 'en') {
-      // Show English only when current language is English
-      const fallback = t(countryMsgKey);
-      if (fallback && fallback !== countryMsgKey) {
-        message = fallback;
+      // Prefer only current-language translation; avoid English fallback unless language is 'en'
+      const localized = typeof tStrict === 'function' ? tStrict(countryMsgKey) : undefined;
+      if (localized) {
+        message = localized;
+      } else if (currentLanguage === 'en') {
+        // Show English only when current language is English
+        const fallback = t(countryMsgKey);
+        if (fallback && fallback !== countryMsgKey) {
+          message = fallback;
+        }
       }
     }
 
     setAdditionalMessage(message);
-  }; 
+  };
 
   const handleSearchOrder = async (e) => {
     e.preventDefault();
@@ -978,14 +991,6 @@ function App() {
     {/* Service Announcement Section */}
     <ServiceAnnouncement allowedDestinations={allowedDestinations} />
 
-    {/* Timezone Display */}
-    <TimezoneDisplay 
-      destinationCountry={destinationCountry}
-      userCountry={userCountry}
-      t={t}
-      getCountryName={getCountryName}
-    />
-
     {/* Wrapped Form in .modern-form-container */}
     <div className="modern-form-container">
       {accessBlocked && (
@@ -1049,7 +1054,7 @@ function App() {
             
             {/* Other Countries - filter if restrictions apply */}
             {(() => {
-              const otherCountries = ['AT', 'BE', 'BN', 'CN', 'CZ', 'FI', 'FR', 'HK', 'IN', 'ID', 'IE', 'IL', 'IT', 'JP', 'MO', 'MY', 'NL', 'NZ', 'NO', 'PH', 'PL', 'PT', 'KR', 'ES', 'SE', 'CH', 'TW', 'TH', 'VN'];
+              const otherCountries = ['AT', 'BE', 'BN', 'CN', 'CZ', 'FI', 'FR', 'HK', 'IN', 'ID', 'IE', 'IL', 'IT', 'JP', 'MO', 'MY', 'NL', 'NZ', 'NO', 'PH', 'PL', 'PT', 'RU', 'KR', 'ES', 'SE', 'CH', 'TW', 'TH', 'VN'];
               const filteredOther = allowedDestinations 
                 ? otherCountries.filter(c => allowedDestinations.includes(c))
                 : otherCountries;
