@@ -269,6 +269,7 @@ export async function detectLanguageFromIP() {
     let response;
     let data;
     let detectedCountryCode;
+    let usedPrimaryApi = true;
 
     try {
       // Primary: ipapi.co (HTTPS, free tier: 1000 requests/day)
@@ -649,6 +650,7 @@ export async function detectLanguageFromIPWithRestrictions() {
       }
     } catch (err) {
       console.warn('Primary API failed, trying fallback:', err.message);
+      usedPrimaryApi = false;
       
       // Fallback API
       response = await fetch('https://geolocation-db.com/json/', {
@@ -693,9 +695,50 @@ export async function detectLanguageFromIPWithRestrictions() {
     // Get browser timezone and languages for enhanced VPN detection
     const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const browserLanguages = navigator.languages || [navigator.language];
+
+    // Secondary provider cross-check to reduce false country classification.
+    let secondaryCountryCode = null;
+    try {
+      const secondaryController = new AbortController();
+      const secondaryTimeoutId = setTimeout(() => secondaryController.abort(), 3000);
+      const secondaryUrl = usedPrimaryApi ? 'https://geolocation-db.com/json/' : 'https://ipapi.co/json/';
+      const secondaryResponse = await fetch(secondaryUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        signal: secondaryController.signal,
+      });
+      clearTimeout(secondaryTimeoutId);
+
+      if (secondaryResponse.ok) {
+        const secondaryData = await secondaryResponse.json();
+        secondaryCountryCode = secondaryData.country_code || secondaryData.countryCode || null;
+      }
+    } catch (secondaryError) {
+      console.warn('Secondary geolocation cross-check failed:', secondaryError.message);
+    }
     
     // Check for potential VPN usage with enhanced detection
-    const vpnDetection = isPotentialVPN(data, browserTimezone, browserLanguages);
+    let vpnDetection = isPotentialVPN(data, browserTimezone, browserLanguages);
+
+    const countryMismatchDetected = Boolean(
+      secondaryCountryCode &&
+      detectedCountryCode &&
+      secondaryCountryCode !== detectedCountryCode
+    );
+
+    if (countryMismatchDetected) {
+      vpnDetection = {
+        ...vpnDetection,
+        isVPN: true,
+        likelihood: vpnDetection.likelihood + 35,
+        indicators: [
+          ...(vpnDetection.indicators || []),
+          `Country mismatch across providers: primary=${detectedCountryCode}, secondary=${secondaryCountryCode}`,
+        ],
+      };
+    }
     
     console.log('=== Enhanced Detection Results ===');
     console.log('Detected Country (IP):', detectedCountryCode);
@@ -708,15 +751,17 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
     console.log('=================================');
     
-    // Special handling: if VPN detected and estimated actual country is CN/RU,
+    // Special handling: if VPN detected and estimated/observed country is CN/RU,
     // use that country (allowing CN/RU users on VPN).
     let finalCountryCode = detectedCountryCode;
-    if (vpnDetection.isVPN && ['CN', 'RU'].includes(vpnDetection.actualCountry)) {
-      finalCountryCode = vpnDetection.actualCountry;
-      console.log(`VPN detected from ${vpnDetection.actualCountry} - using ${vpnDetection.actualCountry} as country`);
+    const vpnCountryCandidates = [vpnDetection.actualCountry, detectedCountryCode, secondaryCountryCode].filter(Boolean);
+    const vpnExceptionCountry = vpnCountryCandidates.find((code) => ['CN', 'RU'].includes(code)) || null;
+    if (vpnDetection.isVPN && vpnExceptionCountry) {
+      finalCountryCode = vpnExceptionCountry;
+      console.log(`VPN detected from ${vpnExceptionCountry} - using ${vpnExceptionCountry} as country`);
     }
 
-    const vpnException = vpnDetection.isVPN && ['CN', 'RU'].includes(vpnDetection.actualCountry || finalCountryCode);
+    const vpnException = vpnDetection.isVPN && Boolean(vpnExceptionCountry);
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
     const blockedByVPN = vpnDetection.isVPN && !vpnException;
     const blocked = blockedByCountry || blockedByVPN;
@@ -733,6 +778,8 @@ export async function detectLanguageFromIPWithRestrictions() {
       vpnLikelihood: vpnDetection.likelihood,
       vpnIndicators: vpnDetection.indicators,
       estimatedActualCountry: vpnDetection.actualCountry,
+      secondaryCountryCode,
+      countryMismatchDetected,
       browserTimezone: browserTimezone,
       browserLanguages: browserLanguages,
       accessRestrictions: finalCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null,

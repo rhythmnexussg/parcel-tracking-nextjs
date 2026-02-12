@@ -76,7 +76,7 @@ export const translations = {
     enterDestinationPostcode: "Enter destination postcode",
     trackingNumberExample: "e.g. LG123456789SG",
     trackingCaseSensitive: "TRACKING LETTERS ARE CASE SENSITIVE AND MUST BE IN CAPITAL LETTERS.",
-    usaPostcodeNote: "For USA Postcode, you may need to provide the full zip code if the error of \"No order found matching all fields\" is triggered. 5 digit postcode should be fine, but for most eBay orders and some Etsy ones it may require the full ZIP code. For countries without postcodes, such as Hong Kong & Macau, please put 999077 (Hong Kong) or 999078 (Macau).",
+    usaPostcodeNote: "For countries without postcodes, such as Hong Kong & Macau, please put 999077 (Hong Kong) or 999078 (Macau).",
     // Timezone display
     currentTime: "Current Time",
     timezoneNote: "Time shown in 12-hour format",
