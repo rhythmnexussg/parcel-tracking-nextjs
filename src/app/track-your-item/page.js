@@ -1145,7 +1145,7 @@ function App() {
           <h4>📌 <strong>{t('note')}</strong></h4>
           <p>
             <strong>{t('trackingCaseSensitive') || "TRACKING LETTERS ARE CASE SENSITIVE AND MUST BE IN CAPITAL LETTERS."}</strong><br/>
-            {'For countries without postcodes, such as Hong Kong & Macau, please put 999077 (Hong Kong) or 999078 (Macau).'}
+            {t('usaPostcodeNote') || 'For countries without postcodes, such as Hong Kong & Macau, please put 999077 (Hong Kong) or 999078 (Macau).'}
           </p>
           <p>
             <strong>{t('epacDeliveryNote') || 'Please KINDLY note that all ePAC items sent to the destination should all be delivered to your mailbox, doorstep, parcel locker or left in a safe place!'}</strong> {t('collectAtPostOffice') || 'However, if your country does not have mailbox as a standard available, you will have to collect it at the post office.'}<br />

@@ -312,7 +312,7 @@ export const translations = {
     enterDestinationPostcode: "Zielpostleitzahl eingeben",
     trackingNumberExample: "z. B. LG123456789SG",
     trackingCaseSensitive: "TRACKING-BUCHSTABEN SIND GROSS- UND KLEINSCHREIBUNGSEMPFINDLICH UND MÜSSEN IN GROSSBUCHSTABEN EINGEGEBEN WERDEN.",
-    usaPostcodeNote: "Für US-Postleitzahlen müssen Sie möglicherweise den vollständigen ZIP-Code angeben, falls der Fehler „Keine Bestellung gefunden, die allen Feldern entspricht“ auftritt. Eine 5-stellige Postleitzahl sollte ausreichen, aber für die meisten eBay-Bestellungen und einige Etsy-Bestellungen kann der vollständige ZIP-Code erforderlich sein. Für Länder ohne Postleitzahlen, wie Hongkong und Macau, geben Sie bitte 999077 (Hongkong) oder 999078 (Macau) ein.",
+    usaPostcodeNote: "Für Länder ohne Postleitzahlen, wie Hongkong und Macau, geben Sie bitte 999077 (Hongkong) oder 999078 (Macau) ein.",
     epacDeliveryNote: "Bitte beachten Sie FREUNDLICH, dass alle ePAC-Artikel, die an den Bestimmungsort gesendet werden, in Ihren Briefkasten, an Ihre Haustür, in ein Paketschließfach geliefert oder an einem sicheren Ort hinterlegt werden sollten!",
     // Timezone display
     currentTime: "Aktuelle Uhrzeit",
@@ -542,7 +542,7 @@ export const translations = {
     enterDestinationPostcode: "Entrer le code postal de destination",
     trackingNumberExample: "ex. LG123456789SG",
     trackingCaseSensitive: "LES LETTRES DE SUIVI SONT SENSIBLES À LA CASSE ET DOIVENT ÊTRE EN MAJUSCULES.",
-    usaPostcodeNote: "Pour le code postal américain, vous devrez peut-être fournir le code ZIP complet si l'erreur « Aucune commande trouvée correspondant à tous les champs » se déclenche. Un code postal à 5 chiffres devrait suffire, mais pour la plupart des commandes eBay et certaines commandes Etsy, le code ZIP complet peut être nécessaire. Pour les pays sans code postal, comme Hong Kong et Macao, veuillez indiquer 999077 (Hong Kong) ou 999078 (Macao).",
+    usaPostcodeNote: "Pour les pays sans code postal, comme Hong Kong et Macao, veuillez indiquer 999077 (Hong Kong) ou 999078 (Macao).",
     epacDeliveryNote: "Veuillez noter que tous les articles ePAC envoyés à destination doivent être livrés dans votre boîte aux lettres, sur le pas de votre porte, dans un casier à colis ou laissés en lieu sûr !",
     // Timezone display
     currentTime: "Heure actuelle",
@@ -767,7 +767,7 @@ export const translations = {
     enterDestinationPostcode: "Introducir código postal de destino",
     trackingNumberExample: "p. ej. LG123456789SG",
     trackingCaseSensitive: "LAS LETRAS DE SEGUIMIENTO DISTINGUEN MAYÚSCULAS DE MINÚSCULAS Y DEBEN ESTAR EN MAYÚSCULAS.",
-    usaPostcodeNote: "Para el código postal de EE. UU., es posible que deba proporcionar el código postal completo si se activa el error \"No se encontró ningún pedido que coincida con todos los campos\". El código postal de 5 dígitos debería estar bien, pero para la mayoría de los pedidos de eBay y algunos de Etsy puede requerir el código postal completo. Para países sin códigos postales, como Hong Kong y Macao, ingrese 999077 (Hong Kong) o 999078 (Macao).",
+    usaPostcodeNote: "Para países sin códigos postales, como Hong Kong y Macao, ingrese 999077 (Hong Kong) o 999078 (Macao).",
     epacDeliveryNote: "¡Tenga en cuenta que todos los artículos ePAC enviados al destino deben entregarse en su buzón, puerta, casillero de paquetes o dejarse en un lugar seguro!",
     // Timezone display
     currentTime: "Hora actual",
@@ -992,7 +992,7 @@ export const translations = {
     enterDestinationPostcode: "宛先の郵便番号を入力してください",
     trackingNumberExample: "例: LG123456789SG",
     trackingCaseSensitive: "追跡文字は大文字と小文字が区別されるため、大文字にする必要があります。",
-    usaPostcodeNote: "米国の郵便番号の場合、「すべてのフィールドに一致する注文が見つかりません」というエラーが発生した場合は、完全な郵便番号を提供する必要がある場合があります。 5桁の郵便番号で問題ありませんが、eBayの注文のほとんどとEtsyの一部の注文では、完全な郵便番号が必要になる場合があります。 香港やマカオなど、郵便番号のない国の場合は、999077（香港）または999078（マカオ）を入力してください。",
+    usaPostcodeNote: "香港やマカオなど、郵便番号のない国の場合は、999077（香港）または999078（マカオ）を入力してください。",
     epacDeliveryNote: "目的地に送信されるすべてのePACアイテムは、郵便受け、玄関先、宅配ロッカーに配達されるか、安全な場所に残される必要があることに注意してください！",
     // Timezone display
     currentTime: "現在時刻",
@@ -1207,7 +1207,7 @@ export const translations = {
     enterDestinationPostcode: "输入目的地邮编",
     trackingNumberExample: "例如：LG123456789SG",
     trackingCaseSensitive: "跟踪字母区分大小写，必须大写。",
-    usaPostcodeNote: "对于美国邮政编码，如果触发“未找到匹配所有字段的订单”错误，您可能需要提供完整的邮政编码。5 位邮政编码应该没问题，但对于大多数 eBay 订单和一些 Etsy 订单，可能需要完整的邮政编码。对于没有邮政编码的国家/地区，例如香港和澳门，请输入 999077（香港）或 999078（澳门）。",
+    usaPostcodeNote: "对于没有邮政编码的国家/地区，例如香港和澳门，请输入 999077（香港）或 999078（澳门）。",
     epacDeliveryNote: "请注意，所有发送到目的地的 ePAC 物品都应送达到您的邮箱、家门口、包裹储物柜或留在安全的地方！",
     // Timezone display
     currentTime: "当前时间",
@@ -1668,7 +1668,7 @@ export const translations = {
     enterDestinationPostcode: "輸入目的地郵遞區號",
     trackingNumberExample: "例如：LG123456789SG",
     trackingCaseSensitive: "追蹤字母區分大小寫，必須大寫。",
-    usaPostcodeNote: "對於美國郵政編碼，如果觸發「找不到符合所有欄位的訂單」錯誤，您可能需要提供完整的郵政編碼。5 位數郵政編碼應該沒問題，但對於大多數 eBay 訂單和一些 Etsy 訂單，可能需要完整的郵政編碼。對於沒有郵政編碼的國家/地區，例如香港和澳門，請輸入 999077（香港）或 999078（澳門）。",
+    usaPostcodeNote: "對於沒有郵政編碼的國家/地區，例如香港和澳門，請輸入 999077（香港）或 999078（澳門）。",
     epacDeliveryNote: "請注意，所有發送到目的地的 ePAC 物品都應送達到您的郵箱、家門口、包裹儲物櫃或留在安全的地方！",
     // Timezone display
     currentTime: "目前時間",
@@ -2129,7 +2129,7 @@ export const translations = {
     enterDestinationPostcode: "Digite o código postal de destino",
     trackingNumberExample: "ex. LG123456789SG",
     trackingCaseSensitive: "AS LETRAS DE RASTREAMENTO SENSÍVEIS A MAIÚSCULAS E DEVEM ESTAR EM MAIÚSCULAS.",
-    usaPostcodeNote: "Para o código postal dos EUA, pode ser necessário fornecer o código postal completo se o erro \"Nenhum pedido encontrado correspondente a todos os campos\" for acionado. O código postal de 5 dígitos deve ficar bem, mas para a maioria dos pedidos do eBay e alguns do Etsy pode exigir o código postal completo. Para países sem códigos postais, como Hong Kong e Macau, coloque 999077 (Hong Kong) o 999078 (Macau).",
+    usaPostcodeNote: "Para países sem códigos postais, como Hong Kong e Macau, coloque 999077 (Hong Kong) o 999078 (Macau).",
     epacDeliveryNote: "Observe GENTILMENTE que todos os itens ePAC enviados ao destino devem ser entregues em sua caixa de correio, porta, armário de encomendas ou deixados em um local seguro!",
     // Timezone display
     currentTime: "Hora Atual",
@@ -2590,7 +2590,7 @@ export const translations = {
     enterDestinationPostcode: "गंतव्य पिन कोड दर्ज करें",
     trackingNumberExample: "उदा.: LG123456789SG",
     trackingCaseSensitive: "ट्रैकिंग अक्षर केस-संवेदी हैं और बड़े अक्षरों में होने चाहिए।",
-    usaPostcodeNote: "USA पिन कोड के लिए, यदि 'सभी फ़ील्ड से मेल खाने वाला कोई ऑर्डर नहीं मिला' की त्रुटि आती है तो आपको पूर्ण ज़िप कोड प्रदान करने की आवश्यकता हो सकती है। 5 अंकों का पिन कोड पर्याप्त होना चाहिए, लेकिन अधिकांश eBay ऑर्डर और कुछ Etsy ऑर्डर के लिए पूर्ण ZIP कोड की आवश्यकता हो सकती है। हांगकांग और मकाऊ जैसे बिना पिन कोड वाले देशों के लिए, कृपया 999077 (हांगकांग) या 999078 (मकाऊ) डालें।",
+    usaPostcodeNote: "बिना पिन कोड वाले देशों के लिए, जैसे हांगकांग और मकाऊ, कृपया 999077 (हांगकांग) या 999078 (मकाऊ) डालें।",
     epacDeliveryNote: "कृपया ध्यान दें कि गंतव्य पर भेजे गए सभी ePAC आइटम आपके मेलबॉक्स, दरवाजे, पार्सल लॉकर में वितरित किए जाने चाहिए या एक सुरक्षित स्थान पर छोड़े जाने चाहिए!",
     // Timezone display
     currentTime: "वर्तमान समय",
@@ -2851,7 +2851,7 @@ export const translations = {
     enterDestinationPostcode: "ป้อนรหัสไปรษณีย์ปลายทาง",
     trackingNumberExample: "เช่น LG123456789SG",
     trackingCaseSensitive: "ตัวอักษรการติดตามต้องคำนึงถึงตัวพิมพ์เล็กใหญ่และต้องเป็นตัวพิมพ์ใหญ่",
-    usaPostcodeNote: "สำหรับรหัสไปรษณีย์สหรัฐอเมริกา คุณอาจต้องระบุรหัสไปรษณีย์เต็มรูปแบบหากมีข้อผิดพลาด 'ไม่พบคำสั่งซื้อที่ตรงกับฟิลด์ทั้งหมด' ปรากฏขึ้น รหัสไปรษณีย์ 5 หลักควรใช้ได้ แต่สำหรับคำสั่งซื้อ eBay ส่วนใหญ่และคำสั่งซื้อ Etsy บางรายการอาจต้องใช้รหัส ZIP แบบเต็ม สำหรับประเทศที่ไม่มีรหัสไปรษณีย์ เช่น ฮ่องกงและมาเก๊า โปรดใส่ 999077 (ฮ่องกง) หรือ 999078 (มาเก๊า)",
+    usaPostcodeNote: "สำหรับประเทศที่ไม่มีรหัสไปรษณีย์ เช่น ฮ่องกงและมาเก๊า โปรดใส่ 999077 (ฮ่องกง) หรือ 999078 (มาเก๊า)",
     epacDeliveryNote: "โปรดทราบว่า รายการ ePAC ทั้งหมดที่ส่งไปยังปลายทางควรได้รับการจัดส่งไปยังกล่องจดหมาย หน้าประตู ตู้พัสดุของคุณ หรือทิ้งไว้ในที่ปลอดภัย!",
     // Timezone display
     currentTime: "เวลาปัจจุบัน",
@@ -3140,7 +3140,7 @@ export const translations = {
     enterDestinationPostcode: "Masukkan poskod destinasi",
     trackingNumberExample: "cth. LG123456789SG",
     trackingCaseSensitive: "HURUF JEJAK ADALAH SENSITIF HURUF DAN MESTI DALAM HURUF BESAR.",
-    usaPostcodeNote: "Untuk Poskod USA, anda mungkin perlu memberikan kod zip penuh jika ralat \"Tiada pesanan yang sepadan dengan semua medan\" dicetuskan. Poskod 5 digit sepatutnya baik, tetapi untuk kebanyakan pesanan eBay dan beberapa pesanan Etsy ia mungkin memerlukan kod ZIP penuh. Untuk negara tanpa poskod, seperti Hong Kong & Macau, sila masukkan 999077 (Hong Kong) atau 999078 (Macau).",
+    usaPostcodeNote: "Untuk negara tanpa poskod, seperti Hong Kong & Macau, sila masukkan 999077 (Hong Kong) atau 999078 (Macau).",
     epacDeliveryNote: "Sila ambil perhatian bahawa semua item ePAC yang dihantar ke destinasi sepatutnya dihantar ke peti surat anda, pintu rumah, loker bungkusan atau ditinggalkan di tempat yang selamat!",
     // Timezone display
     currentTime: "Masa Semasa",
@@ -3389,7 +3389,7 @@ export const translations = {
     enterDestinationPostcode: "Voer bestemmingspostcode in",
     trackingNumberExample: "bijv. LG123456789SG",
     trackingCaseSensitive: "TRACKINGLETTERS ZIJN HOOFDLETTERGEVOELIG EN MOETEN IN HOOFDLETTERS WORDEN GESCHREVEN.",
-    usaPostcodeNote: "Voor Amerikaanse postcode moet u mogelijk de volledige postcode opgeven als de foutmelding \"Geen bestelling gevonden die overeenkomt met alle velden\" wordt weergegeven. Een postcode van 5 cijfers zou voldoende moeten zijn, maar voor de meeste eBay-bestellingen en sommige Etsy-bestellingen kan de volledige ZIP-code vereist zijn. Voor landen zonder postcodes, zoals Hong Kong en Macau, voert u 999077 (Hong Kong) of 999078 (Macau) in.",
+    usaPostcodeNote: "Voor landen zonder postcodes, zoals Hongkong en Macau, voer 999077 (Hongkong) of 999078 (Macau) in.",
     epacDeliveryNote: "Let op: alle ePAC-artikelen worden bezorgd in uw brievenbus / voor uw deur / in een locker.",
     // Timezone display
     currentTime: "Huidige Tijd",
@@ -3801,7 +3801,7 @@ export const translations = {
     enterDestinationPostcode: "Masukkan kode pos tujuan",
     trackingNumberExample: "mis. LG123456789SG",
     trackingCaseSensitive: "HURUF PELACAKAN SENSITIF HURUF BESAR/KECIL DAN HARUS DALAM HURUF BESAR.",
-    usaPostcodeNote: "Untuk Kode Pos AS, Anda mungkin perlu memberikan kode pos lengkap jika kesalahan \"Tidak ada pesanan yang cocok dengan semua bidang\" muncul. Kode pos 5 digit seharusnya baik-baik saja, tetapi untuk sebagian besar pesanan eBay dan beberapa dari Etsy mungkin memerlukan kode pos lengkap. Untuk negara tanpa kode pos, misalnya Hong Kong dan Makau, masukkan 999077 (Hong Kong) atau 999078 (Makau).",
+    usaPostcodeNote: "Untuk negara tanpa kode pos, misalnya Hong Kong dan Makau, masukkan 999077 (Hong Kong) atau 999078 (Makau).",
     epacDeliveryNote: "Harap DICATAT bahwa semua barang ePAC yang dikirim ke tujuan harus dikirim ke Kotak Surat, Pintu Rumah, Loker Paket, atau ditinggalkan di tempat yang aman!",
     // Timezone display
     currentTime: "Waktu Saat Ini",
@@ -4220,7 +4220,7 @@ export const translations = {
     tracking8Title: "Švýcarská DPH", blogPost8Desc: "Švýcarské požadavky na DPH.",
     enterDestinationPostcode: "Zadejte poštovní směrovací číslo cíle",
     trackingCaseSensitive: "SLEDOVACÍ PÍSMENA JSOU CITLIVÁ NA VELIKOST PÍSMEN A MUSÍ BÝT VELKÁ.",
-    usaPostcodeNote: "U PSČ v USA může být nutné zadat úplné PSČ, pokud se spustí chyba „Žádná objednávka nenalezena odpovídající všem polím“. 5místné PSČ by mělo být v pořádku, ale u většiny objednávek eBay a některých z Etsy může být vyžadováno úplné PSČ. Pro země bez PSČ, např. Hongkong a Macao, zadejte 999077 (Hongkong) nebo 999078 (Macao).",
+    usaPostcodeNote: "Pro země bez PSČ, např. Hongkong a Macao, zadejte 999077 (Hongkong) nebo 999078 (Macao).",
     epacDeliveryNote: "Vezměte prosím na vědomí, že všechny položky ePAC zaslané do místa určení by měly být doručeny do vaší poštovní schránky, ke dveřím, do schránky na balíky nebo ponechány na bezpečném místě!",
     // Timezone display
     currentTime: "Aktuální čas",
@@ -4632,7 +4632,7 @@ export const translations = {
     blogPost8Title: "IVA Svizzera", blogPost8Desc: "Requisiti IVA svizzeri.",
     enterDestinationPostcode: "Inserisci il codice postale di destinazione",
     trackingCaseSensitive: "LE LETTERE DI TRACCIAMENTO SONO SENSIBILI ALLE MAIUSCOLE E DEVONO ESSERE IN MAIUSCOLO.",
-    usaPostcodeNote: "Per il codice postale USA, potrebbe essere necessario fornire il codice postale completo se si attiva l'errore \"Nessun ordine trovato corrispondente a tutti i campi\". Il codice postale a 5 cifre dovrebbe andare bene, ma per la maggior parte degli ordini eBay e alcuni da Etsy potrebbe essere necessario il codice postale completo. Per i paesi senza codici postali, ad es. Hong Kong e Macao, inserire 999077 (Hong Kong) o 999078 (Macao).",
+    usaPostcodeNote: "Per i paesi senza codici postali, ad es. Hong Kong e Macao, inserire 999077 (Hong Kong) o 999078 (Macao).",
     epacDeliveryNote: "Si prega di notare GENTILMENTE che tutti gli articoli ePAC inviati a destinazione devono essere consegnati alla cassetta postale, alla porta di casa, all'armadietto dei pacchi o lasciati in un luogo sicuro!",
     // Timezone display
     currentTime: "Ora Attuale",
@@ -4872,7 +4872,7 @@ export const translations = {
     blogPost8Title: "מע\"מ שוויצרי", blogPost8Desc: "דרישות מע\"מ שוויצריות.",
     enterDestinationPostcode: "הזן מיקוד יעד",
     trackingCaseSensitive: "אותיות מעקב רגישות לרישיות וחייבות להיות באותיות גדולות.",
-    usaPostcodeNote: "עבור מיקוד בארה\"ב, ייתכן שתצטרך לספק את המיקוד המלא אם שגיאת \"לא נמצאה הזמנה התואמת לכל השדות\" מופעלת. מיקוד בן 5 ספרות אמור להיות בסדר, אבל עבור רוב הזמנות eBay וכמה מ-Etsy עשוי לדרוש את המיקוד המלא. עבור מדינות ללא מיקודים, למשל הונג קונג ומקאו, שים 999077 (הונג קונג) או 999078 (מקאו).",
+    usaPostcodeNote: "למדינות ללא מיקוד, כגון הונג קונג ומקאו, יש להזין 999077 (הונג קונג) או 999078 (מקאו).",
     epacDeliveryNote: "אנא שים לב שכל פריטי ePAC שנשלחים ליעד צריכים להימסר לתיבת הדואר, לפתח הדלת, ללוקר החבילות או להשאיר במקום בטוח!",
     // Timezone display
     currentTime: "שעה נוכחית",
@@ -5076,7 +5076,7 @@ export const translations = {
     blogPost8Title: "CBL na hEilvéise", blogPost8Desc: "Riachtanais CBL na hEilvéise.",
     enterDestinationPostcode: "Iontráil cód poist ceann scríbe",
     trackingCaseSensitive: "TÁ LITREACHARIANaithe ÍOGAIR DO CHÁS AGUS CAITHFIDH SIAD A BHEITH I NÓRA MÓR.",
-    usaPostcodeNote: "Maidir le Cód Poist SAM, seans go mbeidh ort an cód ZIP iomlán a sholáthar má spreagtar earráid \"Níor aimsíodh aon ordú a mheaitseálann gach réimse\". Ba chóir go mbeadh cód zip 5 dhigit go maith, ach i gcás formhór na n-orduithe eBay agus cuid ó Etsy d'fhéadfadh go mbeadh an cód ZIP iomlán ag teastáil. I gcás tíortha nach bhfuil aon chóid phoist acu, m.sh. Hong Cong agus Macao, cuir 999077 (Hong Cong) nó 999078 (Macao).",
+    usaPostcodeNote: "I gcás tíortha nach bhfuil aon chóid phoist acu, m.sh. Hong Cong agus Macao, cuir 999077 (Hong Cong) nó 999078 (Macao).",
     epacDeliveryNote: "Tabhair faoi deara le do thoil go gcaithfear gach mír ePAC a sheoltar chuig an gceann scríbe a sheachadadh chuig do Bhosca Poist, Doras, Taisceadán Dáileachta nó a fhágáil in áit shábháilte!",
     // Timezone display
     currentTime: "Am Reatha",
@@ -5280,7 +5280,7 @@ export const translations = {
     blogPost8Title: "VAT Szwajcarski", blogPost8Desc: "Szwajcarskie wymagania VAT.",
     enterDestinationPostcode: "Wprowadź kod pocztowy miejsca docelowego",
     trackingCaseSensitive: "LITERY ŚLEDZENIA ROZRÓŻNIAJĄ WIELKOŚĆ LITER I MUSZĄ BYĆ PISANE WIELKIMI LITERAMI.",
-    usaPostcodeNote: "W przypadku kodu pocztowego z USA może być konieczne podanie pełnego kodu pocztowego, jeśli pojawi się błąd „Nie znaleziono zamówienia pasującego do wszystkich pól”. 5-cyfrowy kod pocztowy powinien wystarczyć, ale w przypadku większości zamówień z eBay i niektórych z Etsy może być wymagany pełny kod ZIP. W przypadku krajów bez kodów pocztowych, np. Hongkongu i Makau, wpisz 999077 (Hongkong) lub 999078 (Makau).",
+    usaPostcodeNote: "W przypadku krajów bez kodów pocztowych, np. Hongkongu i Makau, wpisz 999077 (Hongkong) lub 999078 (Makau).",
     epacDeliveryNote: "Należy pamiętać, że wszystkie przedmioty ePAC wysyłane do miejsca przeznaczenia powinny zostać dostarczone do skrzynki pocztowej, pod drzwi, do paczkomatu lub pozostawione w bezpiecznym miejscu!",
     // Timezone display
     currentTime: "Aktualny czas",
@@ -5484,7 +5484,7 @@ export const translations = {
     blogPost8Title: "스위스 VAT", blogPost8Desc: "스위스 VAT 요구사항.",
     enterDestinationPostcode: "목적지 우편번호 입력",
     trackingCaseSensitive: "추적 문자는 대소문자를 구분하므로 대문자여야 합니다.",
-    usaPostcodeNote: "미국 우편번호의 경우 \"모든 필드와 일치하는 주문을 찾을 수 없음\" 오류가 발생하면 전체 ZIP 코드를 제공해야 할 수 있습니다. 5자리 우편번호는 괜찮지만 대부분의 eBay 주문과 Etsy의 일부 주문에는 전체 ZIP 코드가 필요할 수 있습니다. 홍콩 및 마카오와 같이 우편번호가 없는 국가의 경우 999077(홍콩) 또는 999078(마카오)을 입력하십시오.",
+    usaPostcodeNote: "홍콩 및 마카오와 같이 우편번호가 없는 국가의 경우 999077(홍콩) 또는 999078(마카오)을 입력하십시오.",
     epacDeliveryNote: "목적지로 발송되는 모든 ePAC 품목은 우편함, 현관, 택배 보관함으로 배달되거나 안전한 장소에 두어야 합니다!",
     // Timezone display
     currentTime: "현재 시간",
@@ -5740,7 +5740,7 @@ export const translations = {
     blogPost8Title: "Sveitsisk MVA", blogPost8Desc: "Sveitsiske MVA-krav.",
     enterDestinationPostcode: "Skriv inn destinasjonens postnummer",
     trackingCaseSensitive: "SPORINGS BOKSTAVER SKILLER MELLOM STORE OG SMÅ BOKSTAVER OG MÅ VÆRE I STORE BOKSTAVER.",
-    usaPostcodeNote: "For postnummer i USA må du kanskje oppgi fullstendig postnummer hvis feilen \"Ingen bestilling funnet som samsvarer med alle felt\" utløses. 5-sifret postnummer skal gå bra, men for de fleste eBay-bestillinger og noen fra Etsy kan det kreve fullstendig postnummer. For land uten postnummer, f.eks. Hong Kong og Macao, skriv inn 999077 (Hong Kong) eller 999078 (Macao).",
+    usaPostcodeNote: "For land uten postnummer, f.eks. Hong Kong og Macao, skriv inn 999077 (Hong Kong) eller 999078 (Macao).",
     epacDeliveryNote: "Vennligst MERK at alle ePAC-varer som sendes til destinasjonen skal leveres til postkassen, døren, pakkeskapet eller legges igjen på et trygt sted!",
     // Timezone display
     currentTime: "Nåværende tid",
@@ -5972,7 +5972,7 @@ export const translations = {
     blogPost8Title: "Schweizisk Moms", blogPost8Desc: "Schweiziska momskrav.",
     enterDestinationPostcode: "Ange destinationspostnummer",
     trackingCaseSensitive: "SPÅRNINGSBOKSTÄVER ÄR SKIFTLÄGESKÄNSLIGA OCH MÅSTE VARA MED VERSALER.",
-    usaPostcodeNote: "För postnummer i USA kan du behöva ange hela postnumret om felet \"Ingen beställning hittades som matchar alla fält\" utlöses. 5-siffrigt postnummer borde gå bra, men för de flesta eBay-beställningar och vissa från Etsy kan det krävas hela postnumret. För länder utan postnummer, t.ex. Hongkong och Macao, ange 999077 (Hongkong) eller 999078 (Macao).",
+    usaPostcodeNote: "För länder utan postnummer, t.ex. Hongkong och Macao, ange 999077 (Hongkong) eller 999078 (Macao).",
     epacDeliveryNote: "Vänligen NOTERA att alla ePAC-varor som skickas till destinationen ska levereras till din brevlåda, dörr, paketskåp eller lämnas på en säker plats!",
     // Timezone display
     currentTime: "Aktuell tid",
@@ -6134,7 +6134,7 @@ export const translations = {
     blogPost8Title: "Swiss VAT", blogPost8Desc: "Switzerland VAT requirements.",
     enterDestinationPostcode: "Ilagay ang destination postcode",
     trackingCaseSensitive: "ANG TRACKING LETTERS AY CASE SENSITIVE AT KAILANGAN NASA CAPITAL LETTERS.",
-    usaPostcodeNote: "Para sa USA Postcode, kailangan mong ibigay ang full zip code kung ma-trigger ang error \"No order found matching all fields\". Ang 5 digit postcode ay dapat okay lang, pero para sa most eBay orders at some Etsy orders ay kailangan ng full ZIP code. Para sa countries na walang postcodes, tulad ng Hong Kong & Macau, ilagay ang 999077 (Hong Kong) o 999078 (Macau).",
+    usaPostcodeNote: "Para sa mga bansa na walang postcode, gaya ng Hong Kong at Macau, ilagay ang 999077 (Hong Kong) o 999078 (Macau).",
     epacDeliveryNote: "Pakitandaan na lahat ng ePAC items na ipinadala sa destination ay dapat i-deliver sa mailbox, doorstep, parcel locker o iwanan sa safe place!",
     // Timezone display
     currentTime: "Kasalukuyang Oras",
@@ -6337,7 +6337,7 @@ export const translations = {
     blogPost8Title: "VAT Thụy Sĩ", blogPost8Desc: "Yêu cầu VAT của Thụy Sĩ.",
     enterDestinationPostcode: "Nhập mã bưu chính đích",
     trackingCaseSensitive: "CÁC CHỮ CÁI THEO DÕI PHÂN BIỆT CHỮ HOA CHỮ THƯỜNG VÀ PHẢI VIẾT HOA.",
-    usaPostcodeNote: "Đối với Mã bưu chính Hoa Kỳ, bạn có thể cần cung cấp mã ZIP đầy đủ nếu lỗi \"Không tìm thấy đơn hàng khớp với tất cả các trường\" kích hoạt. Mã zip 5 chữ số sẽ ổn, nhưng đối với hầu hết các đơn đặt hàng eBay và một số từ Etsy có thể yêu cầu mã ZIP đầy đủ. Đối với các quốc gia không có mã bưu chính, ví dụ: Hồng Kông và Ma Cao, hãy nhập 999077 (Hồng Kông) hoặc 999078 (Ma Cao).",
+    usaPostcodeNote: "Đối với các quốc gia không có mã bưu chính, ví dụ: Hồng Kông và Ma Cao, hãy nhập 999077 (Hồng Kông) hoặc 999078 (Ma Cao).",
     epacDeliveryNote: "Vui lòng LƯU Ý rằng tất cả các mặt hàng ePAC được gửi đến điểm đến phải được giao đến Hộp thư, Trước cửa, Tủ khóa bưu kiện hoặc để ở nơi an toàn!",
     // Timezone display
     currentTime: "Thời gian hiện tại",
@@ -6558,7 +6558,7 @@ export const translations = {
     enterDestinationPostcode: "Anna kohteen postinumero",
     trackingNumberExample: "esim. LG123456789SG",
     trackingCaseSensitive: "SEURANTAKIRJAIMET OVAT ISOJEN JA PIENTEN KIRJAINTEN EROTTAVIA JA NIIDEN ON OLTAVA ISOILLA KIRJAIMILLA.",
-    usaPostcodeNote: "USA:n postinumerolle saatat joutua antamaan täyden postinumeron, jos virhe \"Kaikkia kenttiä vastaavaa tilausta ei löytynyt\" ilmenee. 5-numeroinen postinumero pitäisi olla hyvä, mutta useimmille eBay-tilauksille ja joillekin Etsy-tilauksille voi vaatia täyden ZIP-koodin. Maille, joilla ei ole postinumeroita, kuten Hong Kong ja Macao, laita 999077 (Hong Kong) tai 999078 (Macao).",
+    usaPostcodeNote: "Maille, joilla ei ole postinumeroita, kuten Hong Kong ja Macao, laita 999077 (Hong Kong) tai 999078 (Macao).",
     epacDeliveryNote: "Huomioi YSTÄVÄLLISESTI, että kaikki ePAC-tuotteet, jotka lähetetään kohteeseen, tulisi toimittaa postilaatikkoosi, ovelle, pakettilokeroosi tai jättää turvalliseen paikkaan!",
     countriesNoMailbox: "Maat, joissa postilaatikko-/kirjelaatikkotoimitus ei ole saatavilla: Brunei, Kiina, Intia, Israel, Macau SAR Kiina, Filippiinit, Puola ja Vietnam.",
     rhythmNexusNotResponsible: "Rhythm Nexus EI OLE VASTUUSSA toimitusten käsittelystä, koska se on meidän hallintamme ulkopuolella ja toivoisimme mieluummin, että seuraat tuotteesi tilaa.",
@@ -6772,7 +6772,7 @@ export const translations = {
     enterDestinationPostcode: "Введите почтовый индекс назначения",
     trackingNumberExample: "напр. LG123456789SG",
     trackingCaseSensitive: "БУКВЫ В НОМЕРЕ ОТСЛЕЖИВАНИЯ ЧУВСТВИТЕЛЬНЫ К РЕГИСТРУ И ДОЛЖНЫ БЫТЬ ЗАГЛАВНЫМИ.",
-    usaPostcodeNote: "Для почтового индекса США вам, возможно, потребуется ввести полный ZIP-код, если возникает ошибка \"Заказ не найден\". 5-значный индекс должен подойти, но для большинства заказов eBay может потребоваться полный ZIP-код. Для стран без почтовых индексов, таких как Гонконг и Макао, введите 999077 (Гонконг) или 999078 (Макао).",
+    usaPostcodeNote: "Для стран без почтовых индексов, таких как Гонконг и Макао, введите 999077 (Гонконг) или 999078 (Макао).",
     epacDeliveryNote: "Обратите внимание, что все отправления ePAC должны быть доставлены в ваш почтовый ящик, до двери, в почтомат или оставлены в безопасном месте!",
     // Timezone display
     currentTime: "Текущее время",
@@ -7052,7 +7052,7 @@ export const translations = {
     enterDestinationPostcode: "Rhowch god post cyrchfan",
     trackingNumberExample: "e.e. LG123456789SG",
     trackingCaseSensitive: "MAE LLYTHRENNAU OLRHAIN YN SENSITIF I LYTHRENNAU BACH A MAWR AC RHAID BOD MEWN LLYTHRENNAU MAWR.",
-    usaPostcodeNote: "Ar gyfer Cod Post yr UD, efallai y bydd angen i chi ddarparu'r cod zip llawn os caiff y gwall \"Dim archeb wedi'i chanfod sy'n cyfateb i'r holl feysydd\" ei sbarduno. Dylai cod post 5 digid fod yn iawn, ond ar gyfer y rhan fwyaf o archebion eBay a rhai rhai Etsy efallai y bydd angen y cod ZIP llawn. Ar gyfer gwledydd heb godau post, fel Hong Kong a Macau, rhowch 999077 (Hong Kong) neu 999078 (Macau).",
+    usaPostcodeNote: "Ar gyfer gwledydd heb godau post, fel Hong Kong a Macau, rhowch 999077 (Hong Kong) neu 999078 (Macau).",
     epacDeliveryNote: "Nodwch yn GAREDIG fod pob eitem ePAC a anfonir i'r cyrchfan i gyd i gael eu dosbarthu i'ch blwch post, trothwy drws, locer parsel neu eu gadael mewn lle diogel!",
     countriesNoMailbox: "Gwledydd sy'n hysbys am beidio â bod â dosbarthu blwch post/blwch llythyrau ar gael: Brunei, Tsieina, India, Israel, Macau SAR Tsieina, Pilipinas, Gwlad Pwyl a Fietnam.",
     rhythmNexusNotResponsible: "NID YW Rhythm Nexus YN GYFRIFOL am drin y dosbarthiadau gan ei fod y tu allan i'n rheolaeth a byddem yn well gennym i chi olrhain statws eich eitem yn lle hynny.",
