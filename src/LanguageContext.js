@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useEffect } from 'react';
 import { translations } from './translations';
-import { detectLanguageFromIP, detectLanguageFromBrowser } from './ipGeolocation';
+import { detectLanguageFromIPWithRestrictions, detectLanguageFromBrowser } from './ipGeolocation';
 import LanguageModal from './LanguageModal';
 
 // Helper function to get language name
@@ -76,11 +76,25 @@ export const LanguageProvider = ({ children }) => {
       // No localStorage check - always detect and show modal on page load
       console.log('✓ Starting fresh detection (no persistent storage)');
       
-      const ipResult = await detectLanguageFromIP();
+      const ipResult = await detectLanguageFromIPWithRestrictions();
       
       console.log('IP Detection Result:', ipResult);
       
       if (ipResult) {
+        if (ipResult.blocked) {
+          console.log('🚫 Access blocked geolocation detected, skipping language modal');
+          const normalizeLang = (code) => {
+            const c = (code || 'en').toLowerCase();
+            if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
+            if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+            return c;
+          };
+          setLanguage(normalizeLang(ipResult.languageCode || 'en'));
+          setShowLanguageModal(false);
+          setLanguageOptions([]);
+          return;
+        }
+
         console.log(`✓ Country: ${ipResult.countryCode}`);
         console.log(`✓ Is Multi-Lingual: ${ipResult.isMultiLingual}`);
         console.log(`✓ Language Code: ${ipResult.languageCode}`);

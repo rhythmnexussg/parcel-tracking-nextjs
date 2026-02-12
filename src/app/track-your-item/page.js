@@ -1078,6 +1078,10 @@ function App() {
             value={postcode}
             onChange={(e) => setPostcode(e.target.value)}
             required
+            pattern={destinationCountry === 'US' ? '^\\d{5}(-\\d{4})?$' : undefined}
+            inputMode={destinationCountry === 'US' ? 'numeric' : undefined}
+            maxLength={destinationCountry === 'US' ? 10 : undefined}
+            title={destinationCountry === 'US' ? 'Use ZIP format 12345 or 12345-6789' : undefined}
             placeholder={t('enterDestinationPostcode') || "Enter destination postcode"}
             disabled={accessBlocked}
           />
