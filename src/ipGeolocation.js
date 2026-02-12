@@ -759,7 +759,9 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
 
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
-    const blockedByVPN = vpnDetection.isVPN && (!vpnDetection.actualCountry || !isAllowedAccessCountry(vpnDetection.actualCountry));
+    // Only block by VPN when we have a concrete inferred actual country and it is disallowed.
+    // This avoids false positives where VPN heuristics trigger but actual country is unknown.
+    const blockedByVPN = vpnDetection.isVPN && Boolean(vpnDetection.actualCountry) && !isAllowedAccessCountry(vpnDetection.actualCountry);
     const blocked = blockedByCountry || blockedByVPN;
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
