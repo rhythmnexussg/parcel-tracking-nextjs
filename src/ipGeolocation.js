@@ -755,18 +755,26 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
     console.log('=================================');
     
-    // If VPN is detected and an actual country is inferred, use that inferred country.
-    let finalCountryCode = detectedCountryCode;
+    const timezoneCountryCode = inferCountryCodeFromBrowserTimezone(browserTimezone);
+    const accessSignals = [
+      detectedCountryCode,
+      secondaryCountryCode,
+      vpnDetection.actualCountry,
+      timezoneCountryCode,
+    ].filter(Boolean);
+
+    // Authoritative allow-list decision: if any trusted signal is in allowed countries,
+    // grant access and use that country as final country.
+    const firstAllowedCountry = accessSignals.find((code) => isAllowedAccessCountry(code)) || null;
+
+    let finalCountryCode = firstAllowedCountry || detectedCountryCode || timezoneCountryCode || vpnDetection.actualCountry || null;
     if (vpnDetection.isVPN && vpnDetection.actualCountry) {
-      finalCountryCode = vpnDetection.actualCountry;
-      console.log(`VPN detected with inferred actual country ${vpnDetection.actualCountry} - using inferred country`);
+      console.log(`VPN detected with inferred actual country ${vpnDetection.actualCountry}`);
     }
 
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
-    // Only block by VPN when we have a concrete inferred actual country and it is disallowed.
-    // This avoids false positives where VPN heuristics trigger but actual country is unknown.
-    const blockedByVPN = vpnDetection.isVPN && Boolean(vpnDetection.actualCountry) && !isAllowedAccessCountry(vpnDetection.actualCountry);
-    const blocked = blockedByCountry || blockedByVPN;
+    const blockedByVPN = false;
+    const blocked = blockedByCountry;
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
 
@@ -780,6 +788,8 @@ export async function detectLanguageFromIPWithRestrictions() {
       vpnLikelihood: vpnDetection.likelihood,
       vpnIndicators: vpnDetection.indicators,
       estimatedActualCountry: vpnDetection.actualCountry,
+      accessSignals,
+      firstAllowedCountry,
       secondaryCountryCode,
       countryMismatchDetected,
       browserTimezone: browserTimezone,
