@@ -124,7 +124,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
     }
   };
 
-  const getNextDSTStartDate = (timezone) => {
+  const getNextDSTTransition = (timezone) => {
     try {
       const now = new Date();
 
@@ -136,7 +136,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
       const julOffset = getUTCOffsetAt(timezone, jul);
       if (janOffset === julOffset) return null;
 
-      // Scan forward up to ~14 months to find the next offset increase (DST start).
+      // Scan forward up to ~14 months to find the next offset change.
       const scanDays = 430;
       const todayNoonUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0));
       let prevOffset = getUTCOffsetAt(timezone, todayNoonUTC);
@@ -144,12 +144,12 @@ const TimezoneHeader = ({ userCountry, t }) => {
       for (let dayIndex = 1; dayIndex <= scanDays; dayIndex += 1) {
         const candidate = new Date(todayNoonUTC.getTime() + dayIndex * 24 * 60 * 60 * 1000);
         const offset = getUTCOffsetAt(timezone, candidate);
-
-        // DST start typically means offset increases (e.g. UTC-5 -> UTC-4).
-        if (offset > prevOffset) {
-          return candidate;
+        if (offset !== prevOffset) {
+          return {
+            type: offset > prevOffset ? 'start' : 'end',
+            date: candidate,
+          };
         }
-
         prevOffset = offset;
       }
 
@@ -159,58 +159,64 @@ const TimezoneHeader = ({ userCountry, t }) => {
     }
   };
 
-  const nextDstStartDate = useMemo(() => {
+  const nextDstTransition = useMemo(() => {
     if (!userCountry || userCountry === 'SG') return null;
+
+    const europeCountries = new Set([
+      'AT', 'BE', 'CH', 'CZ', 'DE', 'ES', 'FI', 'FR', 'GB', 'IE',
+      'IT', 'NL', 'NO', 'PL', 'PT', 'SE',
+    ]);
+    const supportsDstNotice = userCountry === 'AU' || userCountry === 'NZ' || userCountry === 'US' || userCountry === 'CA' || europeCountries.has(userCountry);
+    if (!supportsDstNotice) return null;
 
     const timezoneData = countryTimezones[userCountry];
     if (!timezoneData) return null;
 
-    // Multiple timezones: pick the earliest upcoming DST start date among them.
+    const considerTransition = (transition, best) => {
+      if (!transition) return best;
+      if (!best || transition.date.getTime() < best.date.getTime()) return transition;
+      return best;
+    };
+
     if (Array.isArray(timezoneData)) {
-      let earliest = null;
+      let best = null;
       for (const { timezone } of timezoneData) {
-        const startDate = getNextDSTStartDate(timezone);
-        if (!startDate) continue;
-        if (!earliest || startDate.getTime() < earliest.getTime()) {
-          earliest = startDate;
-        }
+        const transition = getNextDSTTransition(timezone);
+        best = considerTransition(transition, best);
       }
-      return earliest;
+      return best;
     }
 
-    // Single timezone
-    return getNextDSTStartDate(timezoneData);
+    return getNextDSTTransition(timezoneData);
   }, [userCountry]);
 
   const daylightTimeNotice = useMemo(() => {
-    if (!nextDstStartDate) return null;
+    if (!nextDstTransition) return null;
 
     const formattedDate = new Intl.DateTimeFormat(undefined, {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
-    }).format(nextDstStartDate);
+    }).format(nextDstTransition.date);
 
-    if (userCountry === 'AU') {
-      return `Daylight time starts: ${formattedDate} (NSW, VIC, SA, TAS, ACT)`;
+    const suffix = (() => {
+      if (userCountry === 'AU') return ' (NSW, VIC, SA, TAS, ACT)';
+      if (userCountry === 'NZ') return ' (New Zealand)';
+
+      const europeCountries = new Set([
+        'AT', 'BE', 'CH', 'CZ', 'DE', 'ES', 'FI', 'FR', 'GB', 'IE',
+        'IT', 'NL', 'NO', 'PL', 'PT', 'SE',
+      ]);
+      if (europeCountries.has(userCountry)) return ' (Europe)';
+      return '';
+    })();
+
+    if (nextDstTransition.type === 'end') {
+      return `Daylight time ends: ${formattedDate} (reverts to standard time)${suffix}`;
     }
 
-    if (userCountry === 'NZ') {
-      return `Daylight time starts: ${formattedDate} (New Zealand)`;
-    }
-
-    // European countries we support that commonly observe daylight time.
-    // (We only show this line if DST is detected for the timezone anyway.)
-    const europeCountries = new Set([
-      'AT', 'BE', 'CH', 'CZ', 'DE', 'ES', 'FI', 'FR', 'GB', 'IE',
-      'IT', 'NL', 'NO', 'PL', 'PT', 'SE',
-    ]);
-    if (europeCountries.has(userCountry)) {
-      return `Daylight time starts: ${formattedDate} (Europe)`;
-    }
-
-    return `Daylight time starts: ${formattedDate}`;
-  }, [nextDstStartDate, userCountry]);
+    return `Daylight time starts: ${formattedDate}${suffix}`;
+  }, [nextDstTransition, userCountry]);
   
   useEffect(() => {
     const timer = setInterval(() => {
