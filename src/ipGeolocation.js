@@ -453,6 +453,9 @@ function inferCountryCodeFromBrowserTimezone(browserTimezone) {
     'Asia/Hong_Kong': 'HK',
     'Asia/Macau': 'MO',
     'Asia/Macao': 'MO',
+
+    // Singapore
+    'Asia/Singapore': 'SG',
   };
 
   return timezoneToCountry[browserTimezone] || null;
@@ -631,6 +634,7 @@ export async function detectLanguageFromIPWithRestrictions() {
     let response;
     let data;
     let detectedCountryCode;
+    let usedPrimaryApi = true;
 
     // Try primary API with HTTPS
     try {
