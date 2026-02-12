@@ -42,15 +42,16 @@ html, body {
   top: 0;
   left: 0;
   width: 100%;
-  /* UPDATED: Increased height to accommodate bigger logo */
-  height: 130px; 
+  /* UPDATED: Increased height to accommodate bigger logo and multi-row timezones */
+  min-height: 130px;
+  height: auto;
   background-color: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between; 
-  padding: 0 40px; 
+  padding: 10px 40px; 
   box-sizing: border-box;
   z-index: 1000;
   transition: all 0.3s ease;
@@ -78,7 +79,10 @@ html, body {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  min-height: 120px;
+  overflow: visible;
+  padding-top: 10px;
 }
 
 .navbar-links {
@@ -354,7 +358,7 @@ html, body {
   flex: 1;
   width: 100%;
   max-width: 850px;
-  margin: 220px auto 40px;
+  margin: 280px auto 40px;
   padding: 20px;
 }
 
@@ -516,10 +520,11 @@ a:hover { text-decoration: underline; color: #006bb5; }
     order: 2;
     width: 100%;
     overflow-x: auto;
-    overflow-y: hidden;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    min-height: 60px;
   }
 
   .navbar-center::-webkit-scrollbar {
