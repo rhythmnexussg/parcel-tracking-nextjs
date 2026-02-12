@@ -751,6 +751,25 @@ function App() {
 
     const results = await fetchOrderInfo(""); 
 
+    const normalizePostal = (value) => (value || '').toString().trim().toUpperCase();
+    const normalizeUSZipDigits = (value) => (value || '').toString().replace(/\D/g, '');
+    const isPostcodeMatch = (orderPostcodeValue, inputPostcodeValue, countryCode) => {
+      if (!orderPostcodeValue || !inputPostcodeValue) return false;
+
+      const orderPostal = normalizePostal(orderPostcodeValue);
+      const inputPostal = normalizePostal(inputPostcodeValue);
+
+      // USA: allow matching 5-digit ZIP with ZIP+4 from either source.
+      if (countryCode === 'US') {
+        const orderDigits = normalizeUSZipDigits(orderPostal);
+        const inputDigits = normalizeUSZipDigits(inputPostal);
+        if (orderDigits.length < 5 || inputDigits.length < 5) return false;
+        return orderDigits.slice(0, 5) === inputDigits.slice(0, 5);
+      }
+
+      return orderPostal === inputPostal;
+    };
+
     const matchedOrder = results.find(
       (order) =>
         order.trackingNumber && trackingNumber &&
@@ -758,8 +777,7 @@ function App() {
         order.destinationCountry === destinationCountry &&
         order.orderNumber && orderNumber &&
         order.orderNumber.toUpperCase() === orderNumber.toUpperCase() &&
-        order.postcode && postcode &&
-        order.postcode.toUpperCase() === postcode.toUpperCase()
+        isPostcodeMatch(order.postcode, postcode, destinationCountry)
     );
 
     if (!matchedOrder) {
