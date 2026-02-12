@@ -49,9 +49,20 @@ export const allowedAccessCountries = [
   'PT', 'SG', 'KR', 'ES', 'SE', 'CH', 'TW', 'TH', 'GB', 'US', 'VN'
 ];
 
+const countryCodeAliases = {
+  UK: 'GB',
+};
+
+export function normalizeCountryCode(countryCode) {
+  if (!countryCode) return null;
+  const normalized = String(countryCode).trim().toUpperCase();
+  return countryCodeAliases[normalized] || normalized;
+}
+
 export function isAllowedAccessCountry(countryCode) {
-  if (!countryCode) return false;
-  return allowedAccessCountries.includes(countryCode);
+  const normalizedCountryCode = normalizeCountryCode(countryCode);
+  if (!normalizedCountryCode) return false;
+  return allowedAccessCountries.includes(normalizedCountryCode);
 }
 
 // Countries with multiple official languages
@@ -326,6 +337,7 @@ export async function detectLanguageFromIP() {
     if (!detectedCountryCode && data.countryCode) {
       detectedCountryCode = data.countryCode;
     }
+    detectedCountryCode = normalizeCountryCode(detectedCountryCode);
 
     if (!detectedCountryCode) {
       console.error('CRITICAL: No country_code in IP response!');
@@ -494,7 +506,7 @@ function buildFallbackGeoResult({ browserTimezone, detectedCountryCode = null })
 const allowedCountriesFromChina = [
   'AU', 'AT', 'BE', 'BN', 'CA', 'CN', 'CZ', 'FI', 'FR', 'DE', 'HK', 'IN', 
   'ID', 'IE', 'IL', 'IT', 'JP', 'MO', 'MY', 'NL', 'NZ', 'NO', 'PH', 'PL', 
-  'PT', 'KR', 'SG', 'ES', 'SE', 'CH', 'TW', 'TH', 'GB', 'US', 'VN'
+  'PT', 'RU', 'KR', 'SG', 'ES', 'SE', 'CH', 'TW', 'TH', 'GB', 'US', 'VN'
 ];
 
 /**
@@ -717,7 +729,7 @@ export async function detectLanguageFromIPWithRestrictions() {
 
       if (secondaryResponse.ok) {
         const secondaryData = await secondaryResponse.json();
-        secondaryCountryCode = secondaryData.country_code || secondaryData.countryCode || null;
+        secondaryCountryCode = normalizeCountryCode(secondaryData.country_code || secondaryData.countryCode || null);
       }
     } catch (secondaryError) {
       console.warn('Secondary geolocation cross-check failed:', secondaryError.message);
@@ -760,9 +772,9 @@ export async function detectLanguageFromIPWithRestrictions() {
     const ipCountries = [detectedCountryCode, secondaryCountryCode].filter(Boolean);
     const allowedIpCountry = ipCountries.find((code) => isAllowedAccessCountry(code)) || null;
 
-    let finalCountryCode = allowedIpCountry || detectedCountryCode || secondaryCountryCode || null;
+    let finalCountryCode = normalizeCountryCode(allowedIpCountry || detectedCountryCode || secondaryCountryCode || null);
     if (!finalCountryCode) {
-      finalCountryCode = inferCountryCodeFromBrowserTimezone(browserTimezone) || vpnDetection.actualCountry || null;
+      finalCountryCode = normalizeCountryCode(inferCountryCodeFromBrowserTimezone(browserTimezone) || vpnDetection.actualCountry || null);
     }
 
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
