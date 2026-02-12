@@ -970,24 +970,6 @@ function App() {
             <h1 className="mt-4">{t('parcelTracking')}</h1>
         </div>
 
-        {/* Critical Advisory (Top of Page, not in Service Announcements) */}
-        <div
-          className="critical-advisory-card"
-          style={{
-            border: '2px solid #b30000',
-            backgroundColor: '#ffe5e5',
-            color: '#660000',
-            borderRadius: '8px',
-            padding: '16px',
-            marginTop: '16px',
-            marginBottom: '16px'
-          }}
-        >
-          <h3 style={{ marginTop: 0, color: '#b30000' }}>
-            {t('usaStormAdvisory') || 'Severe winter storm is affecting several parts of USA. This will affect both postal and express delivery for packages into USA.'}
-          </h3>
-        </div>
-
     {/* Service Announcement Section */}
     <ServiceAnnouncement allowedDestinations={allowedDestinations} />
 
