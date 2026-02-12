@@ -49,6 +49,28 @@ export const allowedAccessCountries = [
   'PT', 'SG', 'KR', 'ES', 'SE', 'CH', 'TW', 'TH', 'GB', 'US', 'VN'
 ];
 
+// Explicitly blocked countries (cannot access website, VPN or non-VPN)
+// NOTE: Do not modify allowedAccessCountries above.
+export const blockedAccessCountries = [
+  'AF', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AG', 'AR', 'AM', 'AW', 'AZ',
+  'BS', 'BH', 'BD', 'BB', 'BY', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BA', 'BW',
+  'BV', 'BR', 'VG', 'BG', 'BF', 'BI', 'KH', 'CM', 'CV', 'KY', 'CF', 'TD',
+  'CL', 'CO', 'KM', 'CG', 'CK', 'CR', 'CI', 'HR', 'CU', 'CW', 'CY', 'KP',
+  'CD', 'DK', 'DJ', 'DM', 'DO', 'EC', 'EG', 'SV', 'GQ', 'ER', 'EE', 'SZ',
+  'ET', 'FK', 'FO', 'FJ', 'GF', 'PF', 'TF', 'GA', 'GM', 'GE', 'GH', 'GI',
+  'GR', 'GL', 'GD', 'GP', 'GU', 'GT', 'GG', 'GN', 'GW', 'GY', 'HT', 'HN',
+  'HU', 'IS', 'IR', 'IQ', 'JM', 'JE', 'JO', 'KZ', 'KE', 'KI', 'XK', 'KW',
+  'KG', 'LA', 'LV', 'LB', 'LS', 'LR', 'LY', 'LI', 'LT', 'LU', 'MG', 'MW',
+  'MV', 'ML', 'MT', 'MP', 'MH', 'MQ', 'MR', 'MU', 'YT', 'MX', 'FM', 'MD',
+  'MC', 'MN', 'ME', 'MS', 'MA', 'MZ', 'MM', 'NA', 'NR', 'NP', 'NC', 'NI',
+  'NE', 'NG', 'NU', 'NF', 'MK', 'OM', 'PK', 'PW', 'PS', 'PA', 'PG', 'PY',
+  'PE', 'PR', 'QA', 'RE', 'RO', 'RW', 'KN', 'LC', 'MF', 'PM', 'VC', 'WS',
+  'SM', 'ST', 'SA', 'SN', 'RS', 'SC', 'SL', 'SX', 'SK', 'SI', 'SB', 'SO',
+  'ZA', 'SS', 'LK', 'SD', 'SR', 'SJ', 'SY', 'TJ', 'TZ', 'TL', 'TG', 'TK',
+  'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'VI', 'UG', 'UA', 'AE', 'UY',
+  'UM', 'UZ', 'VU', 'VA', 'VE', 'YE', 'ZM', 'ZW'
+];
+
 const countryCodeAliases = {
   UK: 'GB',
 };
@@ -63,6 +85,12 @@ export function isAllowedAccessCountry(countryCode) {
   const normalizedCountryCode = normalizeCountryCode(countryCode);
   if (!normalizedCountryCode) return false;
   return allowedAccessCountries.includes(normalizedCountryCode);
+}
+
+export function isBlockedAccessCountry(countryCode) {
+  const normalizedCountryCode = normalizeCountryCode(countryCode);
+  if (!normalizedCountryCode) return false;
+  return blockedAccessCountries.includes(normalizedCountryCode);
 }
 
 // Countries with multiple official languages
@@ -468,6 +496,10 @@ function inferCountryCodeFromBrowserTimezone(browserTimezone) {
 
     // Singapore
     'Asia/Singapore': 'SG',
+
+    // Baltics (explicit non-allowed examples)
+    'Europe/Vilnius': 'LT',
+    'Europe/Riga': 'LV',
   };
 
   return timezoneToCountry[browserTimezone] || null;
@@ -592,6 +624,18 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
       vpnScore += 25;
       indicators.push('Korean language but non-Korea region');
       actualCountry = actualCountry || 'KR';
+    }
+
+    if (primaryLang === 'lt' && detectedCountry !== 'LT') {
+      vpnScore += 25;
+      indicators.push('Lithuanian language but non-Lithuania region');
+      actualCountry = actualCountry || 'LT';
+    }
+
+    if (primaryLang === 'lv' && detectedCountry !== 'LV') {
+      vpnScore += 25;
+      indicators.push('Latvian language but non-Latvia region');
+      actualCountry = actualCountry || 'LV';
     }
   }
   
@@ -767,19 +811,28 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
     console.log('=================================');
     
-    // Access decision is based on IP geolocation provider countries.
-    // If VPN endpoint is in an allowed country, access remains allowed.
+    // Access decision is based on strict shipping country policy.
+    // Any strong signal of a blocked country should be rejected (VPN or non-VPN).
     const ipCountries = [detectedCountryCode, secondaryCountryCode].filter(Boolean);
     const allowedIpCountry = ipCountries.find((code) => isAllowedAccessCountry(code)) || null;
+    const timezoneCountryCode = normalizeCountryCode(inferCountryCodeFromBrowserTimezone(browserTimezone) || null);
+    const signalCountries = [
+      detectedCountryCode,
+      secondaryCountryCode,
+      normalizeCountryCode(vpnDetection.actualCountry || null),
+      timezoneCountryCode,
+    ].filter(Boolean);
+    const blockedSignalCountry = signalCountries.find((code) => isBlockedAccessCountry(code)) || null;
+    const allIpCountriesAllowed = ipCountries.length > 0 && ipCountries.every((code) => isAllowedAccessCountry(code));
 
     let finalCountryCode = normalizeCountryCode(allowedIpCountry || detectedCountryCode || secondaryCountryCode || null);
     if (!finalCountryCode) {
-      finalCountryCode = normalizeCountryCode(inferCountryCodeFromBrowserTimezone(browserTimezone) || vpnDetection.actualCountry || null);
+      finalCountryCode = normalizeCountryCode(timezoneCountryCode || vpnDetection.actualCountry || null);
     }
 
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
-    const blockedByVPN = vpnDetection.isVPN && !allowedIpCountry;
-    const blocked = blockedByCountry;
+    const blockedByVPN = vpnDetection.isVPN && (!allIpCountriesAllowed || countryMismatchDetected || Boolean(blockedSignalCountry));
+    const blocked = blockedByCountry || blockedByVPN || Boolean(blockedSignalCountry);
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
 
@@ -795,6 +848,8 @@ export async function detectLanguageFromIPWithRestrictions() {
       estimatedActualCountry: vpnDetection.actualCountry,
       ipCountries,
       allowedIpCountry,
+      signalCountries,
+      blockedSignalCountry,
       secondaryCountryCode,
       countryMismatchDetected,
       browserTimezone: browserTimezone,
