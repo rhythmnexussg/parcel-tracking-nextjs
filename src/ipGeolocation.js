@@ -755,25 +755,18 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
     console.log('=================================');
     
-    const timezoneCountryCode = inferCountryCodeFromBrowserTimezone(browserTimezone);
-    const accessSignals = [
-      detectedCountryCode,
-      secondaryCountryCode,
-      vpnDetection.actualCountry,
-      timezoneCountryCode,
-    ].filter(Boolean);
+    // Access decision is based on IP geolocation provider countries.
+    // If VPN endpoint is in an allowed country, access remains allowed.
+    const ipCountries = [detectedCountryCode, secondaryCountryCode].filter(Boolean);
+    const allowedIpCountry = ipCountries.find((code) => isAllowedAccessCountry(code)) || null;
 
-    // Authoritative allow-list decision: if any trusted signal is in allowed countries,
-    // grant access and use that country as final country.
-    const firstAllowedCountry = accessSignals.find((code) => isAllowedAccessCountry(code)) || null;
-
-    let finalCountryCode = firstAllowedCountry || detectedCountryCode || timezoneCountryCode || vpnDetection.actualCountry || null;
-    if (vpnDetection.isVPN && vpnDetection.actualCountry) {
-      console.log(`VPN detected with inferred actual country ${vpnDetection.actualCountry}`);
+    let finalCountryCode = allowedIpCountry || detectedCountryCode || secondaryCountryCode || null;
+    if (!finalCountryCode) {
+      finalCountryCode = inferCountryCodeFromBrowserTimezone(browserTimezone) || vpnDetection.actualCountry || null;
     }
 
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
-    const blockedByVPN = false;
+    const blockedByVPN = vpnDetection.isVPN && !allowedIpCountry;
     const blocked = blockedByCountry;
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
@@ -788,8 +781,8 @@ export async function detectLanguageFromIPWithRestrictions() {
       vpnLikelihood: vpnDetection.likelihood,
       vpnIndicators: vpnDetection.indicators,
       estimatedActualCountry: vpnDetection.actualCountry,
-      accessSignals,
-      firstAllowedCountry,
+      ipCountries,
+      allowedIpCountry,
       secondaryCountryCode,
       countryMismatchDetected,
       browserTimezone: browserTimezone,
