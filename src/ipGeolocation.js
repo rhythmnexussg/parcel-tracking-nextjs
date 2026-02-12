@@ -41,6 +41,19 @@ const countryToLanguageMap = {
   'SG': 'en',        // Singapore → English (default, can choose Malay or Chinese)
 };
 
+// Countries allowed to access the site (shipping destinations)
+export const allowedAccessCountries = [
+  'AU', 'AT', 'BE', 'BN', 'CA', 'CN', 'CZ', 'FI', 'FR', 'DE', 'HK', 'IN',
+  'ID', 'IE', 'IL', 'IT', 'JP', 'MY', 'MO', 'NL', 'NZ', 'NO', 'PH', 'PL',
+  'RU',
+  'PT', 'SG', 'KR', 'ES', 'SE', 'CH', 'TW', 'TH', 'GB', 'US', 'VN'
+];
+
+export function isAllowedAccessCountry(countryCode) {
+  if (!countryCode) return false;
+  return allowedAccessCountries.includes(countryCode);
+}
+
 // Countries with multiple official languages
 const multiLanguageCountries = {
   'AT': [
@@ -452,6 +465,7 @@ function buildFallbackGeoResult({ browserTimezone, detectedCountryCode = null })
   const browserLanguages = (typeof navigator !== 'undefined' && navigator.languages)
     ? navigator.languages
     : (typeof navigator !== 'undefined' ? [navigator.language] : []);
+  const blocked = !isAllowedAccessCountry(inferredCountryCode);
 
   return {
     countryCode: inferredCountryCode,
@@ -466,6 +480,8 @@ function buildFallbackGeoResult({ browserTimezone, detectedCountryCode = null })
     browserTimezone,
     browserLanguages,
     accessRestrictions: inferredCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null,
+    blocked,
+    message: blocked ? 'Sorry, you are not authorized to access this page.' : null,
     detectionMethod: 'timezone_fallback',
   };
 }
@@ -692,13 +708,18 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
     console.log('=================================');
     
-    // Special handling: If VPN detected and actual country is China, use China
-    // For other countries, use detected IP country (VPN exit node)
+    // Special handling: if VPN detected and estimated actual country is CN/RU,
+    // use that country (allowing CN/RU users on VPN).
     let finalCountryCode = detectedCountryCode;
-    if (vpnDetection.isVPN && vpnDetection.actualCountry === 'CN') {
-      finalCountryCode = 'CN';
-      console.log('VPN detected from China - using China as country');
+    if (vpnDetection.isVPN && ['CN', 'RU'].includes(vpnDetection.actualCountry)) {
+      finalCountryCode = vpnDetection.actualCountry;
+      console.log(`VPN detected from ${vpnDetection.actualCountry} - using ${vpnDetection.actualCountry} as country`);
     }
+
+    const vpnException = vpnDetection.isVPN && ['CN', 'RU'].includes(vpnDetection.actualCountry || finalCountryCode);
+    const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
+    const blockedByVPN = vpnDetection.isVPN && !vpnException;
+    const blocked = blockedByCountry || blockedByVPN;
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
 
@@ -714,7 +735,13 @@ export async function detectLanguageFromIPWithRestrictions() {
       estimatedActualCountry: vpnDetection.actualCountry,
       browserTimezone: browserTimezone,
       browserLanguages: browserLanguages,
-      accessRestrictions: finalCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null
+      accessRestrictions: finalCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null,
+      blocked,
+      message: blocked
+        ? (blockedByVPN
+            ? 'Sorry, you are not authorized to access this page. Please disable VPN and try again.'
+            : 'Sorry, you are not authorized to access this page.')
+        : null
     };
 
     console.log('Final Result:', result);

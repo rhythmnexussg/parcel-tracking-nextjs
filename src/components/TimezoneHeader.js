@@ -104,6 +104,78 @@ const TimezoneHeader = ({ userCountry, t }) => {
     return words[0]; // Return first word (main city/region name)
   };
 
+  const timezoneAbbreviationMap = {
+    'Asia/Singapore': 'SGT',
+    'Australia/Sydney': 'AEST/AEDT',
+    'Australia/Adelaide': 'ACST/ACDT',
+    'Australia/Perth': 'AWST',
+
+    'Europe/Vienna': 'CET/CEST',
+    'Europe/Brussels': 'CET/CEST',
+    'Europe/Prague': 'CET/CEST',
+    'Europe/Helsinki': 'EET/EEST',
+    'Europe/Paris': 'CET/CEST',
+    'Europe/Berlin': 'CET/CEST',
+    'Europe/Dublin': 'GMT/IST',
+    'Europe/Rome': 'CET/CEST',
+    'Europe/Amsterdam': 'CET/CEST',
+    'Europe/Oslo': 'CET/CEST',
+    'Europe/Warsaw': 'CET/CEST',
+    'Europe/Lisbon': 'WET/WEST',
+    'Europe/Madrid': 'CET/CEST',
+    'Europe/Stockholm': 'CET/CEST',
+    'Europe/Zurich': 'CET/CEST',
+    'Europe/London': 'GMT/BST',
+
+    'Asia/Brunei': 'BNT',
+    'Asia/Shanghai': 'CST',
+    'Asia/Hong_Kong': 'HKT',
+    'Asia/Kolkata': 'IST',
+    'Asia/Makassar': 'WITA',
+    'Asia/Jerusalem': 'IST/IDT',
+    'Asia/Tokyo': 'JST',
+    'Asia/Kuala_Lumpur': 'MYT',
+    'Asia/Macau': 'MST',
+    'Asia/Manila': 'PHT',
+    'Asia/Seoul': 'KST',
+    'Asia/Taipei': 'TST',
+    'Asia/Bangkok': 'ICT',
+    'Asia/Ho_Chi_Minh': 'ICT',
+
+    'Pacific/Auckland': 'NZST/NZDT',
+
+    'Europe/Kaliningrad': 'KALT',
+    'Europe/Moscow': 'MSK',
+    'Europe/Samara': 'SAMT',
+    'Asia/Yekaterinburg': 'YEKT',
+    'Asia/Omsk': 'OMST',
+    'Asia/Krasnoyarsk': 'KRAT',
+    'Asia/Irkutsk': 'IRKT',
+    'Asia/Yakutsk': 'YAKT',
+    'Asia/Vladivostok': 'VLAT',
+    'Asia/Magadan': 'MAGT',
+    'Asia/Kamchatka': 'PETT',
+  };
+
+  const getCodeFromName = (name) => {
+    if (!name) return null;
+    const prefix = name.split('(')[0].trim();
+    return /^[A-Z]{2,6}$/.test(prefix) ? prefix : null;
+  };
+
+  const getTimezoneCode = (name, timezone) => {
+    const fromName = getCodeFromName(name);
+    return fromName || timezoneAbbreviationMap[timezone] || null;
+  };
+
+  const getTimezoneDisplayWithUTC = (info) => {
+    const base = getTimezoneLabel(info.name);
+    if (!info.timezoneCode || info.hasCodeInName) {
+      return `${base} (${info.utcOffsetLabel})`;
+    }
+    return `${base} (${info.timezoneCode}, ${info.utcOffsetLabel})`;
+  };
+
   const getBoundedDiffTextStyle = (baseStyle) => ({
     ...baseStyle,
     maxWidth: '100%',
@@ -264,9 +336,22 @@ const TimezoneHeader = ({ userCountry, t }) => {
       return 0;
     }
   };
+
+  const formatUTCOffset = (offsetMinutes) => {
+    const sign = offsetMinutes >= 0 ? '+' : '-';
+    const absMinutes = Math.abs(offsetMinutes);
+    const hours = Math.floor(absMinutes / 60);
+    const minutes = absMinutes % 60;
+    if (minutes === 0) {
+      return `UTC${sign}${hours}`;
+    }
+    return `UTC${sign}${hours}:${String(minutes).padStart(2, '0')}`;
+  };
   
   const singaporeTime = formatTime('Asia/Singapore');
   const singaporeOffset = getUTCOffset('Asia/Singapore');
+  const singaporeUTCLabel = formatUTCOffset(singaporeOffset);
+  const singaporeTimezoneCode = 'SGT';
   
   // Get user's local time and time difference
   const getUserLocalInfo = () => {
@@ -280,6 +365,9 @@ const TimezoneHeader = ({ userCountry, t }) => {
       return timezoneData.map(({ name, timezone }) => {
         const localTime = formatTime(timezone);
         const localOffset = getUTCOffset(timezone);
+        const utcOffsetLabel = formatUTCOffset(localOffset);
+        const codeFromName = getCodeFromName(name);
+        const timezoneCode = getTimezoneCode(name, timezone);
         const diffMinutes = localOffset - singaporeOffset;
         const diffHours = diffMinutes / 60;
         
@@ -296,7 +384,16 @@ const TimezoneHeader = ({ userCountry, t }) => {
           timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
         }
         
-        return { name, localTime, timeDiffText, isSameTime: diffHours === 0 };
+        return {
+          name,
+          timezone,
+          localTime,
+          utcOffsetLabel,
+          timezoneCode,
+          hasCodeInName: Boolean(codeFromName),
+          timeDiffText,
+          isSameTime: diffHours === 0,
+        };
       });
     }
     
@@ -304,6 +401,8 @@ const TimezoneHeader = ({ userCountry, t }) => {
     const timezone = timezoneData;
     const localTime = formatTime(timezone);
     const localOffset = getUTCOffset(timezone);
+    const utcOffsetLabel = formatUTCOffset(localOffset);
+    const timezoneCode = getTimezoneCode(null, timezone);
     const diffMinutes = localOffset - singaporeOffset;
     const diffHours = diffMinutes / 60;
     
@@ -320,7 +419,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
       timeDiffText = `${hours === Math.floor(hours) ? hours : hours.toFixed(1)} ${hourText}`;
     }
     
-    return { localTime, timeDiffText, isSameTime: diffHours === 0 };
+    return { timezone, localTime, utcOffsetLabel, timezoneCode, timeDiffText, isSameTime: diffHours === 0 };
   };
   
   const userLocalInfo = getUserLocalInfo();
@@ -345,6 +444,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
           whiteSpace: 'nowrap',
         }}>
           <span style={{ fontSize: isMobile ? '1rem' : '0.9rem' }}>🇸🇬</span>
+          <span style={{ fontSize: isMobile ? '0.65rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
           <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{singaporeTime}</span>
         </div>
       </div>
@@ -397,7 +497,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '2px' : '2px' }}>
                         <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                         <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d', fontWeight: '600', textAlign: 'center' }}>
-                          {getTimezoneLabel(info.name)}
+                          {getTimezoneDisplayWithUTC(info)}
                         </span>
                       </div>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -425,7 +525,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '2px' : '2px' }}>
                         <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                         <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d', fontWeight: '600', textAlign: 'center' }}>
-                          {getTimezoneLabel(info.name)}
+                          {getTimezoneDisplayWithUTC(info)}
                         </span>
                       </div>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -451,7 +551,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '2px' : '2px' }}>
                       <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                       <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d', fontWeight: '600', textAlign: 'center' }}>
-                        {getTimezoneLabel(userLocalInfo[10].name)}
+                        {getTimezoneDisplayWithUTC(userLocalInfo[10])}
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{userLocalInfo[10].localTime}</span>
@@ -472,6 +572,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     whiteSpace: 'nowrap',
                   }}>
                     <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem' }}>🇸🇬</span>
+                    <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d', fontWeight: '600' }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
                     <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{singaporeTime}</span>
                   </div>
                 </div>
@@ -497,7 +598,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
                       <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
-                        {getTimezoneLabel(info.name)}
+                        {getTimezoneDisplayWithUTC(info)}
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -525,7 +626,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
                       <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
-                        {getTimezoneLabel(info.name)}
+                        {getTimezoneDisplayWithUTC(info)}
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -550,7 +651,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
                     <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>🇸🇬</span>
-                    <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>SG</span>
+                    <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
                   </div>
                   <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{singaporeTime}</span>
                 </div>
@@ -576,7 +677,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
                     <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                     <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
-                      {getTimezoneLabel(info.name)}
+                      {getTimezoneDisplayWithUTC(info)}
                     </span>
                   </div>
                   <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -601,7 +702,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
                   <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>🇸🇬</span>
-                  <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>SG</span>
+                  <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
                 </div>
                 <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{singaporeTime}</span>
               </div>
@@ -622,6 +723,9 @@ const TimezoneHeader = ({ userCountry, t }) => {
               whiteSpace: 'nowrap',
             }}>
               <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+              <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
+                {userLocalInfo.timezoneCode ? `${userLocalInfo.timezoneCode} (${userLocalInfo.utcOffsetLabel})` : userLocalInfo.utcOffsetLabel}
+              </span>
               <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{userLocalInfo.localTime}</span>
               {!isMobile && (
                 <span style={getBoundedDiffTextStyle({ fontSize: '0.5rem', color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic', marginLeft: '4px' })}>
@@ -641,6 +745,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
               whiteSpace: 'nowrap',
             }}>
               <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>🇸🇬</span>
+              <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
               <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{singaporeTime}</span>
             </div>
           </>

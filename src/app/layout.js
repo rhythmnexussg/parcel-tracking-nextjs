@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "../LanguageContext";
 import Script from "next/script";
+import { usePathname, useRouter } from "next/navigation";
+import { detectLanguageFromIPWithRestrictions, isAllowedAccessCountry } from "../ipGeolocation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,6 +19,50 @@ const geistMono = Geist_Mono({
 });
 
 export default function RootLayout({ children }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [accessChecked, setAccessChecked] = useState(false);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const checkAccess = async () => {
+      // Always allow access to the blocked page itself
+      if (pathname === "/blocked") {
+        if (isActive) setAccessChecked(true);
+        return;
+      }
+
+      if (isActive) setAccessChecked(false);
+
+      try {
+        const geoData = await detectLanguageFromIPWithRestrictions();
+        if (!isActive) return;
+
+        const countryCode = geoData?.countryCode;
+        const blocked = geoData?.blocked ?? !isAllowedAccessCountry(countryCode);
+
+        if (blocked) {
+          router.replace("/blocked");
+          setAccessChecked(true);
+          return;
+        }
+
+        setAccessChecked(true);
+      } catch (_) {
+        if (!isActive) return;
+        router.replace("/blocked");
+        setAccessChecked(true);
+      }
+    };
+
+    checkAccess();
+
+    return () => {
+      isActive = false;
+    };
+  }, [pathname, router]);
+
   return (
     <html lang="en">
       <head>
@@ -75,7 +122,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <LanguageProvider>
-          {children}
+          {pathname === "/blocked" || accessChecked ? children : null}
         </LanguageProvider>
         
         {/* Google Analytics - Add your measurement ID here */}
