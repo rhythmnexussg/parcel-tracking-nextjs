@@ -751,19 +751,15 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
     console.log('=================================');
     
-    // Special handling: if VPN detected and estimated/observed country is CN/RU,
-    // use that country (allowing CN/RU users on VPN).
+    // If VPN is detected and an actual country is inferred, use that inferred country.
     let finalCountryCode = detectedCountryCode;
-    const vpnCountryCandidates = [vpnDetection.actualCountry, detectedCountryCode, secondaryCountryCode].filter(Boolean);
-    const vpnExceptionCountry = vpnCountryCandidates.find((code) => ['CN', 'RU'].includes(code)) || null;
-    if (vpnDetection.isVPN && vpnExceptionCountry) {
-      finalCountryCode = vpnExceptionCountry;
-      console.log(`VPN detected from ${vpnExceptionCountry} - using ${vpnExceptionCountry} as country`);
+    if (vpnDetection.isVPN && vpnDetection.actualCountry) {
+      finalCountryCode = vpnDetection.actualCountry;
+      console.log(`VPN detected with inferred actual country ${vpnDetection.actualCountry} - using inferred country`);
     }
 
-    const vpnException = vpnDetection.isVPN && Boolean(vpnExceptionCountry);
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
-    const blockedByVPN = vpnDetection.isVPN && !vpnException;
+    const blockedByVPN = vpnDetection.isVPN && (!vpnDetection.actualCountry || !isAllowedAccessCountry(vpnDetection.actualCountry));
     const blocked = blockedByCountry || blockedByVPN;
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
