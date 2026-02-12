@@ -497,22 +497,38 @@ function inferCountryCodeFromBrowserTimezone(browserTimezone) {
     // Singapore
     'Asia/Singapore': 'SG',
 
-    // Baltics (explicit non-allowed examples)
-    'Europe/Vilnius': 'LT',
-    'Europe/Riga': 'LV',
   };
 
   return timezoneToCountry[browserTimezone] || null;
 }
 
-function buildFallbackGeoResult({ browserTimezone, detectedCountryCode = null }) {
-  const inferredCountryCode = inferCountryCodeFromBrowserTimezone(browserTimezone);
-  if (!inferredCountryCode) return null;
+function inferCountryCodeFromBrowserLanguages(browserLanguages = []) {
+  if (!Array.isArray(browserLanguages) || browserLanguages.length === 0) return null;
 
-  const languageCode = countryToLanguageMap[inferredCountryCode] || detectLanguageFromBrowser();
+  for (const langTag of browserLanguages) {
+    if (!langTag || typeof langTag !== 'string') continue;
+    const parts = langTag.split(/[-_]/).filter(Boolean);
+    for (let i = parts.length - 1; i >= 0; i -= 1) {
+      const part = parts[i];
+      if (/^[A-Za-z]{2}$/.test(part)) {
+        return normalizeCountryCode(part);
+      }
+    }
+  }
+
+  return null;
+}
+
+function buildFallbackGeoResult({ browserTimezone, detectedCountryCode = null }) {
   const browserLanguages = (typeof navigator !== 'undefined' && navigator.languages)
     ? navigator.languages
     : (typeof navigator !== 'undefined' ? [navigator.language] : []);
+  const inferredCountryCode =
+    inferCountryCodeFromBrowserTimezone(browserTimezone) ||
+    inferCountryCodeFromBrowserLanguages(browserLanguages);
+  if (!inferredCountryCode) return null;
+
+  const languageCode = countryToLanguageMap[inferredCountryCode] || detectLanguageFromBrowser();
   const blocked = !isAllowedAccessCountry(inferredCountryCode);
 
   return {
@@ -602,7 +618,7 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
   // 3. Check browser language vs detected country (25 points)
   if (browserLanguages.length > 0 && (ipData.country_code || ipData.countryCode)) {
     const primaryLang = browserLanguages[0].split('-')[0].toLowerCase();
-    const detectedCountry = ipData.country_code || ipData.countryCode;
+    const detectedCountry = normalizeCountryCode(ipData.country_code || ipData.countryCode);
     
     // Chinese language but not in Chinese region
     if ((primaryLang === 'zh' || browserLanguages[0].includes('zh-CN')) && 
@@ -626,16 +642,12 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
       actualCountry = actualCountry || 'KR';
     }
 
-    if (primaryLang === 'lt' && detectedCountry !== 'LT') {
+    // Generic locale-region mismatch support for all countries, not just specific examples
+    const localeCountryCode = inferCountryCodeFromBrowserLanguages(browserLanguages);
+    if (localeCountryCode && detectedCountry && localeCountryCode !== detectedCountry) {
       vpnScore += 25;
-      indicators.push('Lithuanian language but non-Lithuania region');
-      actualCountry = actualCountry || 'LT';
-    }
-
-    if (primaryLang === 'lv' && detectedCountry !== 'LV') {
-      vpnScore += 25;
-      indicators.push('Latvian language but non-Latvia region');
-      actualCountry = actualCountry || 'LV';
+      indicators.push(`Browser locale region mismatch: locale=${localeCountryCode}, IP=${detectedCountry}`);
+      actualCountry = actualCountry || localeCountryCode;
     }
   }
   
@@ -755,6 +767,7 @@ export async function detectLanguageFromIPWithRestrictions() {
     // Get browser timezone and languages for enhanced VPN detection
     const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const browserLanguages = navigator.languages || [navigator.language];
+    const localeCountryCode = normalizeCountryCode(inferCountryCodeFromBrowserLanguages(browserLanguages) || null);
 
     // Secondary provider cross-check to reduce false country classification.
     let secondaryCountryCode = null;
@@ -821,6 +834,7 @@ export async function detectLanguageFromIPWithRestrictions() {
       secondaryCountryCode,
       normalizeCountryCode(vpnDetection.actualCountry || null),
       timezoneCountryCode,
+      localeCountryCode,
     ].filter(Boolean);
     const blockedSignalCountry = signalCountries.find((code) => isBlockedAccessCountry(code)) || null;
     const allIpCountriesAllowed = ipCountries.length > 0 && ipCountries.every((code) => isAllowedAccessCountry(code));
@@ -854,6 +868,7 @@ export async function detectLanguageFromIPWithRestrictions() {
       countryMismatchDetected,
       browserTimezone: browserTimezone,
       browserLanguages: browserLanguages,
+      localeCountryCode,
       accessRestrictions: finalCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null,
       blocked,
       message: blocked

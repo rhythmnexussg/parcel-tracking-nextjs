@@ -109,8 +109,9 @@ export const LanguageProvider = ({ children }) => {
         };
         setLanguage(normalizeLang(ipResult.languageCode));
         
-        // Show modal for ALL visitors with a detected country who haven't set a language
-        if (ipResult.countryCode) {
+        // Show modal for detected countries, except countries where English-only UX is desired
+        const noLanguagePopupCountries = new Set(['AU', 'NZ']);
+        if (ipResult.countryCode && !noLanguagePopupCountries.has(ipResult.countryCode)) {
           console.log('🎉 SHOWING LANGUAGE MODAL - Detected country, no saved preference');
           console.log(`   Country: ${ipResult.countryCode}`);
           console.log(`   Available languages: ${ipResult.languageOptions?.length || 0}`);
@@ -125,7 +126,7 @@ export const LanguageProvider = ({ children }) => {
           
           setShowLanguageModal(true);
         } else {
-          console.log('❌ NOT showing modal - No country detected');
+          console.log('❌ NOT showing modal - No country detected or popup suppressed for this country');
           setShowLanguageModal(false);
         }
       } else {
