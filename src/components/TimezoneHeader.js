@@ -87,6 +87,23 @@ const TimezoneHeader = ({ userCountry, t }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isMobile, setIsMobile] = useState(false);
   
+  // Helper function to extract region/state name from timezone name
+  const getTimezoneLabel = (name) => {
+    if (!name) return name;
+    
+    // Extract text before "(UTC"
+    const regionPart = name.split('(')[0].trim();
+    
+    // For names like "Moscow/Western Russia", take first part before "/"
+    if (regionPart.includes('/')) {
+      return regionPart.split('/')[0].trim();
+    }
+    
+    // For names like "Ural Region", "Sakha Republic", etc., take the first word
+    const words = regionPart.split(/\s+/);
+    return words[0]; // Return first word (main city/region name)
+  };
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -266,7 +283,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '2px' : '2px' }}>
                         <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                         <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d', fontWeight: '600', textAlign: 'center' }}>
-                          {info.name.includes('UTC') ? info.name.match(/UTC([+-]\d+)/)?.[1] : info.name.split('(')[0].trim()}
+                          {getTimezoneLabel(info.name)}
                         </span>
                       </div>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -294,7 +311,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '2px' : '2px' }}>
                         <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                         <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d', fontWeight: '600', textAlign: 'center' }}>
-                          {info.name.includes('UTC') ? info.name.match(/UTC([+-]\d+)/)?.[1] : info.name.split('(')[0].trim()}
+                          {getTimezoneLabel(info.name)}
                         </span>
                       </div>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -320,7 +337,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '2px' : '2px' }}>
                       <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                       <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d', fontWeight: '600', textAlign: 'center' }}>
-                        {userLocalInfo[10].name.includes('UTC') ? userLocalInfo[10].name.match(/UTC([+-]\d+)/)?.[1] : userLocalInfo[10].name.split('(')[0].trim()}
+                        {getTimezoneLabel(userLocalInfo[10].name)}
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{userLocalInfo[10].localTime}</span>
@@ -366,7 +383,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
                       <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
-                        {info.name.split('(')[1]?.replace(')', '') || info.name.split(' ')[0]}
+                        {getTimezoneLabel(info.name)}
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -394,7 +411,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
                       <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                       <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
-                        {info.name.split('(')[1]?.replace(')', '') || info.name.split(' ')[0]}
+                        {getTimezoneLabel(info.name)}
                       </span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
@@ -445,7 +462,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
                     <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                     <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
-                      {info.name.split('(')[1]?.replace(')', '') || info.name.split(' ')[0]}
+                      {getTimezoneLabel(info.name)}
                     </span>
                   </div>
                   <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>

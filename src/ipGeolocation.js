@@ -192,10 +192,6 @@ const multiLanguageCountries = {
     { code: 'ru', name: 'Русский (Russian)', flag: '🇷🇺' },
     { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
-  'RU': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ru', name: 'Русский (Russian)', flag: '🇷🇺' }
-  ],
   'AU': [
     { code: 'en', name: 'English', flag: '🇦🇺' }
   ],
@@ -315,6 +311,12 @@ export async function detectLanguageFromIP() {
       console.error('CRITICAL: No country_code in IP response!');
       console.log('Response keys:', Object.keys(data));
       return null;
+    }
+    
+    // Detailed logging for debugging Russia detection
+    if (detectedCountryCode === 'RU') {
+      console.log('🇷🇺 RUSSIA DETECTED! ✓');
+      console.log('Available languages for Russia:', getLanguageOptions('RU'));
     }
     
     console.log(`Detected country code from IP: ${detectedCountryCode}`);
@@ -596,6 +598,11 @@ export async function detectLanguageFromIPWithRestrictions() {
 
     if (!detectedCountryCode && data.countryCode) {
       detectedCountryCode = data.countryCode;
+    }
+
+    // Detailed logging for debugging Russia detection
+    if (detectedCountryCode === 'RU') {
+      console.log('🇷🇺 RUSSIA DETECTED in detectLanguageFromIPWithRestrictions! ✓');
     }
 
     // Get browser timezone and languages for enhanced VPN detection
