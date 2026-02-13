@@ -1,5 +1,6 @@
 // IP Geolocation Service
 // Maps countries to their appropriate language codes
+import { getBlockedCountryDisplayName } from './blockedCountryNames';
 
 const countryToLanguageMap = {
   // Major markets
@@ -111,6 +112,8 @@ function getAdminCountryOverride() {
 function getCountryNameFromCode(countryCode) {
   const normalizedCountryCode = normalizeCountryCode(countryCode);
   if (!normalizedCountryCode) return 'Unknown country';
+  const blockedCountryName = getBlockedCountryDisplayName(normalizedCountryCode);
+  if (blockedCountryName) return blockedCountryName;
   try {
     if (typeof Intl !== 'undefined' && typeof Intl.DisplayNames === 'function') {
       const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });

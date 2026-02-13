@@ -1,16 +1,23 @@
+import { getBlockedCountryDisplayName } from "../../blockedCountryNames";
+
 export default function BlockedPage({ searchParams }) {
   const countryParam = searchParams?.country;
   const countryCode = Array.isArray(countryParam)
     ? (countryParam[0] || "").trim().toUpperCase()
     : (countryParam || "").trim().toUpperCase();
 
-  let countryName = "your location";
+  let countryName = "Unknown country";
   if (countryCode) {
+    const mappedName = getBlockedCountryDisplayName(countryCode);
+    if (mappedName) {
+      countryName = mappedName;
+    } else {
     try {
       const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
       countryName = regionNames.of(countryCode) || countryCode;
     } catch (_) {
       countryName = countryCode;
+    }
     }
   }
 
