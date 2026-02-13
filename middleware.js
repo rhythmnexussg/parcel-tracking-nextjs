@@ -262,8 +262,24 @@ function extractIphoneOsVersion(userAgent) {
   };
 }
 
+function extractAppleMobileOsVersion(userAgent) {
+  const match = userAgent.match(/(?:iPhone OS|CPU OS)\s+(\d+)[_\.](\d+)/i);
+  if (!match) return null;
+  return {
+    major: Number(match[1]),
+    minor: Number(match[2]),
+  };
+}
+
+function isIpadUserAgent(userAgent) {
+  const ua = (userAgent || '').toLowerCase();
+  if (ua.includes('ipad')) return true;
+  return ua.includes('macintosh') && ua.includes('mobile/') && ua.includes('safari');
+}
+
 function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
   const ua = (userAgent || '').toLowerCase();
+  const isIpad = isIpadUserAgent(userAgent);
 
   if (!ua) return null;
 
@@ -278,13 +294,11 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
     return `Android ${androidVersion.major}`;
   }
 
-  if (
-    /\b(sm-g93|sm-g95|sm-g96|sm-g97|sm-g98|sm-g99|sm-g99[0-9]|sm-g98[0-9]|sm-g99[0-9]|samsung[-_\s]?galaxy\s?s(7|8|9|10|20|21))/.test(ua)
-  ) {
-    return 'Samsung Galaxy S7/S8/S9/S10/S20/S21 (unsupported or high risk)';
-  }
-
+  const appleMobileVersion = extractAppleMobileOsVersion(userAgent || '');
   const iphoneVersion = extractIphoneOsVersion(userAgent || '');
+  if (isIpad && appleMobileVersion && Number.isFinite(appleMobileVersion.major) && appleMobileVersion.major < 17) {
+    return `iPadOS ${appleMobileVersion.major}`;
+  }
   if (iphoneVersion && Number.isFinite(iphoneVersion.major) && iphoneVersion.major < 17) {
     return `iPhone iOS ${iphoneVersion.major}`;
   }
@@ -322,7 +336,7 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
   }
 
   const macVersion = extractMacOsVersion(userAgent || '');
-  if (macVersion && Number.isFinite(macVersion.major) && macVersion.major <= 11) {
+  if (!isIpad && macVersion && Number.isFinite(macVersion.major) && macVersion.major <= 11) {
     return `macOS ${macVersion.major}`;
   }
 
@@ -352,6 +366,7 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
 function isCaptchaExemptPath(path) {
   return (
     path === '/access' ||
+    path === '/blocked' ||
     path === ADMIN_AUTH_PATH ||
     path.startsWith('/api/access/') ||
     path === '/api/singpost-announcements' ||
