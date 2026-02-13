@@ -253,6 +253,15 @@ function extractAndroidVersion(userAgent) {
   };
 }
 
+function extractPlatformVersionMajor(platformVersionHeader) {
+  if (!platformVersionHeader || typeof platformVersionHeader !== 'string') return null;
+  const cleaned = platformVersionHeader.replace(/"/g, '').trim();
+  const match = cleaned.match(/^(\d+)/);
+  if (!match) return null;
+  const major = Number(match[1]);
+  return Number.isFinite(major) ? major : null;
+}
+
 function extractIphoneOsVersion(userAgent) {
   const match = userAgent.match(/iPhone OS\s+(\d+)[_\.](\d+)/i);
   if (!match) return null;
@@ -277,7 +286,7 @@ function isIpadUserAgent(userAgent) {
   return ua.includes('macintosh') && ua.includes('mobile/') && ua.includes('safari');
 }
 
-function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
+function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platformVersionMajor = null) {
   const ua = (userAgent || '').toLowerCase();
   const isIpad = isIpadUserAgent(userAgent);
 
@@ -290,7 +299,23 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
   }
 
   const androidVersion = extractAndroidVersion(userAgent || '');
-  if (androidVersion && Number.isFinite(androidVersion.major) && androidVersion.major < 13) {
+  const isLikelyReducedAndroidUa = Boolean(
+    androidVersion &&
+    androidVersion.major === 10 &&
+    /\bchrome\//.test(ua) &&
+    platformVersionMajor == null
+  );
+
+  if (platformVersionMajor != null) {
+    if (platformVersionMajor < 13) {
+      return `Android ${platformVersionMajor}`;
+    }
+  } else if (
+    androidVersion &&
+    Number.isFinite(androidVersion.major) &&
+    androidVersion.major < 13 &&
+    !isLikelyReducedAndroidUa
+  ) {
     return `Android ${androidVersion.major}`;
   }
 
@@ -336,8 +361,15 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
   }
 
   const macVersion = extractMacOsVersion(userAgent || '');
-  if (!isIpad && macVersion && Number.isFinite(macVersion.major) && macVersion.major <= 11) {
-    return `macOS ${macVersion.major}`;
+  if (
+    !isIpad &&
+    macVersion &&
+    Number.isFinite(macVersion.major) &&
+    Number.isFinite(macVersion.minor) &&
+    macVersion.major === 10 &&
+    macVersion.minor <= 14
+  ) {
+    return `macOS 10.${macVersion.minor}`;
   }
 
   if (/ubuntu[\s/_-]?(12\.04|14\.04|16\.04|18\.04|20\.04)/.test(ua)) {
@@ -354,10 +386,6 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
 
   if (/mandriva|meego|mythbuntu|corel linux|crunchbang|antergos/.test(ua)) {
     return 'Discontinued Linux distribution';
-  }
-
-  if (/puppy linux|bodhi linux|antix|q4os|lubuntu|lxle/.test(ua)) {
-    return 'Legacy Linux distribution';
   }
 
   return null;
@@ -472,13 +500,15 @@ export async function middleware(request) {
   const { nextUrl } = request;
   const path = nextUrl.pathname || '';
   const userAgent = request.headers.get('user-agent') || '';
+  const platformVersionHeader = request.headers.get('sec-ch-ua-platform-version') || '';
+  const platformVersionMajor = extractPlatformVersionMajor(platformVersionHeader);
   const requestedCountry = (nextUrl.searchParams.get('country') || nextUrl.searchParams.get('adminCountry') || '').trim().toUpperCase();
   const hasQueryCountryOverride = /^[A-Z]{2}$/.test(requestedCountry);
   const isProtectedPath = !isCaptchaExemptPath(path);
   const hasCaptchaCookie = request.cookies.get(ACCESS_COOKIE_NAME)?.value === ACCESS_COOKIE_VALUE;
 
   if (!isOsPolicyExemptPath(path)) {
-    const unsupportedSystem = getUnsupportedSystemFromUserAgent(userAgent);
+    const unsupportedSystem = getUnsupportedSystemFromUserAgent(userAgent, Date.now(), platformVersionMajor);
     if (unsupportedSystem) {
       const blockedUrl = nextUrl.clone();
       blockedUrl.pathname = '/blocked';
