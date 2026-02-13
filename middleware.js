@@ -5,6 +5,7 @@ const ACCESS_COOKIE_VALUE = '1';
 const ADMIN_SESSION_COOKIE_NAME = 'rnx_admin_session';
 const ADMIN_SESSION_DURATION_SECONDS = 60 * 60;
 const ADMIN_SESSION_TOKEN_VERSION = 'v2';
+const ADMIN_AUTH_PATH = '/admin-auth';
 
 const ADMIN_OVERRIDE_USERNAME =
   process.env.ADMIN_OVERRIDE_USERNAME ||
@@ -222,6 +223,7 @@ function applySecurityHeaders(response) {
 function isCaptchaExemptPath(path) {
   return (
     path === '/access' ||
+    path === ADMIN_AUTH_PATH ||
     path.startsWith('/api/access/') ||
     path === '/api/singpost-announcements' ||
     path === '/api/proxy-singpost' ||
@@ -234,6 +236,46 @@ function isCaptchaExemptPath(path) {
     path === '/manifest.json' ||
     path === '/ads.txt'
   );
+}
+
+function clearAccessCookie(response) {
+  response.cookies.set(ACCESS_COOKIE_NAME, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+  });
+}
+
+function clearAdminSessionCookie(response) {
+  response.cookies.set(ADMIN_SESSION_COOKIE_NAME, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+  });
+}
+
+async function getAdminSessionAuth(request) {
+  if (!isAdminSecurityConfigured()) {
+    return { authenticated: false, sessionExpired: false };
+  }
+
+  const sessionToken = request.cookies.get(ADMIN_SESSION_COOKIE_NAME)?.value;
+  const sessionStatus = await getAdminSessionTokenStatus(sessionToken);
+  return {
+    authenticated: sessionStatus.valid,
+    sessionExpired: sessionStatus.expired,
+  };
+}
+
+function getAdminAuthRedirectUrl(nextUrl) {
+  const authUrl = nextUrl.clone();
+  authUrl.pathname = ADMIN_AUTH_PATH;
+  authUrl.searchParams.set('next', `${nextUrl.pathname}${nextUrl.search || ''}`);
+  return authUrl;
 }
 
 function parseBasicAuthHeader(request) {
@@ -278,13 +320,7 @@ function expiredAdminSessionResponse() {
       'Cache-Control': 'no-store',
     },
   });
-  response.cookies.set(ADMIN_SESSION_COOKIE_NAME, '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 0,
-  });
+  clearAdminSessionCookie(response);
   return response;
 }
 
@@ -293,21 +329,21 @@ export async function middleware(request) {
   const path = nextUrl.pathname || '';
   const requestedCountry = (nextUrl.searchParams.get('country') || nextUrl.searchParams.get('adminCountry') || '').trim().toUpperCase();
   const hasQueryCountryOverride = /^[A-Z]{2}$/.test(requestedCountry);
+  const isProtectedPath = !isCaptchaExemptPath(path);
+  const hasCaptchaCookie = request.cookies.get(ACCESS_COOKIE_NAME)?.value === ACCESS_COOKIE_VALUE;
 
-  if (!isCaptchaExemptPath(path)) {
-    const hasCaptchaCookie = request.cookies.get(ACCESS_COOKIE_NAME)?.value === ACCESS_COOKIE_VALUE;
-    if (!hasCaptchaCookie) {
-      const accessUrl = nextUrl.clone();
-      accessUrl.pathname = '/access';
-      accessUrl.searchParams.set('next', `${path}${nextUrl.search || ''}`);
-      return applySecurityHeaders(NextResponse.redirect(accessUrl));
-    }
+  if (isProtectedPath && !hasCaptchaCookie) {
+    const accessUrl = nextUrl.clone();
+    accessUrl.pathname = '/access';
+    accessUrl.searchParams.set('next', `${path}${nextUrl.search || ''}`);
+    return applySecurityHeaders(NextResponse.redirect(accessUrl));
   }
 
-  if (hasQueryCountryOverride) {
+  if (path === ADMIN_AUTH_PATH) {
     if (!isAdminSecurityConfigured()) {
       return applySecurityHeaders(new NextResponse('Admin override unavailable.', { status: 503 }));
     }
+
     const adminAuth = await isAdminAuthenticated(request);
     if (!adminAuth.authenticated) {
       if (adminAuth.sessionExpired) {
@@ -316,9 +352,33 @@ export async function middleware(request) {
       return applySecurityHeaders(unauthorizedAdminResponse());
     }
 
-    const response = NextResponse.next();
+    const nextParam = nextUrl.searchParams.get('next') || '/track-your-item';
+    const safeNext = nextParam.startsWith('/') ? nextParam : '/track-your-item';
+    const redirectUrl = nextUrl.clone();
+    redirectUrl.pathname = safeNext.split('?')[0] || '/track-your-item';
+    redirectUrl.search = safeNext.includes('?') ? `?${safeNext.split('?').slice(1).join('?')}` : '';
+
+    const response = NextResponse.redirect(redirectUrl);
     if (adminAuth.setSessionCookie) {
       await applyAdminSessionCookie(response);
+    }
+    return applySecurityHeaders(response);
+  }
+
+  if (hasQueryCountryOverride) {
+    if (!isAdminSecurityConfigured()) {
+      return applySecurityHeaders(new NextResponse('Admin override unavailable.', { status: 503 }));
+    }
+    const adminSessionAuth = await getAdminSessionAuth(request);
+    if (!adminSessionAuth.authenticated) {
+      const response = NextResponse.redirect(getAdminAuthRedirectUrl(nextUrl));
+      clearAdminSessionCookie(response);
+      return applySecurityHeaders(response);
+    }
+
+    const response = NextResponse.next();
+    if (isProtectedPath && hasCaptchaCookie) {
+      clearAccessCookie(response);
     }
     return applySecurityHeaders(response);
   }
@@ -328,12 +388,11 @@ export async function middleware(request) {
     if (!isAdminSecurityConfigured()) {
       return applySecurityHeaders(new NextResponse('Admin override unavailable.', { status: 503 }));
     }
-    const adminAuth = await isAdminAuthenticated(request);
-    if (!adminAuth.authenticated) {
-      if (adminAuth.sessionExpired) {
-        return applySecurityHeaders(expiredAdminSessionResponse());
-      }
-      return applySecurityHeaders(unauthorizedAdminResponse());
+    const adminSessionAuth = await getAdminSessionAuth(request);
+    if (!adminSessionAuth.authenticated) {
+      const response = NextResponse.redirect(getAdminAuthRedirectUrl(nextUrl));
+      clearAdminSessionCookie(response);
+      return applySecurityHeaders(response);
     }
 
     const countryPart = path.slice('/country='.length).split('/')[0];
@@ -344,14 +403,18 @@ export async function middleware(request) {
       url.pathname = '/track-your-item';
       url.searchParams.set('country', countryCode);
       const response = NextResponse.rewrite(url);
-      if (adminAuth.setSessionCookie) {
-        await applyAdminSessionCookie(response);
+      if (isProtectedPath && hasCaptchaCookie) {
+        clearAccessCookie(response);
       }
       return applySecurityHeaders(response);
     }
   }
 
-  return applySecurityHeaders(NextResponse.next());
+  const response = NextResponse.next();
+  if (isProtectedPath && hasCaptchaCookie) {
+    clearAccessCookie(response);
+  }
+  return applySecurityHeaders(response);
 }
 
 export const config = {
