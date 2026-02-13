@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import logo from "../assets/images/logo.jpg";
 import { useLanguage } from "../LanguageContext";
 import { LanguageSelector } from "../LanguageSelector";
@@ -12,6 +13,17 @@ import { detectLanguageFromIPWithRestrictions } from "../ipGeolocation";
 export const Navigation = () => {
   const { t } = useLanguage();
   const [userCountry, setUserCountry] = useState(null);
+  const searchParams = useSearchParams();
+
+  const overrideCountry =
+    (searchParams.get('country') || searchParams.get('adminCountry') || '').trim().toUpperCase();
+  const hasOverrideCountry = /^[A-Z]{2}$/.test(overrideCountry);
+
+  const withOverride = (pathname) => {
+    if (!hasOverrideCountry) return pathname;
+    const separator = pathname.includes('?') ? '&' : '?';
+    return `${pathname}${separator}country=${overrideCountry}`;
+  };
   
   useEffect(() => {
     const detectUserLocation = async () => {
@@ -31,7 +43,7 @@ export const Navigation = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link href="/">
+        <Link href={withOverride('/')}>
           <Image src={logo} alt="Rhythm Nexus" />
         </Link>
       </div>
@@ -41,12 +53,12 @@ export const Navigation = () => {
       </div>
       
       <div className="navbar-links">
-        <Link href="/" className="nav-link">{t('home')}</Link>
-        <Link href="/blog" className="nav-link">{t('blog')}</Link>
-        <Link href="/about" className="nav-link">{t('aboutUs')}</Link>
-        <Link href="/FAQ" className="nav-link">{t('faq')}</Link>
+        <Link href={withOverride('/')} className="nav-link">{t('home')}</Link>
+        <Link href={withOverride('/blog')} className="nav-link">{t('blog')}</Link>
+        <Link href={withOverride('/about')} className="nav-link">{t('aboutUs')}</Link>
+        <Link href={withOverride('/FAQ')} className="nav-link">{t('faq')}</Link>
         <Link href="/contact" className="nav-link">{t('contact')}</Link>
-        <Link href="/track-your-item" className="nav-link highlight">{t('trackPackage')}</Link>
+        <Link href={withOverride('/track-your-item')} className="nav-link highlight">{t('trackPackage')}</Link>
         <LanguageSelector />
       </div>
     </nav>
