@@ -16,7 +16,23 @@ function isAdminCredentialsConfigured() {
 }
 
 function isAdminSessionConfigured() {
-  return Boolean(ADMIN_SESSION_SECRET && ADMIN_SESSION_SECRET.length >= 32);
+  if (ADMIN_SESSION_SECRET) {
+    return ADMIN_SESSION_SECRET.length >= 32;
+  }
+
+  return isAdminCredentialsConfigured();
+}
+
+function getAdminSessionSecret() {
+  if (ADMIN_SESSION_SECRET && ADMIN_SESSION_SECRET.length >= 32) {
+    return ADMIN_SESSION_SECRET;
+  }
+
+  if (isAdminCredentialsConfigured()) {
+    return `rnx-admin-session-v1:${ADMIN_OVERRIDE_USERNAME}:${ADMIN_OVERRIDE_PASSWORD}`;
+  }
+
+  return '';
 }
 
 function isAdminSecurityConfigured() {
@@ -47,9 +63,10 @@ async function signAdminSessionPayload(payload) {
   if (!isAdminSessionConfigured()) {
     throw new Error('Admin security is not configured.');
   }
+  const sessionSecret = getAdminSessionSecret();
   const key = await crypto.subtle.importKey(
     'raw',
-    textEncoder.encode(ADMIN_SESSION_SECRET),
+    textEncoder.encode(sessionSecret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
