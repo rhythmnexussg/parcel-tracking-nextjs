@@ -5,9 +5,20 @@ const ACCESS_COOKIE_VALUE = '1';
 const ADMIN_SESSION_COOKIE_NAME = 'rnx_admin_session';
 const ADMIN_SESSION_DURATION_SECONDS = 60 * 60;
 
-const ADMIN_OVERRIDE_USERNAME = process.env.ADMIN_OVERRIDE_USERNAME || '';
-const ADMIN_OVERRIDE_PASSWORD = process.env.ADMIN_OVERRIDE_PASSWORD || '';
-const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || '';
+const ADMIN_OVERRIDE_USERNAME =
+  process.env.ADMIN_OVERRIDE_USERNAME ||
+  process.env.ADMIN_USERNAME ||
+  process.env.BASIC_AUTH_USERNAME ||
+  '';
+const ADMIN_OVERRIDE_PASSWORD =
+  process.env.ADMIN_OVERRIDE_PASSWORD ||
+  process.env.ADMIN_PASSWORD ||
+  process.env.BASIC_AUTH_PASSWORD ||
+  '';
+const ADMIN_SESSION_SECRET =
+  process.env.ADMIN_SESSION_SECRET ||
+  process.env.ADMIN_OVERRIDE_SESSION_SECRET ||
+  '';
 
 const textEncoder = new TextEncoder();
 
