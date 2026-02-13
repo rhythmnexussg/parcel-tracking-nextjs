@@ -133,7 +133,7 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
             backgroundColor: 'white'
           }}
           title="SingPost Service Announcements"
-          sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+          sandbox="allow-popups allow-forms allow-scripts"
         />
       )}
     </div>
@@ -1356,7 +1356,7 @@ function App() {
                     src={`/api/proxy-singpost?trackingid=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}`}
                     style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
                     title="SingPost Tracking"
-                    sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+                    sandbox="allow-popups allow-forms allow-scripts"
                   />
                 )}
 
@@ -1406,7 +1406,7 @@ function App() {
                           src={proxyUrl}
                           style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
                           title="Destination Post Tracking"
-                          sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+                          sandbox="allow-popups allow-forms allow-scripts"
                           onError={(e) => { console.warn('Destination tracking embed failed:', e); }}
                         />
                       );

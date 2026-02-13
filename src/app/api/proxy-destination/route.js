@@ -67,12 +67,6 @@ export async function GET(request) {
       'Connection': 'keep-alive',
     };
     
-    // Forward cookies from the client if present
-    const cookieHeader = request.headers.get('cookie');
-    if (cookieHeader) {
-      fetchHeaders['Cookie'] = cookieHeader;
-    }
-
     const resp = await fetch(target, {
       headers: fetchHeaders,
       cache: 'no-store',
@@ -84,17 +78,11 @@ export async function GET(request) {
     const html = await resp.text();
     const content = sanitizeAndRewrite(html, baseUrl, { translateLang: lang });
     
-    // Build response with realistic headers and forward cookies
+    // Build response without forwarding upstream cookies to this origin
     const responseHeaders = {
       'Content-Type': 'text/html; charset=utf-8',
-      'Cache-Control': 'public, s-maxage=180, stale-while-revalidate=600',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
     };
-    
-    // Forward Set-Cookie headers from upstream to maintain sessions
-    const setCookie = resp.headers.get('set-cookie');
-    if (setCookie) {
-      responseHeaders['Set-Cookie'] = setCookie;
-    }
     
     return new NextResponse(content, {
       status: 200,
