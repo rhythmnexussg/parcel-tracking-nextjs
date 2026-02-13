@@ -262,6 +262,17 @@ function extractPlatformVersionMajor(platformVersionHeader) {
   return Number.isFinite(major) ? major : null;
 }
 
+function extractFirefoxMajorVersion(userAgent) {
+  const match = userAgent.match(/Firefox\/(\d+)/i);
+  if (!match) return null;
+  const major = Number(match[1]);
+  return Number.isFinite(major) ? major : null;
+}
+
+function isWindows81OrBelowUserAgent(ua) {
+  return /windows nt 6\.3|windows 8\.1|windows nt 6\.2|windows 8|windows nt 6\.1|windows 7|windows nt 6\.0|windows vista|windows nt 5\.2|windows nt 5\.1|windows xp|windows nt 5\.0|windows 2000|windows 98|windows 95|windows me|windows nt 4\.0/.test(ua);
+}
+
 function extractIphoneOsVersion(userAgent) {
   const match = userAgent.match(/iPhone OS\s+(\d+)[_\.](\d+)/i);
   if (!match) return null;
@@ -296,6 +307,22 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platfo
     /windows phone|windows mobile|iemobile|wpdesktop|windows ce|windows embedded compact/.test(ua)
   ) {
     return 'Windows Mobile/Embedded (unsupported)';
+  }
+
+  if (isWindows81OrBelowUserAgent(ua)) {
+    const firefoxMajor = extractFirefoxMajorVersion(userAgent || '');
+    if (/\bsupermium\b/.test(ua)) {
+      return 'Supermium on Windows 8.1 or below';
+    }
+    if (/\bthorium\b/.test(ua)) {
+      return 'Thorium on Windows 8.1 or below';
+    }
+    if (/\bmypal\b/.test(ua)) {
+      return 'Mypal on Windows 8.1 or below';
+    }
+    if (/\bfirefox\b/.test(ua) && firefoxMajor != null && firefoxMajor >= 115) {
+      return `Firefox ESR ${firefoxMajor} on Windows 8.1 or below`;
+    }
   }
 
   const androidVersion = extractAndroidVersion(userAgent || '');
