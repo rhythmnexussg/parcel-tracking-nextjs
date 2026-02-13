@@ -13,6 +13,7 @@ function getCaptchaSecret() {
 }
 const ACCESS_COOKIE_NAME = 'rnx_access_granted';
 const ACCESS_COOKIE_VALUE = '1';
+const ACCESS_COOKIE_DURATION_SECONDS = 60 * 60;
 
 function signPayload(payloadBase64, captchaSecret) {
   return crypto.createHmac('sha256', captchaSecret).update(payloadBase64).digest('base64url');
@@ -75,7 +76,7 @@ export async function POST(request) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 12,
+      maxAge: ACCESS_COOKIE_DURATION_SECONDS,
     });
 
     return response;

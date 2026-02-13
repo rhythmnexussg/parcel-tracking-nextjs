@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+const ACCESS_TAB_SESSION_KEY = 'rnx_access_tab_verified';
+
 export default function AccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -62,6 +64,8 @@ export default function AccessPage() {
         return;
       }
 
+      sessionStorage.setItem(ACCESS_TAB_SESSION_KEY, '1');
+
       router.replace(data.redirectTo || '/');
       router.refresh();
     } catch (_) {
@@ -98,6 +102,26 @@ export default function AccessPage() {
         <p style={{ marginTop: 0, marginBottom: '16px', color: '#374151' }}>
           Complete this captcha to continue.
         </p>
+
+        <div
+          style={{
+            marginBottom: '16px',
+            padding: '12px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            background: '#f9fafb',
+            color: '#374151',
+            fontSize: '0.9rem',
+            lineHeight: 1.5,
+          }}
+        >
+          <p style={{ margin: '0 0 6px', fontWeight: 600, color: '#1f2937' }}>Minimum supported system versions</p>
+          <p style={{ margin: '0 0 4px' }}>Windows: Windows 10 or above</p>
+          <p style={{ margin: '0 0 4px' }}>macOS: macOS 12 or above</p>
+          <p style={{ margin: '0 0 4px' }}>Android: Android 13 or above</p>
+          <p style={{ margin: '0 0 4px' }}>iPhone/iOS: iOS 17 or above</p>
+          <p style={{ margin: 0 }}>Linux: A currently supported distribution release with active security updates</p>
+        </div>
 
         <form onSubmit={onSubmit}>
           <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: '#1f2937' }}>

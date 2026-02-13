@@ -29,10 +29,45 @@ function getCountryFromHeaders(headerStore) {
   return "";
 }
 
+function getUnsupportedSystemGuidance(systemLabel) {
+  const normalized = (systemLabel || "").toLowerCase();
+
+  if (normalized.includes("windows")) {
+    return "Please upgrade to Windows 10 or above.";
+  }
+
+  if (normalized.includes("android")) {
+    return "Please upgrade to Android 13 or above.";
+  }
+
+  if (normalized.includes("iphone") || normalized.includes("ios")) {
+    return "Please upgrade to iOS 17 or above.";
+  }
+
+  if (normalized.includes("mac")) {
+    return "Please upgrade to macOS 12 or above.";
+  }
+
+  if (normalized.includes("linux") || normalized.includes("ubuntu") || normalized.includes("fedora") || normalized.includes("mint")) {
+    return "Please use a currently supported Linux distribution release with active security updates.";
+  }
+
+  return "Please use a currently supported operating system version with active security updates.";
+}
+
 export default async function BlockedPage({ searchParams }) {
   const resolvedSearchParams = typeof searchParams?.then === "function"
     ? await searchParams
     : searchParams;
+
+  const reasonParam = resolvedSearchParams?.reason;
+  const reason = Array.isArray(reasonParam)
+    ? (reasonParam[0] || "").trim().toLowerCase()
+    : (reasonParam || "").trim().toLowerCase();
+  const systemParam = resolvedSearchParams?.system;
+  const unsupportedSystem = Array.isArray(systemParam)
+    ? (systemParam[0] || "").trim()
+    : (systemParam || "").trim();
 
   const countryCodeFromQuery = getCountryFromSearchParams(resolvedSearchParams);
   const requestHeaders = await headers();
@@ -52,6 +87,14 @@ export default async function BlockedPage({ searchParams }) {
     }
     }
   }
+
+  const unsupportedOsMessage = reason === "unsupported-os"
+    ? `Access is blocked because this device is using unsupported hardware or an unsupported operating system version. ${getUnsupportedSystemGuidance(unsupportedSystem)}`
+    : null;
+
+  const message = reason === "unsupported-os"
+    ? unsupportedOsMessage
+    : `Sorry, you are not authorized to access this page. You are located in ${countryName} that currently Rhythm Nexus does not offer any shipping there.`;
 
   return (
     <main
@@ -80,7 +123,7 @@ export default async function BlockedPage({ searchParams }) {
           Access Blocked
         </h1>
         <p style={{ margin: 0, fontSize: "1rem", color: "#374151", lineHeight: 1.6 }}>
-          {`Sorry, you are not authorized to access this page. You are located in ${countryName} that currently Rhythm Nexus does not offer any shipping there.`}
+          {message}
         </p>
       </div>
     </main>

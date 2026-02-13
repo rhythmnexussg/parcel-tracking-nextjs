@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server';
 
 const ACCESS_COOKIE_NAME = 'rnx_access_granted';
 const ACCESS_COOKIE_VALUE = '1';
+const ACCESS_COOKIE_DURATION_SECONDS = 60 * 60;
 const ADMIN_SESSION_COOKIE_NAME = 'rnx_admin_session';
 const ADMIN_SESSION_DURATION_SECONDS = 60 * 60;
 const ADMIN_SESSION_TOKEN_VERSION = 'v2';
 const ADMIN_AUTH_PATH = '/admin-auth';
+const WINDOWS_SERVER_2016_SUPPORT_END_UTC = Date.UTC(2027, 0, 12, 0, 0, 0);
+const WINDOWS_SERVER_2019_SUPPORT_END_UTC = Date.UTC(2029, 0, 9, 0, 0, 0);
 
 const ADMIN_OVERRIDE_USERNAME =
   process.env.ADMIN_OVERRIDE_USERNAME ||
@@ -220,6 +223,132 @@ function applySecurityHeaders(response) {
   return response;
 }
 
+function isOsPolicyExemptPath(path) {
+  return (
+    path === '/blocked' ||
+    path.startsWith('/_next/') ||
+    path === '/favicon.ico' ||
+    path === '/robots.txt' ||
+    path === '/sitemap.xml' ||
+    path === '/manifest.json' ||
+    path === '/ads.txt'
+  );
+}
+
+function extractMacOsVersion(userAgent) {
+  const match = userAgent.match(/Mac OS X (\d+)[._](\d+)/i);
+  if (!match) return null;
+  return {
+    major: Number(match[1]),
+    minor: Number(match[2]),
+  };
+}
+
+function extractAndroidVersion(userAgent) {
+  const match = userAgent.match(/Android\s+(\d+)(?:[._](\d+))?/i);
+  if (!match) return null;
+  return {
+    major: Number(match[1]),
+    minor: Number(match[2] || 0),
+  };
+}
+
+function extractIphoneOsVersion(userAgent) {
+  const match = userAgent.match(/iPhone OS\s+(\d+)[_\.](\d+)/i);
+  if (!match) return null;
+  return {
+    major: Number(match[1]),
+    minor: Number(match[2]),
+  };
+}
+
+function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now()) {
+  const ua = (userAgent || '').toLowerCase();
+
+  if (!ua) return null;
+
+  if (
+    /windows phone|windows mobile|iemobile|wpdesktop|windows ce|windows embedded compact/.test(ua)
+  ) {
+    return 'Windows Mobile/Embedded (unsupported)';
+  }
+
+  const androidVersion = extractAndroidVersion(userAgent || '');
+  if (androidVersion && Number.isFinite(androidVersion.major) && androidVersion.major < 13) {
+    return `Android ${androidVersion.major}`;
+  }
+
+  if (
+    /\b(sm-g93|sm-g95|sm-g96|sm-g97|sm-g98|sm-g99|sm-g99[0-9]|sm-g98[0-9]|sm-g99[0-9]|samsung[-_\s]?galaxy\s?s(7|8|9|10|20|21))/.test(ua)
+  ) {
+    return 'Samsung Galaxy S7/S8/S9/S10/S20/S21 (unsupported or high risk)';
+  }
+
+  const iphoneVersion = extractIphoneOsVersion(userAgent || '');
+  if (iphoneVersion && Number.isFinite(iphoneVersion.major) && iphoneVersion.major < 17) {
+    return `iPhone iOS ${iphoneVersion.major}`;
+  }
+
+  if (/windows nt 5\.0|windows 2000|windows 95|windows 98|windows me|windows nt 4\.0/.test(ua)) {
+    return 'Legacy Windows (95/98/ME/2000/NT)';
+  }
+
+  if (/windows nt 5\.1|windows nt 5\.2|windows xp/.test(ua)) {
+    return 'Windows XP / Server 2003';
+  }
+
+  if (/windows nt 6\.0|windows vista/.test(ua)) {
+    return 'Windows Vista / Server 2008';
+  }
+
+  if (/windows nt 6\.1|windows 7/.test(ua)) {
+    return 'Windows 7 / Server 2008 R2';
+  }
+
+  if (/windows nt 6\.2|windows 8/.test(ua)) {
+    return 'Windows 8 / Server 2012';
+  }
+
+  if (/windows nt 6\.3|windows 8\.1/.test(ua)) {
+    return 'Windows 8.1 / Server 2012 R2';
+  }
+
+  if (/windows server 2016/.test(ua) && nowMs >= WINDOWS_SERVER_2016_SUPPORT_END_UTC) {
+    return 'Windows Server 2016';
+  }
+
+  if (/windows server 2019/.test(ua) && nowMs >= WINDOWS_SERVER_2019_SUPPORT_END_UTC) {
+    return 'Windows Server 2019';
+  }
+
+  const macVersion = extractMacOsVersion(userAgent || '');
+  if (macVersion && Number.isFinite(macVersion.major) && macVersion.major <= 11) {
+    return `macOS ${macVersion.major}`;
+  }
+
+  if (/ubuntu[\s/_-]?(12\.04|14\.04|16\.04|18\.04|20\.04)/.test(ua)) {
+    return 'Ubuntu (unsupported release)';
+  }
+
+  if (/fedora[\s/_-]?(1[0-7]|[1-9])\b/.test(ua)) {
+    return 'Fedora (unsupported release)';
+  }
+
+  if (/linux mint[\s/_-]?13\b|mint[\s/_-]?13\b/.test(ua)) {
+    return 'Linux Mint 13';
+  }
+
+  if (/mandriva|meego|mythbuntu|corel linux|crunchbang|antergos/.test(ua)) {
+    return 'Discontinued Linux distribution';
+  }
+
+  if (/puppy linux|bodhi linux|antix|q4os|lubuntu|lxle/.test(ua)) {
+    return 'Legacy Linux distribution';
+  }
+
+  return null;
+}
+
 function isCaptchaExemptPath(path) {
   return (
     path === '/access' ||
@@ -238,13 +367,13 @@ function isCaptchaExemptPath(path) {
   );
 }
 
-function clearAccessCookie(response) {
-  response.cookies.set(ACCESS_COOKIE_NAME, '', {
+function refreshAccessCookie(response) {
+  response.cookies.set(ACCESS_COOKIE_NAME, ACCESS_COOKIE_VALUE, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
-    maxAge: 0,
+    maxAge: ACCESS_COOKIE_DURATION_SECONDS,
   });
 }
 
@@ -327,10 +456,22 @@ function expiredAdminSessionResponse() {
 export async function middleware(request) {
   const { nextUrl } = request;
   const path = nextUrl.pathname || '';
+  const userAgent = request.headers.get('user-agent') || '';
   const requestedCountry = (nextUrl.searchParams.get('country') || nextUrl.searchParams.get('adminCountry') || '').trim().toUpperCase();
   const hasQueryCountryOverride = /^[A-Z]{2}$/.test(requestedCountry);
   const isProtectedPath = !isCaptchaExemptPath(path);
   const hasCaptchaCookie = request.cookies.get(ACCESS_COOKIE_NAME)?.value === ACCESS_COOKIE_VALUE;
+
+  if (!isOsPolicyExemptPath(path)) {
+    const unsupportedSystem = getUnsupportedSystemFromUserAgent(userAgent);
+    if (unsupportedSystem) {
+      const blockedUrl = nextUrl.clone();
+      blockedUrl.pathname = '/blocked';
+      blockedUrl.searchParams.set('reason', 'unsupported-os');
+      blockedUrl.searchParams.set('system', unsupportedSystem);
+      return applySecurityHeaders(NextResponse.redirect(blockedUrl));
+    }
+  }
 
   if (isProtectedPath && !hasCaptchaCookie) {
     const accessUrl = nextUrl.clone();
@@ -378,7 +519,7 @@ export async function middleware(request) {
 
     const response = NextResponse.next();
     if (isProtectedPath && hasCaptchaCookie) {
-      clearAccessCookie(response);
+      refreshAccessCookie(response);
     }
     return applySecurityHeaders(response);
   }
@@ -404,7 +545,7 @@ export async function middleware(request) {
       url.searchParams.set('country', countryCode);
       const response = NextResponse.rewrite(url);
       if (isProtectedPath && hasCaptchaCookie) {
-        clearAccessCookie(response);
+        refreshAccessCookie(response);
       }
       return applySecurityHeaders(response);
     }
@@ -412,7 +553,7 @@ export async function middleware(request) {
 
   const response = NextResponse.next();
   if (isProtectedPath && hasCaptchaCookie) {
-    clearAccessCookie(response);
+    refreshAccessCookie(response);
   }
   return applySecurityHeaders(response);
 }

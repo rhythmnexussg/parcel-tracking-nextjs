@@ -8,6 +8,8 @@ import Script from "next/script";
 import { usePathname, useRouter } from "next/navigation";
 import { detectLanguageFromIPWithRestrictions, isAllowedAccessCountry } from "../ipGeolocation";
 
+const ACCESS_TAB_SESSION_KEY = "rnx_access_tab_verified";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,8 +29,16 @@ export default function RootLayout({ children }) {
     let isActive = true;
 
     const checkAccess = async () => {
-      // Always allow access to the blocked page itself
-      if (pathname === "/blocked") {
+      // Always allow access checks to be bypassed for access and blocked pages
+      if (pathname === "/access" || pathname === "/blocked") {
+        if (isActive) setAccessChecked(true);
+        return;
+      }
+
+      const hasTabCaptcha = sessionStorage.getItem(ACCESS_TAB_SESSION_KEY) === "1";
+      if (!hasTabCaptcha) {
+        const nextPath = `${pathname}${window.location.search || ""}`;
+        router.replace(`/access?next=${encodeURIComponent(nextPath)}`);
         if (isActive) setAccessChecked(true);
         return;
       }
