@@ -1,10 +1,42 @@
 import { getBlockedCountryDisplayName } from "../../blockedCountryNames";
+import { headers } from "next/headers";
 
-export default function BlockedPage({ searchParams }) {
-  const countryParam = searchParams?.country;
-  const countryCode = Array.isArray(countryParam)
-    ? (countryParam[0] || "").trim().toUpperCase()
-    : (countryParam || "").trim().toUpperCase();
+function normalizeCountryCode(value) {
+  const normalized = (value || "").trim().toUpperCase();
+  return /^[A-Z]{2}$/.test(normalized) ? normalized : "";
+}
+
+function getCountryFromSearchParams(searchParams) {
+  if (!searchParams) return "";
+  const keys = ["country", "blockedCountry", "detectedCountryCode", "adminCountry", "code"];
+
+  for (const key of keys) {
+    const paramValue = searchParams?.[key];
+    const firstValue = Array.isArray(paramValue) ? paramValue[0] : paramValue;
+    const normalized = normalizeCountryCode(firstValue || "");
+    if (normalized) return normalized;
+  }
+
+  return "";
+}
+
+function getCountryFromHeaders(headerStore) {
+  const headerKeys = ["x-vercel-ip-country", "cf-ipcountry", "x-country-code", "x-geo-country"];
+  for (const key of headerKeys) {
+    const normalized = normalizeCountryCode(headerStore.get(key) || "");
+    if (normalized) return normalized;
+  }
+  return "";
+}
+
+export default async function BlockedPage({ searchParams }) {
+  const resolvedSearchParams = typeof searchParams?.then === "function"
+    ? await searchParams
+    : searchParams;
+
+  const countryCodeFromQuery = getCountryFromSearchParams(resolvedSearchParams);
+  const requestHeaders = await headers();
+  const countryCode = countryCodeFromQuery || getCountryFromHeaders(requestHeaders);
 
   let countryName = "Unknown country";
   if (countryCode) {

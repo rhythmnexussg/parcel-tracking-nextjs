@@ -35,6 +35,15 @@ export default function RootLayout({ children }) {
 
       if (isActive) setAccessChecked(false);
 
+      const fallbackCountryFromUrl = (() => {
+        try {
+          const params = new URLSearchParams(window.location.search || "");
+          return (params.get("country") || params.get("adminCountry") || "").trim().toUpperCase();
+        } catch (_) {
+          return "";
+        }
+      })();
+
       try {
         const geoData = await detectLanguageFromIPWithRestrictions();
         if (!isActive) return;
@@ -43,7 +52,12 @@ export default function RootLayout({ children }) {
         const blocked = geoData?.blocked ?? !isAllowedAccessCountry(countryCode);
 
         if (blocked) {
-          const blockedCountry = geoData?.countryCode || geoData?.detectedCountryCode || "";
+          const blockedCountry =
+            geoData?.countryCode ||
+            geoData?.detectedCountryCode ||
+            geoData?.secondaryCountryCode ||
+            geoData?.blockedSignalCountry ||
+            fallbackCountryFromUrl;
           router.replace(blockedCountry ? `/blocked?country=${encodeURIComponent(blockedCountry)}` : "/blocked");
           setAccessChecked(true);
           return;
@@ -52,7 +66,8 @@ export default function RootLayout({ children }) {
         setAccessChecked(true);
       } catch (_) {
         if (!isActive) return;
-        router.replace("/blocked");
+        const fallbackCountry = fallbackCountryFromUrl;
+        router.replace(fallbackCountry ? `/blocked?country=${encodeURIComponent(fallbackCountry)}` : "/blocked");
         setAccessChecked(true);
       }
     };
