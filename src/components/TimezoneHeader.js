@@ -384,7 +384,22 @@ const TimezoneHeader = ({ userCountry, t }) => {
         const day = Number(parts.find((part) => part.type === 'day')?.value || currentTime.getDate());
         const rocYear = year - 1911;
 
-        return `${year}/${month}/${day}（民國${rocYear}年${month}月${day}日）`;
+        return `${year}年${month}月${day}日（民國${rocYear}年${month}月${day}日）`;
+      }
+
+      if (currentLanguage === 'zh' || currentLanguage === 'zh-hant' || currentLanguage === 'zh_hk') {
+        const locale = currentLanguage === 'zh' ? 'zh-CN' : 'zh-Hant-TW';
+        const parts = new Intl.DateTimeFormat(locale, {
+          timeZone: timezone,
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }).formatToParts(currentTime);
+
+        const year = Number(parts.find((part) => part.type === 'year')?.value || currentTime.getFullYear());
+        const month = Number(parts.find((part) => part.type === 'month')?.value || currentTime.getMonth() + 1);
+        const day = Number(parts.find((part) => part.type === 'day')?.value || currentTime.getDate());
+        return `${year}年${month}月${day}日`;
       }
 
       const resolvedLocale = localeByLanguage[currentLanguage] || (currentLanguage === 'en' ? 'en-US' : currentLanguage);
@@ -768,11 +783,9 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   </div>
                   <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
                   <span style={{ fontSize: isMobile ? '0.65rem' : '0.6rem', color: '#5a6c7d' }}>{info.localDate}</span>
-                  {!isMobile && (
-                    <span style={getBoundedDiffTextStyle({ fontSize: '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
-                      {info.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
-                    </span>
-                  )}
+                  <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.56rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
+                    {info.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
+                  </span>
                 </div>
               ))}
               <div style={{
@@ -816,11 +829,9 @@ const TimezoneHeader = ({ userCountry, t }) => {
               </span>
               <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{userLocalInfo.localTime}</span>
               <span style={{ fontSize: isMobile ? '0.65rem' : '0.6rem', color: '#5a6c7d' }}>{userLocalInfo.localDate}</span>
-              {!isMobile && (
-                <span style={getBoundedDiffTextStyle({ fontSize: '0.5rem', color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic', marginLeft: '4px' })}>
-                  {userLocalInfo.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
-                </span>
-              )}
+              <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.56rem' : '0.5rem', color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic', marginLeft: isMobile ? '0' : '4px' })}>
+                {userLocalInfo.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
+              </span>
             </div>
             <div style={{
               display: 'flex',
