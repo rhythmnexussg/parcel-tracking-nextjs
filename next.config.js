@@ -1,5 +1,7 @@
 module.exports = {
   reactStrictMode: true,
+  productionBrowserSourceMaps: false,
+  poweredByHeader: false,
   async redirects() {
     return [
       {

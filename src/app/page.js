@@ -33,15 +33,21 @@ export default function Home() {
         <h1 className="mt-3">{t('welcomeTitle')}</h1>
 
         <p className="mt-3">
-          {t('purchaseInfo')}{" "}
           {isChina ? (
-            <a href="mailto:rhythmnexusco@gmail.com">rhythmnexusco@gmail.com</a>
+            <>
+              {t('purchaseInfoChina') || 'Purchase from us through our official channels, or email us at'} {" "}
+              <a href="mailto:rhythmnexusco@gmail.com">rhythmnexusco@gmail.com</a>
+              {t('purchaseInfoChinaSuffix') || '.'}
+            </>
           ) : (
-            <a href="https://t.me/deltaboxstoresg" target="_blank" rel="noopener noreferrer">
-              {t('telegramGroup')}
-            </a>
-          )}{" "}
-          {t('forUpdates')}
+            <>
+              {t('purchaseInfo')} {" "}
+              <a href="https://t.me/deltaboxstoresg" target="_blank" rel="noopener noreferrer">
+                {t('telegramGroup')}
+              </a>{" "}
+              {t('forUpdates')}
+            </>
+          )}
         </p>
 
         <div className="home-section">

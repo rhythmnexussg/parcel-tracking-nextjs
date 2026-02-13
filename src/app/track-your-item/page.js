@@ -1166,7 +1166,13 @@ function App() {
           <hr />
           <p>
             {t('reviewShippingRates') || 'Review our current shipping rates'} <a href="https://docs.google.com/spreadsheets/d/1Q08_ePn3d0IEp8FU6hShyZ7ayEFbeh1k3SE1wX_T4TY/edit?usp=sharing">{t('here')}</a><br />
-            {t('contactUsForm') || 'Please contact us through this'} <a href="https://docs.google.com/forms/d/e/1FAIpQLSfMZDY_D9gO2JPLYAnIeEqyyYeZI2VXDTnR12L4ihbz5hYwIA/viewform">{t('form') || 'form'}</a> {t('forEnquiries') || 'for any enquiries you have regarding your order.'}
+            {t('contactUsForm') || 'Please contact us through this'}{' '}
+            {['CN', 'RU'].includes(userCountry) ? (
+              <a href="mailto:rhythmnexusco@gmail.com">{t('form') || 'form'}</a>
+            ) : (
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSfMZDY_D9gO2JPLYAnIeEqyyYeZI2VXDTnR12L4ihbz5hYwIA/viewform">{t('form') || 'form'}</a>
+            )}{' '}
+            {t('forEnquiries') || 'for any enquiries you have regarding your order.'}
           </p>
         </div>
 

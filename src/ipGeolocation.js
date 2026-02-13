@@ -12,19 +12,18 @@ const countryToLanguageMap = {
   'DE': 'de',        // Germany → German
   'ES': 'es',        // Spain → Spanish
   'PT': 'pt',        // Portugal → Portuguese
-  'BR': 'pt',        // Brazil → Portuguese
   'IT': 'it',        // Italy → Italian
   'NL': 'nl',        // Netherlands → Dutch
   'NO': 'no',        // Norway → Norwegian
   'SE': 'sv',        // Sweden → Swedish
   'PL': 'pl',        // Poland → Polish
   'CZ': 'cs',        // Czech Republic → Czech
-  'IN': 'en',        // India → English (default, can choose Hindi)
+  'IN': 'hi',        // India → Hindi
   'TH': 'th',        // Thailand → Thai
-  'MY': 'en',        // Malaysia → English (default, can choose Malay or Chinese)
+  'MY': 'ms',        // Malaysia → Malay
   'ID': 'id',        // Indonesia → Indonesian
   'RU': 'ru',        // Russia → Russian
-  'PH': 'en',        // Philippines → English (default, can choose Tagalog)
+  'PH': 'tl',        // Philippines → Tagalog/Filipino
   'VN': 'vi',        // Vietnam → Vietnamese
   'IE': 'ga',        // Ireland → Irish
   'IL': 'he',        // Israel → Hebrew
@@ -35,10 +34,10 @@ const countryToLanguageMap = {
   // Default to English for other countries
   'US': 'en',
   'GB': 'en',
-  'CA': 'en',
+  'CA': 'fr',
   'AU': 'en',
   'NZ': 'en',
-  'SG': 'en',        // Singapore → English (default, can choose Malay or Chinese)
+  'SG': 'ms',        // Singapore → Malay
 };
 
 // Countries allowed to access the site (shipping destinations)
@@ -96,12 +95,6 @@ export function isBlockedAccessCountry(countryCode) {
 function getAdminCountryOverride() {
   if (typeof window === 'undefined') return null;
 
-  const ADMIN_OVERRIDE_USERNAME = 'admin';
-  const ADMIN_OVERRIDE_PASSWORD = 'RhythmN3xu$@dm!n#2026%!';
-  const REQUIRED_ADMIN_CREDENTIAL = `${ADMIN_OVERRIDE_USERNAME}:${ADMIN_OVERRIDE_PASSWORD}`;
-
-  const configuredToken = (process.env.NEXT_PUBLIC_ADMIN_OVERRIDE_TOKEN || '').trim();
-
   const params = new URLSearchParams(window.location.search);
   const pathname = window.location.pathname || '';
   const pathCountry = pathname.startsWith('/country=')
@@ -111,38 +104,7 @@ function getAdminCountryOverride() {
     params.get('country') || params.get('adminCountry') || pathCountry || null
   );
   if (!requestedCountry) return null;
-
-  // Backward-compatible token override (if configured)
-  const providedToken = (params.get('adminToken') || params.get('admin') || '').trim();
-  if (configuredToken && providedToken && providedToken === configuredToken) {
-    return requestedCountry;
-  }
-
-  // Prompt-based admin credential (admin:password)
-  const providedCredential = (params.get('adminAuth') || '').trim();
-  if (providedCredential === REQUIRED_ADMIN_CREDENTIAL) {
-    return requestedCountry;
-  }
-
-  const sessionKey = `rnx_admin_override_ok_${requestedCountry}`;
-  try {
-    if (window.sessionStorage.getItem(sessionKey) === '1') {
-      return requestedCountry;
-    }
-  } catch (_) {
-    // ignore storage issues
-  }
-
-  const entered = window.prompt('Admin override required. Enter credentials as admin:password');
-  if (!entered) return null;
-  if (entered.trim() !== REQUIRED_ADMIN_CREDENTIAL) return null;
-
-  try {
-    window.sessionStorage.setItem(sessionKey, '1');
-  } catch (_) {
-    // ignore storage issues
-  }
-
+  // Country override is protected by middleware basic auth on the server.
   return requestedCountry;
 }
 
@@ -303,10 +265,6 @@ const multiLanguageCountries = {
     { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
     { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇸🇬' }
   ],
-  'BR': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'pt', name: 'Português (Portuguese)', flag: '🇧🇷' }
-  ],
   'RU': [
     { code: 'ru', name: 'Русский (Russian)', flag: '🇷🇺' },
     { code: 'en', name: 'English', flag: '🇬🇧' }
@@ -345,11 +303,22 @@ export function getLanguageOptions(countryCode) {
     return null;
   }
   const options = multiLanguageCountries[countryCode] || null;
+  const englishFirstCountries = new Set(['US', 'CA']);
+  const normalizedOptions = Array.isArray(options)
+    ? (() => {
+        if (englishFirstCountries.has(countryCode)) {
+          return options;
+        }
+        const englishOptions = options.filter((option) => option?.code === 'en');
+        const nonEnglishOptions = options.filter((option) => option?.code !== 'en');
+        return [...nonEnglishOptions, ...englishOptions];
+      })()
+    : options;
   console.log(`getLanguageOptions(${countryCode}):`, options);
-  if (options && Array.isArray(options)) {
-    console.log(`  - Found ${options.length} language(s) for ${countryCode}`);
+  if (normalizedOptions && Array.isArray(normalizedOptions)) {
+    console.log(`  - Found ${normalizedOptions.length} language(s) for ${countryCode}`);
   }
-  return options;
+  return normalizedOptions;
 }
 
 /**
