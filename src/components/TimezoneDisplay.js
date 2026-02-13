@@ -33,7 +33,7 @@ const countryTimezones = {
   IE: 'Europe/Dublin',
   IL: 'Asia/Jerusalem',
   IT: 'Europe/Rome',
-  JP: 'Asia/Tokyo',
+  JP: 'Asia/Tokyo', 
   MO: 'Asia/Macau',
   MY: 'Asia/Kuala_Lumpur',
   NO: 'Europe/Oslo',

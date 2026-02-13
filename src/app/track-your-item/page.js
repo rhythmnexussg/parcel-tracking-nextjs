@@ -691,7 +691,7 @@ function App() {
         // Korean format: 2026년 1월 27일
         return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
       } else {
-        // Use locale-specific format for other languages
+        // Use locale-specific format for other languages 
         return date.toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, options);
       }
     } catch (error) {

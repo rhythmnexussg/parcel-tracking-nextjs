@@ -6986,7 +6986,7 @@ export const translations = {
     noOrderMatchingFields: "Dim archeb wedi'i chanfod sy'n cyfateb i'r holl feysydd.",
     postcodeRequired: "Mae cod post yn ofynnol ar gyfer y cyrchfan hwn.",
     invalidUSZip: "Cod ZIP yr UD annilys. Defnyddiwch 5 digid neu ZIP+4.",
-    failedGenerateURL: "Methu creu URL olrhain. Gwiriwch y mewnbwn.",
+    failedGenerateURL: "Methu creu URL olrhain. Gwiriwch y mewnbwn.", 
     trackingValidationSG: "Rhaid i rifau olrhain Singapore fod yn: LG123456789SG, LP123456789SG, LT123456789SG, EZ123456789SG neu PX123456789SG. Ar gyfer llwythi DHL defnyddiwch rifau 10 digid.",
     invalidSingPostFormat: "Fformat rhif olrhain SingPost annilys.\nFformatau derbyniol:\n• PP123456789SG → Label Wedi'i Ddilyn Rhagdaledig\n• SPNDD0000001234 → Olrhain Safonol SpeedPost",
     // Home
