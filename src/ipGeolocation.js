@@ -93,6 +93,20 @@ export function isBlockedAccessCountry(countryCode) {
   return blockedAccessCountries.includes(normalizedCountryCode);
 }
 
+function getCountryNameFromCode(countryCode) {
+  const normalizedCountryCode = normalizeCountryCode(countryCode);
+  if (!normalizedCountryCode) return 'your location';
+  try {
+    if (typeof Intl !== 'undefined' && typeof Intl.DisplayNames === 'function') {
+      const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+      return regionNames.of(normalizedCountryCode) || normalizedCountryCode;
+    }
+  } catch (_) {
+    // ignore and fallback to code
+  }
+  return normalizedCountryCode;
+}
+
 // Countries with multiple official languages
 const multiLanguageCountries = {
   'AT': [
@@ -530,6 +544,7 @@ function buildFallbackGeoResult({ browserTimezone, detectedCountryCode = null })
 
   const languageCode = countryToLanguageMap[inferredCountryCode] || detectLanguageFromBrowser();
   const blocked = !isAllowedAccessCountry(inferredCountryCode);
+  const countryName = getCountryNameFromCode(inferredCountryCode);
 
   return {
     countryCode: inferredCountryCode,
@@ -545,7 +560,9 @@ function buildFallbackGeoResult({ browserTimezone, detectedCountryCode = null })
     browserLanguages,
     accessRestrictions: inferredCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null,
     blocked,
-    message: blocked ? 'Sorry, you are not authorized to access this page.' : null,
+    message: blocked
+      ? `Sorry, you are not authorized to access this page. You are located in ${countryName} that currently Rhythm Nexus does not offer any shipping there.`
+      : null,
     detectionMethod: 'timezone_fallback',
   };
 }
@@ -845,10 +862,14 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
 
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
-    const blockedByVPN = vpnDetection.isVPN && (!allIpCountriesAllowed || countryMismatchDetected || Boolean(blockedSignalCountry));
+    // Relax VPN blocking: allow access when final country is allowed.
+    // Only block on VPN if signals indicate an explicitly blocked country.
+    const blockedByVPN = vpnDetection.isVPN && Boolean(blockedSignalCountry);
     const blocked = blockedByCountry || blockedByVPN || Boolean(blockedSignalCountry);
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
+
+    const blockedCountryName = getCountryNameFromCode(finalCountryCode || detectedCountryCode || secondaryCountryCode);
 
     const result = {
       countryCode: finalCountryCode,
@@ -873,8 +894,8 @@ export async function detectLanguageFromIPWithRestrictions() {
       blocked,
       message: blocked
         ? (blockedByVPN
-            ? 'Sorry, you are not authorized to access this page. Please disable VPN and try again.'
-            : 'Sorry, you are not authorized to access this page.')
+            ? `Sorry, you are not authorized to access this page. Please disable VPN and try again. You are located in ${blockedCountryName} that currently Rhythm Nexus does not offer any shipping there.`
+            : `Sorry, you are not authorized to access this page. You are located in ${blockedCountryName} that currently Rhythm Nexus does not offer any shipping there.`)
         : null
     };
 

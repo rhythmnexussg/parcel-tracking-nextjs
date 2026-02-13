@@ -29,7 +29,11 @@ const countryTimezones = {
   DE: 'Europe/Berlin',
   HK: 'Asia/Hong_Kong',
   IN: 'Asia/Kolkata',
-  ID: 'Asia/Makassar',
+  ID: [
+    { name: 'Jakarta (WIB)', timezone: 'Asia/Jakarta' },
+    { name: 'Makassar (WITA)', timezone: 'Asia/Makassar' },
+    { name: 'Jayapura (WIT)', timezone: 'Asia/Jayapura' },
+  ],
   IE: 'Europe/Dublin',
   IL: 'Asia/Jerusalem',
   IT: 'Europe/Rome',

@@ -43,7 +43,8 @@ export default function RootLayout({ children }) {
         const blocked = geoData?.blocked ?? !isAllowedAccessCountry(countryCode);
 
         if (blocked) {
-          router.replace("/blocked");
+          const blockedCountry = geoData?.countryCode || geoData?.detectedCountryCode || "";
+          router.replace(blockedCountry ? `/blocked?country=${encodeURIComponent(blockedCountry)}` : "/blocked");
           setAccessChecked(true);
           return;
         }

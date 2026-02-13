@@ -1,6 +1,25 @@
 "use client";
 
+import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+
 export default function BlockedPage() {
+  const searchParams = useSearchParams();
+  const countryCode = (searchParams.get("country") || "").trim().toUpperCase();
+
+  const countryName = useMemo(() => {
+    if (!countryCode) return "your location";
+    try {
+      if (typeof Intl !== "undefined" && typeof Intl.DisplayNames === "function") {
+        const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+        return regionNames.of(countryCode) || countryCode;
+      }
+    } catch (_) {
+      // ignore and fallback to code
+    }
+    return countryCode;
+  }, [countryCode]);
+
   return (
     <main
       style={{
@@ -28,7 +47,7 @@ export default function BlockedPage() {
           Access Blocked
         </h1>
         <p style={{ margin: 0, fontSize: "1rem", color: "#374151", lineHeight: 1.6 }}>
-          Sorry, you are not authorized to access this page.
+          {`Sorry, you are not authorized to access this page. You are located in ${countryName} that currently Rhythm Nexus does not offer any shipping there.`}
         </p>
       </div>
     </main>

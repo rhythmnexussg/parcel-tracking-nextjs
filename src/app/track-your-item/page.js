@@ -1269,11 +1269,22 @@ function App() {
 
             {/^PX\d{9}SG$/.test(trackingNumber) && (
               <div style={{ padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
-                {t('speedPostNoEmbed')}{' '}
-                <a href={`https://www.speedpost.com.sg/track-and-trace?tnt=${trackingNumber}`}
-                  target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc', fontWeight: 'bold' }}>
-                  {t('clickHere')}
-                </a>{' '}{t('toTrackNewTab')}
+                {destinationCountry !== 'SG' ? (
+                  <>
+                    {t('speedPostNoEmbed')}{' '}
+                    <a href={`https://www.speedpost.com.sg/track-and-trace?tnt=${trackingNumber}`}
+                      target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc', fontWeight: 'bold' }}>
+                      {t('clickHere')}
+                    </a>{' '}{t('toTrackNewTab')}
+                  </>
+                ) : (
+                  <>
+                    <a href={`https://www.speedpost.com.sg/track-and-trace?tnt=${trackingNumber}`}
+                      target="_blank" rel="noopener noreferrer" style={{ color: '#0066cc', fontWeight: 'bold' }}>
+                      {t('clickHere')}
+                    </a>{' '}{t('toTrackNewTab')}
+                  </>
+                )}
               </div>
             )}
 
