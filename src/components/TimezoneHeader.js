@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState, useEffect } from 'react';
+import { useLanguage } from '../LanguageContext';
 
 // Country flag emojis
 const countryFlags = {
@@ -90,6 +91,7 @@ const countryTimezones = {
 const TimezoneHeader = ({ userCountry, t }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isMobile, setIsMobile] = useState(false);
+  const { language: currentLanguage } = useLanguage();
   
   // Helper function to extract region/state name from timezone name
   const getTimezoneLabel = (name) => {
@@ -334,13 +336,64 @@ const TimezoneHeader = ({ userCountry, t }) => {
   // Format today's date for a given timezone
   const formatDate = (timezone) => {
     try {
-      const options = {
+      const localeByLanguage = {
+        en: 'en-US',
+        cs: 'cs-CZ',
+        nl: 'nl-NL',
+        fi: 'fi-FI',
+        fr: 'fr-FR',
+        de: 'de-DE',
+        ru: 'ru-RU',
+        hi: 'hi-IN',
+        he: 'he-IL',
+        id: 'id-ID',
+        ms: 'ms-MY',
+        ga: 'ga-IE',
+        it: 'it-IT',
+        ja: 'ja-JP',
+        ko: 'ko-KR',
+        no: 'nb-NO',
+        pl: 'pl-PL',
+        pt: 'pt-PT',
+        'zh-hant': 'zh-Hant-TW',
+        zh_hk: 'zh-Hant-HK',
+        zh: 'zh-CN',
+        es: 'es-ES',
+        sv: 'sv-SE',
+        tl: 'fil-PH',
+        th: 'th-TH',
+        vi: 'vi-VN',
+        cy: 'cy-GB',
+      };
+
+      const isTaiwanDualYearFormat =
+        userCountry === 'TW' &&
+        timezone === 'Asia/Taipei' &&
+        (currentLanguage === 'zh-hant' || currentLanguage === 'en');
+
+      if (isTaiwanDualYearFormat) {
+        const parts = new Intl.DateTimeFormat('zh-Hant-TW', {
+          timeZone: timezone,
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }).formatToParts(currentTime);
+
+        const year = Number(parts.find((part) => part.type === 'year')?.value || currentTime.getFullYear());
+        const month = Number(parts.find((part) => part.type === 'month')?.value || currentTime.getMonth() + 1);
+        const day = Number(parts.find((part) => part.type === 'day')?.value || currentTime.getDate());
+        const rocYear = year - 1911;
+
+        return `${year}/${month}/${day}（民國${rocYear}年${month}月${day}日）`;
+      }
+
+      const resolvedLocale = localeByLanguage[currentLanguage] || (currentLanguage === 'en' ? 'en-US' : currentLanguage);
+      return currentTime.toLocaleDateString(resolvedLocale, {
         timeZone: timezone,
         year: 'numeric',
-        month: 'short',
+        month: 'long',
         day: 'numeric',
-      };
-      return currentTime.toLocaleDateString(undefined, options);
+      });
     } catch (error) {
       return '--';
     }

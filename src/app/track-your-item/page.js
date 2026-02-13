@@ -679,25 +679,59 @@ function App() {
     try {
       const date = new Date(dateStr);
       if (isNaN(date.getTime())) return dateStr;
-      
-      const options = { year: 'numeric', month: 'short', day: 'numeric' };
-      if (currentLanguage === 'zh' || currentLanguage === 'zh_hk') {
-        // Chinese format: 2026年1月27日
-        return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
-      } else if (currentLanguage === 'ja') {
-        // Japanese format: 2026年1月27日
-        return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
-      } else if (currentLanguage === 'ko') {
-        // Korean format: 2026년 1월 27일
-        return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
-      } else {
-        // Use locale-specific format for other languages 
-        return date.toLocaleDateString(currentLanguage === 'en' ? 'en-US' : currentLanguage, options);
+      const localeByLanguage = {
+        en: 'en-US',
+        cs: 'cs-CZ',
+        nl: 'nl-NL',
+        fi: 'fi-FI',
+        fr: 'fr-FR',
+        de: 'de-DE',
+        ru: 'ru-RU',
+        hi: 'hi-IN',
+        he: 'he-IL',
+        id: 'id-ID',
+        ms: 'ms-MY',
+        ga: 'ga-IE',
+        it: 'it-IT',
+        ja: 'ja-JP',
+        ko: 'ko-KR',
+        no: 'nb-NO',
+        pl: 'pl-PL',
+        pt: 'pt-PT',
+        'zh-hant': 'zh-Hant-TW',
+        zh_hk: 'zh-Hant-HK',
+        zh: 'zh-CN',
+        es: 'es-ES',
+        sv: 'sv-SE',
+        tl: 'fil-PH',
+        th: 'th-TH',
+        vi: 'vi-VN',
+        cy: 'cy-GB',
+      };
+
+      const isTaiwanDualYearFormat =
+        userCountry === 'TW' && (currentLanguage === 'zh-hant' || currentLanguage === 'en');
+
+      if (isTaiwanDualYearFormat) {
+        const gregorianDate = date.toLocaleDateString('zh-Hant-TW', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        });
+        const rocYear = date.getFullYear() - 1911;
+        return `${gregorianDate}（民國${rocYear}年${date.getMonth() + 1}月${date.getDate()}日）`;
       }
+
+      const resolvedLocale = localeByLanguage[currentLanguage] || (currentLanguage === 'en' ? 'en-US' : currentLanguage);
+      return date.toLocaleDateString(resolvedLocale, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
     } catch (error) {
       return dateStr;
     }
-  }, [currentLanguage]);
+  }, [currentLanguage, userCountry]);
 
   // Translate "aka" in service names
   const translateServiceName = useCallback((serviceName) => {
