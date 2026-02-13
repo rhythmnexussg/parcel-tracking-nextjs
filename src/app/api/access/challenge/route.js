@@ -8,6 +8,10 @@ function signPayload(payloadBase64) {
 }
 
 export async function GET() {
+  if (!CAPTCHA_SECRET || CAPTCHA_SECRET === 'change-this-access-captcha-secret') {
+    return NextResponse.json({ error: 'captcha_not_configured' }, { status: 503 });
+  }
+
   const a = Math.floor(Math.random() * 8) + 2;
   const b = Math.floor(Math.random() * 8) + 2;
   const exp = Date.now() + 5 * 60 * 1000;

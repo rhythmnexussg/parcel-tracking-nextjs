@@ -5,7 +5,8 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const urlParam = searchParams.get('url');
-    const lang = searchParams.get('lang');
+    const rawLang = (searchParams.get('lang') || '').trim();
+    const lang = /^[a-z]{2,3}(?:-[a-z]{2,4})?$/i.test(rawLang) ? rawLang.toLowerCase() : null;
     if (!urlParam) {
       return NextResponse.json({ error: 'Missing url' }, { status: 400 });
     }
@@ -100,6 +101,6 @@ export async function GET(request) {
       headers: responseHeaders,
     });
   } catch (err) {
-    return NextResponse.json({ error: 'Proxy failed', message: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Proxy failed' }, { status: 500 });
   }
 }

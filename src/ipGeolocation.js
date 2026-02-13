@@ -303,7 +303,7 @@ export function getLanguageOptions(countryCode) {
     return null;
   }
   const options = multiLanguageCountries[countryCode] || null;
-  const englishFirstCountries = new Set(['US', 'CA']);
+  const englishFirstCountries = new Set(['US', 'CA', 'SG']);
   const normalizedOptions = Array.isArray(options)
     ? (() => {
         if (englishFirstCountries.has(countryCode)) {

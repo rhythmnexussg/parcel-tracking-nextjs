@@ -4,10 +4,13 @@ import { sanitizeAndRewrite } from '../proxy-utils';
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const trackingid = searchParams.get('trackingid');
+    const trackingid = (searchParams.get('trackingid') || '').trim();
     const lang = searchParams.get('lang');
     if (!trackingid) {
       return NextResponse.json({ error: 'Missing trackingid' }, { status: 400 });
+    }
+    if (!/^[A-Za-z0-9-]{6,50}$/.test(trackingid)) {
+      return NextResponse.json({ error: 'Invalid trackingid format' }, { status: 400 });
     }
 
     const baseUrl = 'https://www.singpost.com';
@@ -34,6 +37,6 @@ export async function GET(request) {
       },
     });
   } catch (err) {
-    return NextResponse.json({ error: 'Proxy failed', message: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Proxy failed' }, { status: 500 });
   }
 }

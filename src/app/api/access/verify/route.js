@@ -18,6 +18,10 @@ function getSafeRedirectPath(nextPath) {
 
 export async function POST(request) {
   try {
+    if (!CAPTCHA_SECRET || CAPTCHA_SECRET === 'change-this-access-captcha-secret') {
+      return NextResponse.json({ ok: false, error: 'captcha_not_configured' }, { status: 503 });
+    }
+
     const body = await request.json();
     const token = (body?.token || '').toString().trim();
     const answer = Number(body?.answer);
@@ -33,10 +37,12 @@ export async function POST(request) {
     }
 
     const expectedSignature = signPayload(payloadBase64);
-    const signatureMatch = crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    );
+    const providedSignatureBuffer = Buffer.from(signature, 'utf-8');
+    const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf-8');
+    if (providedSignatureBuffer.length !== expectedSignatureBuffer.length) {
+      return NextResponse.json({ ok: false, error: 'invalid_signature' }, { status: 401 });
+    }
+    const signatureMatch = crypto.timingSafeEqual(providedSignatureBuffer, expectedSignatureBuffer);
 
     if (!signatureMatch) {
       return NextResponse.json({ ok: false, error: 'invalid_signature' }, { status: 401 });
