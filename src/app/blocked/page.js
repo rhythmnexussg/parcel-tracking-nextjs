@@ -1,24 +1,18 @@
-"use client";
+export default function BlockedPage({ searchParams }) {
+  const countryParam = searchParams?.country;
+  const countryCode = Array.isArray(countryParam)
+    ? (countryParam[0] || "").trim().toUpperCase()
+    : (countryParam || "").trim().toUpperCase();
 
-import { useMemo } from "react";
-import { useSearchParams } from "next/navigation";
-
-export default function BlockedPage() {
-  const searchParams = useSearchParams();
-  const countryCode = (searchParams.get("country") || "").trim().toUpperCase();
-
-  const countryName = useMemo(() => {
-    if (!countryCode) return "your location";
+  let countryName = "your location";
+  if (countryCode) {
     try {
-      if (typeof Intl !== "undefined" && typeof Intl.DisplayNames === "function") {
-        const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-        return regionNames.of(countryCode) || countryCode;
-      }
+      const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+      countryName = regionNames.of(countryCode) || countryCode;
     } catch (_) {
-      // ignore and fallback to code
+      countryName = countryCode;
     }
-    return countryCode;
-  }, [countryCode]);
+  }
 
   return (
     <main
