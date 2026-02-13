@@ -110,7 +110,7 @@ function getAdminCountryOverride() {
 
 function getCountryNameFromCode(countryCode) {
   const normalizedCountryCode = normalizeCountryCode(countryCode);
-  if (!normalizedCountryCode) return 'your location';
+  if (!normalizedCountryCode) return 'Unknown country';
   try {
     if (typeof Intl !== 'undefined' && typeof Intl.DisplayNames === 'function') {
       const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });

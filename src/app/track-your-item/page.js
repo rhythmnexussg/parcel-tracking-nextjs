@@ -133,7 +133,7 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
             backgroundColor: 'white'
           }}
           title="SingPost Service Announcements"
-          sandbox="allow-popups allow-forms allow-scripts"
+          sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
         />
       )}
     </div>
