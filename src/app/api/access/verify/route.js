@@ -1,12 +1,19 @@
 import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 
-const CAPTCHA_SECRET = process.env.ACCESS_CAPTCHA_SECRET || 'change-this-access-captcha-secret';
+function getCaptchaSecret() {
+  return (
+    process.env.ACCESS_CAPTCHA_SECRET ||
+    process.env.ADMIN_SESSION_SECRET ||
+    process.env.ADMIN_OVERRIDE_SESSION_SECRET ||
+    ''
+  );
+}
 const ACCESS_COOKIE_NAME = 'rnx_access_granted';
 const ACCESS_COOKIE_VALUE = '1';
 
-function signPayload(payloadBase64) {
-  return crypto.createHmac('sha256', CAPTCHA_SECRET).update(payloadBase64).digest('base64url');
+function signPayload(payloadBase64, captchaSecret) {
+  return crypto.createHmac('sha256', captchaSecret).update(payloadBase64).digest('base64url');
 }
 
 function getSafeRedirectPath(nextPath) {
@@ -18,7 +25,8 @@ function getSafeRedirectPath(nextPath) {
 
 export async function POST(request) {
   try {
-    if (!CAPTCHA_SECRET || CAPTCHA_SECRET === 'change-this-access-captcha-secret') {
+    const captchaSecret = getCaptchaSecret();
+    if (!captchaSecret) {
       return NextResponse.json({ ok: false, error: 'captcha_not_configured' }, { status: 503 });
     }
 
@@ -36,7 +44,7 @@ export async function POST(request) {
       return NextResponse.json({ ok: false, error: 'invalid_token' }, { status: 400 });
     }
 
-    const expectedSignature = signPayload(payloadBase64);
+    const expectedSignature = signPayload(payloadBase64, captchaSecret);
     const providedSignatureBuffer = Buffer.from(signature, 'utf-8');
     const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf-8');
     if (providedSignatureBuffer.length !== expectedSignatureBuffer.length) {
