@@ -104,20 +104,34 @@ async function createAdminSessionToken() {
   return `${payload}.${signature}`;
 }
 
-async function isValidAdminSessionToken(token) {
-  if (!token || typeof token !== 'string') return false;
+async function getAdminSessionTokenStatus(token) {
+  if (!token || typeof token !== 'string') {
+    return { valid: false, expired: false };
+  }
   const tokenParts = token.split('.');
-  if (tokenParts.length !== 2) return false;
+  if (tokenParts.length !== 2) {
+    return { valid: false, expired: false };
+  }
 
   const [payload, providedSignature] = tokenParts;
   const issuedAt = Number(payload);
-  if (!Number.isFinite(issuedAt)) return false;
+  if (!Number.isFinite(issuedAt)) {
+    return { valid: false, expired: false };
+  }
 
   const ageMs = Date.now() - issuedAt;
-  if (ageMs < 0 || ageMs > ADMIN_SESSION_DURATION_SECONDS * 1000) return false;
+  if (ageMs < 0) {
+    return { valid: false, expired: false };
+  }
+  if (ageMs > ADMIN_SESSION_DURATION_SECONDS * 1000) {
+    return { valid: false, expired: true };
+  }
 
   const expectedSignature = await signAdminSessionPayload(payload);
-  return constantTimeEqual(providedSignature, expectedSignature);
+  return {
+    valid: constantTimeEqual(providedSignature, expectedSignature),
+    expired: false,
+  };
 }
 
 async function sha256Hex(value) {
@@ -140,12 +154,17 @@ async function isDefaultCredentialMatch(credentials) {
 
 async function isAdminAuthenticated(request) {
   if (!isAdminSecurityConfigured()) {
-    return { authenticated: false, setSessionCookie: false };
+    return { authenticated: false, setSessionCookie: false, sessionExpired: false };
   }
 
   const sessionToken = request.cookies.get(ADMIN_SESSION_COOKIE_NAME)?.value;
-  if (await isValidAdminSessionToken(sessionToken)) {
-    return { authenticated: true, setSessionCookie: false };
+  const sessionStatus = await getAdminSessionTokenStatus(sessionToken);
+  if (sessionStatus.valid) {
+    return { authenticated: true, setSessionCookie: false, sessionExpired: false };
+  }
+
+  if (sessionStatus.expired) {
+    return { authenticated: false, setSessionCookie: false, sessionExpired: true };
   }
 
   const credentials = parseBasicAuthHeader(request);
@@ -161,6 +180,7 @@ async function isAdminAuthenticated(request) {
   return {
     authenticated: hasValidCredentials,
     setSessionCookie: hasValidCredentials,
+    sessionExpired: false,
   };
 }
 
@@ -171,7 +191,6 @@ async function applyAdminSessionCookie(response) {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
-    maxAge: ADMIN_SESSION_DURATION_SECONDS,
   });
 }
 
@@ -255,6 +274,9 @@ export async function middleware(request) {
     }
     const adminAuth = await isAdminAuthenticated(request);
     if (!adminAuth.authenticated) {
+      if (adminAuth.sessionExpired) {
+        return applySecurityHeaders(new NextResponse('Admin session expired. Close and reopen your browser, then authenticate again.', { status: 401 }));
+      }
       return applySecurityHeaders(unauthorizedAdminResponse());
     }
 
@@ -272,6 +294,9 @@ export async function middleware(request) {
     }
     const adminAuth = await isAdminAuthenticated(request);
     if (!adminAuth.authenticated) {
+      if (adminAuth.sessionExpired) {
+        return applySecurityHeaders(new NextResponse('Admin session expired. Close and reopen your browser, then authenticate again.', { status: 401 }));
+      }
       return applySecurityHeaders(unauthorizedAdminResponse());
     }
 
