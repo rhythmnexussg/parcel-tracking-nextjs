@@ -93,6 +93,59 @@ export function isBlockedAccessCountry(countryCode) {
   return blockedAccessCountries.includes(normalizedCountryCode);
 }
 
+function getAdminCountryOverride() {
+  if (typeof window === 'undefined') return null;
+
+  const ADMIN_OVERRIDE_USERNAME = 'admin';
+  const ADMIN_OVERRIDE_PASSWORD = 'RhythmN3xu$@dm!n#2026%!';
+  const REQUIRED_ADMIN_CREDENTIAL = `${ADMIN_OVERRIDE_USERNAME}:${ADMIN_OVERRIDE_PASSWORD}`;
+
+  const configuredToken = (process.env.NEXT_PUBLIC_ADMIN_OVERRIDE_TOKEN || '').trim();
+
+  const params = new URLSearchParams(window.location.search);
+  const pathname = window.location.pathname || '';
+  const pathCountry = pathname.startsWith('/country=')
+    ? normalizeCountryCode(pathname.slice('/country='.length).split('/')[0] || null)
+    : null;
+  const requestedCountry = normalizeCountryCode(
+    params.get('country') || params.get('adminCountry') || pathCountry || null
+  );
+  if (!requestedCountry) return null;
+
+  // Backward-compatible token override (if configured)
+  const providedToken = (params.get('adminToken') || params.get('admin') || '').trim();
+  if (configuredToken && providedToken && providedToken === configuredToken) {
+    return requestedCountry;
+  }
+
+  // Prompt-based admin credential (admin:password)
+  const providedCredential = (params.get('adminAuth') || '').trim();
+  if (providedCredential === REQUIRED_ADMIN_CREDENTIAL) {
+    return requestedCountry;
+  }
+
+  const sessionKey = `rnx_admin_override_ok_${requestedCountry}`;
+  try {
+    if (window.sessionStorage.getItem(sessionKey) === '1') {
+      return requestedCountry;
+    }
+  } catch (_) {
+    // ignore storage issues
+  }
+
+  const entered = window.prompt('Admin override required. Enter credentials as admin:password');
+  if (!entered) return null;
+  if (entered.trim() !== REQUIRED_ADMIN_CREDENTIAL) return null;
+
+  try {
+    window.sessionStorage.setItem(sessionKey, '1');
+  } catch (_) {
+    // ignore storage issues
+  }
+
+  return requestedCountry;
+}
+
 function getCountryNameFromCode(countryCode) {
   const normalizedCountryCode = normalizeCountryCode(countryCode);
   if (!normalizedCountryCode) return 'your location';
@@ -709,6 +762,38 @@ export async function detectLanguageFromIPWithRestrictions() {
   if (typeof window === 'undefined') {
     console.log('detectLanguageFromIPWithRestrictions called on server, skipping');
     return null;
+  }
+
+  const adminOverrideCountry = getAdminCountryOverride();
+  if (adminOverrideCountry) {
+    const blocked = !isAllowedAccessCountry(adminOverrideCountry);
+    const countryName = getCountryNameFromCode(adminOverrideCountry);
+    return {
+      countryCode: adminOverrideCountry,
+      detectedCountryCode: adminOverrideCountry,
+      languageCode: countryToLanguageMap[adminOverrideCountry] || 'en',
+      isMultiLingual: isMultiLanguageCountry(adminOverrideCountry),
+      languageOptions: isMultiLanguageCountry(adminOverrideCountry) ? getLanguageOptions(adminOverrideCountry) : null,
+      isVPNDetected: false,
+      vpnLikelihood: 0,
+      vpnIndicators: ['Admin country override applied'],
+      estimatedActualCountry: adminOverrideCountry,
+      ipCountries: [adminOverrideCountry],
+      allowedIpCountry: isAllowedAccessCountry(adminOverrideCountry) ? adminOverrideCountry : null,
+      signalCountries: [adminOverrideCountry],
+      blockedSignalCountry: isBlockedAccessCountry(adminOverrideCountry) ? adminOverrideCountry : null,
+      secondaryCountryCode: null,
+      countryMismatchDetected: false,
+      browserTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      browserLanguages: navigator.languages || [navigator.language],
+      localeCountryCode: null,
+      accessRestrictions: adminOverrideCountry === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null,
+      blocked,
+      message: blocked
+        ? `Sorry, you are not authorized to access this page. You are located in ${countryName} that currently Rhythm Nexus does not offer any shipping there.`
+        : null,
+      detectionMethod: 'admin_override',
+    };
   }
 
   try {
