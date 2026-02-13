@@ -842,7 +842,7 @@ export async function detectLanguageFromIPWithRestrictions() {
     console.log('=================================');
     
     // Access decision is based on shipping country allowlist.
-    // Prioritize trusted allowed-country signals to avoid false blocks caused by VPN exit-node rerouting.
+    // Keep non-VPN decisions strictly IP-based so normal users are not affected by VPN heuristics.
     const ipCountries = [detectedCountryCode, secondaryCountryCode].filter(Boolean);
     const allowedIpCountry = ipCountries.find((code) => isAllowedAccessCountry(code)) || null;
     const timezoneCountryCode = normalizeCountryCode(inferCountryCodeFromBrowserTimezone(browserTimezone) || null);
@@ -854,25 +854,24 @@ export async function detectLanguageFromIPWithRestrictions() {
       localeCountryCode,
     ].filter(Boolean);
     const blockedSignalCountry = signalCountries.find((code) => isBlockedAccessCountry(code)) || null;
-    const allIpCountriesAllowed = ipCountries.length > 0 && ipCountries.every((code) => isAllowedAccessCountry(code));
 
-    const trustedSignalCountries = [
-      timezoneCountryCode,
-      normalizeCountryCode(vpnDetection.actualCountry || null),
-      detectedCountryCode,
-      secondaryCountryCode,
-    ].filter(Boolean);
-    const allowedTrustedCountry = trustedSignalCountries.find((code) => isAllowedAccessCountry(code)) || null;
+    let finalCountryCode;
+    let blocked;
 
-    let finalCountryCode = normalizeCountryCode(allowedTrustedCountry || allowedIpCountry || detectedCountryCode || secondaryCountryCode || null);
-    if (!finalCountryCode) {
-      finalCountryCode = normalizeCountryCode(timezoneCountryCode || vpnDetection.actualCountry || null);
+    if (vpnDetection.isVPN) {
+      // VPN policy: use VPN exit country and allow only if it is in the explicit allowlist.
+      finalCountryCode = normalizeCountryCode(allowedIpCountry || detectedCountryCode || secondaryCountryCode || null);
+      if (!finalCountryCode) {
+        finalCountryCode = normalizeCountryCode(detectedCountryCode || secondaryCountryCode || null);
+      }
+      blocked = !isAllowedAccessCountry(finalCountryCode);
+    } else {
+      finalCountryCode = normalizeCountryCode(detectedCountryCode || secondaryCountryCode || null);
+      if (!finalCountryCode) {
+        finalCountryCode = normalizeCountryCode(timezoneCountryCode || localeCountryCode || null);
+      }
+      blocked = !isAllowedAccessCountry(finalCountryCode);
     }
-
-    const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
-    // Final country allowlist takes precedence to prevent false blocks
-    // for shippable destinations (e.g., Austria) under VPN/proxy mismatches.
-    const blocked = blockedByCountry;
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
 
