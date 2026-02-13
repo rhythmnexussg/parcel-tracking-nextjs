@@ -254,13 +254,38 @@ function parseBasicAuthHeader(request) {
   }
 }
 
+function getAdminAuthRealm() {
+  const windowSizeMs = ADMIN_SESSION_DURATION_SECONDS * 1000;
+  const currentWindowStart = Math.floor(Date.now() / windowSizeMs) * windowSizeMs;
+  return `Rhythm Nexus Admin Override ${new Date(currentWindowStart).toISOString().slice(0, 13)}`;
+}
+
 function unauthorizedAdminResponse() {
   return new NextResponse('Unauthorized.', {
     status: 401,
     headers: {
-      'WWW-Authenticate': 'Basic realm="Rhythm Nexus Admin Override"',
+      'WWW-Authenticate': `Basic realm="${getAdminAuthRealm()}"`,
+      'Cache-Control': 'no-store',
     },
   });
+}
+
+function expiredAdminSessionResponse() {
+  const response = new NextResponse('Admin session expired. Please log in again.', {
+    status: 401,
+    headers: {
+      'WWW-Authenticate': `Basic realm="${getAdminAuthRealm()}"`,
+      'Cache-Control': 'no-store',
+    },
+  });
+  response.cookies.set(ADMIN_SESSION_COOKIE_NAME, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+  });
+  return response;
 }
 
 export async function middleware(request) {
@@ -286,7 +311,7 @@ export async function middleware(request) {
     const adminAuth = await isAdminAuthenticated(request);
     if (!adminAuth.authenticated) {
       if (adminAuth.sessionExpired) {
-        return applySecurityHeaders(new NextResponse('Admin session expired. Close and reopen your browser, then authenticate again.', { status: 401 }));
+        return applySecurityHeaders(expiredAdminSessionResponse());
       }
       return applySecurityHeaders(unauthorizedAdminResponse());
     }
@@ -306,7 +331,7 @@ export async function middleware(request) {
     const adminAuth = await isAdminAuthenticated(request);
     if (!adminAuth.authenticated) {
       if (adminAuth.sessionExpired) {
-        return applySecurityHeaders(new NextResponse('Admin session expired. Close and reopen your browser, then authenticate again.', { status: 401 }));
+        return applySecurityHeaders(expiredAdminSessionResponse());
       }
       return applySecurityHeaders(unauthorizedAdminResponse());
     }
