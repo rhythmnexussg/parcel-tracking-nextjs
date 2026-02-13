@@ -1360,7 +1360,7 @@ function App() {
                   />
                 )}
 
-                {activeEmbed === 'dest' && (() => {
+                {activeEmbed === 'dest' && destinationCountry !== 'SG' && (() => {
                   // Ireland: always fallback, never embed
                   if (destinationCountry === 'IE') {
                     // Always use the homepage link, never with tracking number

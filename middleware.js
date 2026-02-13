@@ -11,12 +11,18 @@ const ADMIN_SESSION_SECRET = process.env.ADMIN_SESSION_SECRET || '';
 
 const textEncoder = new TextEncoder();
 
+function isAdminCredentialsConfigured() {
+  return Boolean(ADMIN_OVERRIDE_USERNAME && ADMIN_OVERRIDE_PASSWORD);
+}
+
+function isAdminSessionConfigured() {
+  return Boolean(ADMIN_SESSION_SECRET && ADMIN_SESSION_SECRET.length >= 32);
+}
+
 function isAdminSecurityConfigured() {
   return Boolean(
-    ADMIN_OVERRIDE_USERNAME &&
-    ADMIN_OVERRIDE_PASSWORD &&
-    ADMIN_SESSION_SECRET &&
-    ADMIN_SESSION_SECRET.length >= 32
+    isAdminCredentialsConfigured() &&
+    isAdminSessionConfigured()
   );
 }
 
@@ -38,7 +44,7 @@ function constantTimeEqual(a, b) {
 }
 
 async function signAdminSessionPayload(payload) {
-  if (!isAdminSecurityConfigured()) {
+  if (!isAdminSessionConfigured()) {
     throw new Error('Admin security is not configured.');
   }
   const key = await crypto.subtle.importKey(
@@ -99,7 +105,10 @@ async function isAdminAuthenticated(request) {
     credentials.password === ADMIN_OVERRIDE_PASSWORD
   );
 
-  return { authenticated: hasValidCredentials, setSessionCookie: hasValidCredentials };
+  return {
+    authenticated: hasValidCredentials,
+    setSessionCookie: hasValidCredentials,
+  };
 }
 
 async function applyAdminSessionCookie(response) {
@@ -130,6 +139,10 @@ function isCaptchaExemptPath(path) {
   return (
     path === '/access' ||
     path.startsWith('/api/access/') ||
+    path === '/api/singpost-announcements' ||
+    path === '/api/proxy-singpost' ||
+    path === '/api/proxy-dhl' ||
+    path === '/api/proxy-destination' ||
     path.startsWith('/_next/') ||
     path === '/favicon.ico' ||
     path === '/robots.txt' ||
