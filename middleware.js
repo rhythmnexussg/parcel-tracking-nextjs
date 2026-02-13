@@ -4,6 +4,7 @@ const ACCESS_COOKIE_NAME = 'rnx_access_granted';
 const ACCESS_COOKIE_VALUE = '1';
 const ADMIN_SESSION_COOKIE_NAME = 'rnx_admin_session';
 const ADMIN_SESSION_DURATION_SECONDS = 60 * 60;
+const ADMIN_SESSION_TOKEN_VERSION = 'v2';
 
 const ADMIN_OVERRIDE_USERNAME =
   process.env.ADMIN_OVERRIDE_USERNAME ||
@@ -99,7 +100,7 @@ async function signAdminSessionPayload(payload) {
 
 async function createAdminSessionToken() {
   const issuedAt = Date.now();
-  const payload = `${issuedAt}`;
+  const payload = `${ADMIN_SESSION_TOKEN_VERSION}:${issuedAt}`;
   const signature = await signAdminSessionPayload(payload);
   return `${payload}.${signature}`;
 }
@@ -114,7 +115,17 @@ async function getAdminSessionTokenStatus(token) {
   }
 
   const [payload, providedSignature] = tokenParts;
-  const issuedAt = Number(payload);
+  const payloadParts = payload.split(':');
+  if (payloadParts.length !== 2) {
+    return { valid: false, expired: false };
+  }
+
+  const [tokenVersion, issuedAtRaw] = payloadParts;
+  if (tokenVersion !== ADMIN_SESSION_TOKEN_VERSION) {
+    return { valid: false, expired: false };
+  }
+
+  const issuedAt = Number(issuedAtRaw);
   if (!Number.isFinite(issuedAt)) {
     return { valid: false, expired: false };
   }
