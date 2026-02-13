@@ -273,30 +273,93 @@ const TimezoneHeader = ({ userCountry, t }) => {
   const daylightTimeNotice = useMemo(() => {
     if (!nextDstTransition) return null;
 
-    const formattedDate = new Intl.DateTimeFormat(undefined, {
-      month: 'short',
+    const localeByLanguage = {
+      en: 'en-US',
+      cs: 'cs-CZ',
+      nl: 'nl-NL',
+      fi: 'fi-FI',
+      fr: 'fr-FR',
+      de: 'de-DE',
+      ru: 'ru-RU',
+      hi: 'hi-IN',
+      he: 'he-IL',
+      id: 'id-ID',
+      ms: 'ms-MY',
+      ga: 'ga-IE',
+      it: 'it-IT',
+      ja: 'ja-JP',
+      ko: 'ko-KR',
+      no: 'nb-NO',
+      pl: 'pl-PL',
+      pt: 'pt-PT',
+      zh: 'zh-CN',
+      'zh-hant': 'zh-Hant-TW',
+      zh_hk: 'zh-Hant-HK',
+      es: 'es-ES',
+      sv: 'sv-SE',
+      tl: 'fil-PH',
+      th: 'th-TH',
+      vi: 'vi-VN',
+      cy: 'cy-GB',
+    };
+
+    const dstPhrasesByLanguage = {
+      en: { starts: 'Daylight time starts', ends: 'Daylight time ends', reverts: 'reverts to standard time', europe: 'Europe', newZealand: 'New Zealand' },
+      cs: { starts: 'Letní čas začíná', ends: 'Letní čas končí', reverts: 'návrat na standardní čas', europe: 'Evropa', newZealand: 'Nový Zéland' },
+      nl: { starts: 'Zomertijd begint', ends: 'Zomertijd eindigt', reverts: 'terug naar standaardtijd', europe: 'Europa', newZealand: 'Nieuw-Zeeland' },
+      fi: { starts: 'Kesäaika alkaa', ends: 'Kesäaika päättyy', reverts: 'paluu normaaliaikaan', europe: 'Eurooppa', newZealand: 'Uusi-Seelanti' },
+      fr: { starts: 'L’heure d’été commence', ends: 'L’heure d’été se termine', reverts: 'retour à l’heure standard', europe: 'Europe', newZealand: 'Nouvelle-Zélande' },
+      de: { starts: 'Sommerzeit beginnt', ends: 'Sommerzeit endet', reverts: 'Rückkehr zur Standardzeit', europe: 'Europa', newZealand: 'Neuseeland' },
+      ru: { starts: 'Летнее время начинается', ends: 'Летнее время заканчивается', reverts: 'переход на стандартное время', europe: 'Европа', newZealand: 'Новая Зеландия' },
+      hi: { starts: 'डेलाइट समय शुरू होता है', ends: 'डेलाइट समय समाप्त होता है', reverts: 'मानक समय पर वापसी', europe: 'यूरोप', newZealand: 'न्यूज़ीलैंड' },
+      he: { starts: 'שעון קיץ מתחיל', ends: 'שעון קיץ מסתיים', reverts: 'חזרה לשעון תקני', europe: 'אירופה', newZealand: 'ניו זילנד' },
+      id: { starts: 'Waktu musim panas dimulai', ends: 'Waktu musim panas berakhir', reverts: 'kembali ke waktu standar', europe: 'Eropa', newZealand: 'Selandia Baru' },
+      ms: { starts: 'Waktu musim panas bermula', ends: 'Waktu musim panas berakhir', reverts: 'kembali ke waktu standard', europe: 'Eropah', newZealand: 'New Zealand' },
+      ga: { starts: 'Tosaíonn am samhraidh', ends: 'Críochnaíonn am samhraidh', reverts: 'fill ar an am caighdeánach', europe: 'an Eoraip', newZealand: 'an Nua-Shéalainn' },
+      it: { starts: 'L’ora legale inizia', ends: 'L’ora legale finisce', reverts: 'ritorno all’ora standard', europe: 'Europa', newZealand: 'Nuova Zelanda' },
+      ja: { starts: '夏時間が開始', ends: '夏時間が終了', reverts: '標準時に戻ります', europe: 'ヨーロッパ', newZealand: 'ニュージーランド' },
+      ko: { starts: '일광절약시간 시작', ends: '일광절약시간 종료', reverts: '표준시로 전환', europe: '유럽', newZealand: '뉴질랜드' },
+      no: { starts: 'Sommertid starter', ends: 'Sommertid slutter', reverts: 'går tilbake til normaltid', europe: 'Europa', newZealand: 'New Zealand' },
+      pl: { starts: 'Czas letni zaczyna się', ends: 'Czas letni kończy się', reverts: 'powrót do czasu standardowego', europe: 'Europa', newZealand: 'Nowa Zelandia' },
+      pt: { starts: 'Horário de verão começa', ends: 'Horário de verão termina', reverts: 'retorno ao horário padrão', europe: 'Europa', newZealand: 'Nova Zelândia' },
+      zh: { starts: '夏令时开始', ends: '夏令时结束', reverts: '恢复标准时间', europe: '欧洲', newZealand: '新西兰' },
+      'zh-hant': { starts: '夏令時間開始', ends: '夏令時間結束', reverts: '恢復標準時間', europe: '歐洲', newZealand: '紐西蘭' },
+      zh_hk: { starts: '夏令時間開始', ends: '夏令時間結束', reverts: '恢復標準時間', europe: '歐洲', newZealand: '紐西蘭' },
+      es: { starts: 'El horario de verano comienza', ends: 'El horario de verano termina', reverts: 'vuelve al horario estándar', europe: 'Europa', newZealand: 'Nueva Zelanda' },
+      sv: { starts: 'Sommartid börjar', ends: 'Sommartid slutar', reverts: 'återgår till normaltid', europe: 'Europa', newZealand: 'Nya Zeeland' },
+      tl: { starts: 'Nagsisimula ang daylight saving time', ends: 'Nagtatapos ang daylight saving time', reverts: 'bumabalik sa karaniwang oras', europe: 'Europa', newZealand: 'New Zealand' },
+      th: { starts: 'เวลาออมแสงเริ่มต้น', ends: 'เวลาออมแสงสิ้นสุด', reverts: 'กลับสู่เวลามาตรฐาน', europe: 'ยุโรป', newZealand: 'นิวซีแลนด์' },
+      vi: { starts: 'Giờ mùa hè bắt đầu', ends: 'Giờ mùa hè kết thúc', reverts: 'trở về giờ chuẩn', europe: 'Châu Âu', newZealand: 'New Zealand' },
+      cy: { starts: 'Mae amser haf yn dechrau', ends: 'Mae amser haf yn dod i ben', reverts: 'dychwelyd i amser safonol', europe: 'Ewrop', newZealand: 'Seland Newydd' },
+    };
+
+    const translatedPhrases = dstPhrasesByLanguage[currentLanguage] || dstPhrasesByLanguage.en;
+    const locale = localeByLanguage[currentLanguage] || 'en-US';
+
+    const formattedDate = new Intl.DateTimeFormat(locale, {
+      month: 'long',
       day: 'numeric',
       year: 'numeric',
     }).format(nextDstTransition.date);
 
     const suffix = (() => {
       if (userCountry === 'AU') return ' (NSW, VIC, SA, TAS, ACT)';
-      if (userCountry === 'NZ') return ' (New Zealand)';
+      if (userCountry === 'NZ') return ` (${translatedPhrases.newZealand})`;
 
       const europeCountries = new Set([
         'AT', 'BE', 'CH', 'CZ', 'DE', 'ES', 'FI', 'FR', 'GB', 'IE',
         'IT', 'NL', 'NO', 'PL', 'PT', 'SE',
       ]);
-      if (europeCountries.has(userCountry)) return ' (Europe)';
+      if (europeCountries.has(userCountry)) return ` (${translatedPhrases.europe})`;
       return '';
     })();
 
     if (nextDstTransition.type === 'end') {
-      return `Daylight time ends: ${formattedDate} (reverts to standard time)${suffix}`;
+      return `${translatedPhrases.ends}: ${formattedDate} (${translatedPhrases.reverts})${suffix}`;
     }
 
-    return `Daylight time starts: ${formattedDate}${suffix}`;
-  }, [nextDstTransition, userCountry]);
+    return `${translatedPhrases.starts}: ${formattedDate}${suffix}`;
+  }, [nextDstTransition, userCountry, currentLanguage]);
   
   useEffect(() => {
     const timer = setInterval(() => {
