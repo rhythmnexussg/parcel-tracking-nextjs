@@ -841,8 +841,8 @@ export async function detectLanguageFromIPWithRestrictions() {
     }
     console.log('=================================');
     
-    // Access decision is based on strict shipping country policy.
-    // Any strong signal of a blocked country should be rejected (VPN or non-VPN).
+    // Access decision is based on shipping country allowlist.
+    // Prioritize trusted allowed-country signals to avoid false blocks caused by VPN exit-node rerouting.
     const ipCountries = [detectedCountryCode, secondaryCountryCode].filter(Boolean);
     const allowedIpCountry = ipCountries.find((code) => isAllowedAccessCountry(code)) || null;
     const timezoneCountryCode = normalizeCountryCode(inferCountryCodeFromBrowserTimezone(browserTimezone) || null);
@@ -856,16 +856,23 @@ export async function detectLanguageFromIPWithRestrictions() {
     const blockedSignalCountry = signalCountries.find((code) => isBlockedAccessCountry(code)) || null;
     const allIpCountriesAllowed = ipCountries.length > 0 && ipCountries.every((code) => isAllowedAccessCountry(code));
 
-    let finalCountryCode = normalizeCountryCode(allowedIpCountry || detectedCountryCode || secondaryCountryCode || null);
+    const trustedSignalCountries = [
+      timezoneCountryCode,
+      normalizeCountryCode(vpnDetection.actualCountry || null),
+      detectedCountryCode,
+      secondaryCountryCode,
+    ].filter(Boolean);
+    const allowedTrustedCountry = trustedSignalCountries.find((code) => isAllowedAccessCountry(code)) || null;
+
+    let finalCountryCode = normalizeCountryCode(allowedTrustedCountry || allowedIpCountry || detectedCountryCode || secondaryCountryCode || null);
     if (!finalCountryCode) {
       finalCountryCode = normalizeCountryCode(timezoneCountryCode || vpnDetection.actualCountry || null);
     }
 
     const blockedByCountry = !isAllowedAccessCountry(finalCountryCode);
-    // Relax VPN blocking: allow access when final country is allowed.
-    // Only block on VPN if signals indicate an explicitly blocked country.
-    const blockedByVPN = vpnDetection.isVPN && Boolean(blockedSignalCountry);
-    const blocked = blockedByCountry || blockedByVPN || Boolean(blockedSignalCountry);
+    // Final country allowlist takes precedence to prevent false blocks
+    // for shippable destinations (e.g., Austria) under VPN/proxy mismatches.
+    const blocked = blockedByCountry;
     
     const languageCode = countryToLanguageMap[finalCountryCode] || 'en';
 
@@ -893,9 +900,7 @@ export async function detectLanguageFromIPWithRestrictions() {
       accessRestrictions: finalCountryCode === 'CN' ? { allowedDestinations: allowedCountriesFromChina } : null,
       blocked,
       message: blocked
-        ? (blockedByVPN
-            ? `Sorry, you are not authorized to access this page. Please disable VPN and try again. You are located in ${blockedCountryName} that currently Rhythm Nexus does not offer any shipping there.`
-            : `Sorry, you are not authorized to access this page. You are located in ${blockedCountryName} that currently Rhythm Nexus does not offer any shipping there.`)
+        ? `Sorry, you are not authorized to access this page. You are located in ${blockedCountryName} that currently Rhythm Nexus does not offer any shipping there.`
         : null
     };
 
