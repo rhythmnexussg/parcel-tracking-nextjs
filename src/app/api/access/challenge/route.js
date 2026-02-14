@@ -140,7 +140,6 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const lang = normalizeCaptchaLanguage(searchParams.get('lang'));
-    const useEnglish = Math.random() < 0.5;
     const captchaSecret = getCaptchaSecretOrThrow();
     const { a, b, op } = createOperationChallenge();
     const exp = Date.now() + 5 * 60 * 1000;
@@ -148,14 +147,14 @@ export async function GET(request) {
     const payloadBase64 = Buffer.from(JSON.stringify({ a, b, op, exp }), 'utf-8').toString('base64url');
     const signature = crypto.createHmac('sha256', captchaSecret).update(payloadBase64).digest('base64url');
     const token = `${payloadBase64}.${signature}`;
-    const question = buildQuestionText(lang, a, b, op, useEnglish);
+    const question = buildQuestionText(lang, a, b, op, false);
 
     return secureApiResponse(
       NextResponse.json(
         {
           question,
           token,
-          language: useEnglish ? 'en' : lang,
+          language: lang,
           operation: op,
         },
         {

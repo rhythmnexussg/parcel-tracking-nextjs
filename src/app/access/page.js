@@ -5,8 +5,10 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLanguage } from '../../LanguageContext';
 
 const ACCESS_TAB_SESSION_KEY = 'rnx_access_tab_verified';
+const CAPTCHA_LANG_SESSION_KEY = 'rnx_captcha_language';
 
 const CAPTCHA_LANGUAGES = [
+  { code: 'en', label: 'English' },
   { code: 'cs', label: 'Čeština (Czech)' },
   { code: 'nl', label: 'Nederlands (Dutch)' },
   { code: 'fi', label: 'Suomi (Finnish)' },
@@ -27,7 +29,7 @@ const CAPTCHA_LANGUAGES = [
   { code: 'zh', label: '简体中文 (Chinese Simplified)' },
   { code: 'es', label: 'Español (Spanish)' },
   { code: 'sv', label: 'Svenska (Swedish)' },
-  { code: 'tl', label: 'Tagalog (with English mixed)' },
+  { code: 'tl', label: 'Tagalog (Filipino)' },
   { code: 'th', label: 'ไทย (Thai)' },
   { code: 'zh-hant', label: '繁體中文 (Chinese Traditional)' },
   { code: 'vi', label: 'Tiếng Việt (Vietnamese)' },
@@ -116,10 +118,25 @@ export default function AccessPage() {
   }, [selectedLang, text.chooseLanguageFirst, text.loadFailed]);
 
   useEffect(() => {
-    if (!selectedLang && language) {
-      setSelectedLang(language);
+    if (selectedLang) return;
+
+    const isSupported = (code) => CAPTCHA_LANGUAGES.some((item) => item.code === code);
+    const savedLang = sessionStorage.getItem(CAPTCHA_LANG_SESSION_KEY) || '';
+
+    if (savedLang && isSupported(savedLang)) {
+      setSelectedLang(savedLang);
+      setLanguage(savedLang);
+      return;
     }
-  }, [language, selectedLang]);
+
+    if (language && isSupported(language)) {
+      setSelectedLang(language);
+      return;
+    }
+
+    setSelectedLang('en');
+    setLanguage('en');
+  }, [language, selectedLang, setLanguage]);
 
   useEffect(() => {
     if (selectedLang && !token && !loading) {
@@ -231,6 +248,7 @@ export default function AccessPage() {
               const nextLang = e.target.value;
               setSelectedLang(nextLang);
               setLanguage(nextLang);
+              sessionStorage.setItem(CAPTCHA_LANG_SESSION_KEY, nextLang);
               setQuestion('');
               setToken('');
               setAnswer('');
