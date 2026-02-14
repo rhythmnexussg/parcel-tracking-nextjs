@@ -249,14 +249,27 @@ function formatPostedDate(dateString) {
 }
 
 async function fetchOrderInfo(query) {
-  const url =
-    "https://sheets.googleapis.com/v4/spreadsheets/1t-1V0WBpuFmRCLgctUZqm4-BXCdyyqG-NBrm8JgULQQ/values/Current!A:J?key=AIzaSyA-2x10CBEwNEybXB07fN7xBeJLdIltH4M";
-
   try {
-    const response = await fetch(url);
+    const response = await fetch('/api/orders', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error('Order source unavailable');
+    }
+
     const data = await response.json();
-    const rows = data.values || [];
-    const bodyRows = rows.slice(1);
+    const bodyRows = Array.isArray(data?.orders)
+      ? data.orders.map((r) => [
+          r.orderNumber,
+          r.email,
+          r.dialingCode,
+          r.phone,
+          r.trackingNumber,
+          r.destinationCountry,
+          r.postcode,
+          r.status,
+          r.postedDate,
+          r.shippedVia,
+        ])
+      : [];
 
     if (!query) {
       return bodyRows.map((r) => ({
@@ -312,6 +325,7 @@ async function fetchOrderInfo(query) {
     }));
   } catch (err) {
     console.error("Error fetching Google Sheet:", err);
+    alert('Order database is temporarily unavailable. Please try again in a moment.');
     return [];
   }
 }
@@ -855,7 +869,7 @@ function App() {
         alert(t('invalidSingPostFormat'));
         return;
       }
-      url = postalTrackingUrls.PP + encodeURIComponent(trackingNumber);
+      url = postalTrackingUrls.SG + encodeURIComponent(trackingNumber);
     }
     else {
       if (/^PX\d{9}SG$/.test(trackingNumber)) {
