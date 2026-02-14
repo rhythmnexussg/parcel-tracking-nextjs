@@ -32,7 +32,10 @@ export async function GET(request) {
       throw new Error(`Upstream failed: ${resp.status}`);
     }
     const html = await resp.text();
-    const content = sanitizeAndRewrite(html, baseUrl, { translateLang: lang });
+    const content = sanitizeAndRewrite(html, baseUrl, {
+      translateLang: lang,
+      forceFormTargetBlank: true,
+    });
     return secureApiResponse(
       new NextResponse(content, {
         status: 200,

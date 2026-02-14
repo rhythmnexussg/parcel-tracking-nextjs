@@ -129,6 +129,7 @@ export function sanitizeAndRewrite(html, baseUrl, options = {}) {
   $('form').each(function () {
     const $form = $(this);
     const action = ($form.attr('action') || '').trim();
+    const shouldOpenFormInNewTab = Boolean(options.forceFormTargetBlank);
 
     if (action.startsWith('/')) {
       $form.attr('action', `${baseUrl}${action}`);
@@ -137,7 +138,7 @@ export function sanitizeAndRewrite(html, baseUrl, options = {}) {
       $form.attr('action', `${baseUrl}/${normalizedAction}`);
     }
 
-    $form.attr('target', '_self');
+    $form.attr('target', shouldOpenFormInNewTab ? '_blank' : '_self');
   });
 
   let out = $.html();
