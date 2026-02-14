@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
 import { sanitizeAndRewrite } from '../proxy-utils';
+import { normalizeLangParam, rateLimit, secureApiResponse } from '../security';
 
 export async function GET(request) {
+  const limited = rateLimit(request, { keyPrefix: 'proxy-destination', maxRequests: 25, windowMs: 60 * 1000 });
+  if (limited) return limited;
+
   try {
     const { searchParams } = new URL(request.url);
     const urlParam = searchParams.get('url');
-    const rawLang = (searchParams.get('lang') || '').trim();
-    const lang = /^[a-z]{2,3}(?:-[a-z]{2,4})?$/i.test(rawLang) ? rawLang.toLowerCase() : null;
+    const lang = normalizeLangParam(searchParams.get('lang'));
     if (!urlParam) {
-      return NextResponse.json({ error: 'Missing url' }, { status: 400 });
+      return secureApiResponse(NextResponse.json({ error: 'Missing url' }, { status: 400 }));
     }
 
     // Only allow http/https and a whitelist of hostnames to reduce abuse.
@@ -20,11 +23,11 @@ export async function GET(request) {
       try {
         parsed = new URL(decodeURIComponent(urlParam));
       } catch (e) {
-        return NextResponse.json({ error: 'Invalid url parameter' }, { status: 400 });
+        return secureApiResponse(NextResponse.json({ error: 'Invalid url parameter' }, { status: 400 }));
       }
     }
     if (!['http:', 'https:'].includes(parsed.protocol)) {
-      return NextResponse.json({ error: 'Invalid protocol' }, { status: 400 });
+      return secureApiResponse(NextResponse.json({ error: 'Invalid protocol' }, { status: 400 }));
     }
     const allowedHosts = [
       'www.usps.com', 'tools.usps.com',
@@ -42,7 +45,7 @@ export async function GET(request) {
       'www.posti.fi', 'www.postaonline.cz'
     ];
     if (!allowedHosts.includes(parsed.hostname)) {
-      return NextResponse.json({ error: 'Host not allowed' }, { status: 403 });
+      return secureApiResponse(NextResponse.json({ error: 'Host not allowed' }, { status: 403 }));
     }
 
     const baseUrl = `${parsed.protocol}//${parsed.hostname}`;
@@ -84,11 +87,14 @@ export async function GET(request) {
       'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
     };
     
-    return new NextResponse(content, {
-      status: 200,
-      headers: responseHeaders,
-    });
+    return secureApiResponse(
+      new NextResponse(content, {
+        status: 200,
+        headers: responseHeaders,
+      }),
+      { isHtml: true }
+    );
   } catch (err) {
-    return NextResponse.json({ error: 'Proxy failed' }, { status: 500 });
+    return secureApiResponse(NextResponse.json({ error: 'Proxy failed' }, { status: 500 }));
   }
 }

@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
+import { normalizeLangParam, rateLimit, secureApiResponse } from '../security';
 
 export async function GET(request) {
+  const limited = rateLimit(request, { keyPrefix: 'singpost-announcements', maxRequests: 20, windowMs: 60 * 1000 });
+  if (limited) return limited;
+
   try {
     // Define the 34 countries you ship to internationally (alphabetical order)
     const shippedCountries = [
@@ -14,9 +18,13 @@ export async function GET(request) {
     // Get allowed countries from query parameters, or use all shipped countries
     const { searchParams } = new URL(request.url);
     const allowedCountriesParam = searchParams.get('countries');
-    const lang = searchParams.get('lang');
-    const allowedCountries = allowedCountriesParam 
-      ? allowedCountriesParam.split(',') 
+    const lang = normalizeLangParam(searchParams.get('lang'));
+    const allowedCountries = allowedCountriesParam
+      ? allowedCountriesParam
+          .split(',')
+          .map((code) => code.trim().toUpperCase())
+          .filter((code) => /^[A-Z]{2}$/.test(code))
+          .slice(0, 50)
       : shippedCountries; // Always filter by shipped countries
     
     const response = await fetch('https://www.singpost.com/send-receive/service-announcements', {
@@ -333,23 +341,28 @@ export async function GET(request) {
       }
     } catch {}
     
-    return new NextResponse(content, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600', // Cache for 5 minutes
-      },
-    });
+    return secureApiResponse(
+      new NextResponse(content, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600', // Cache for 5 minutes
+        },
+      }),
+      { isHtml: true }
+    );
     
   } catch (error) {
     console.error('Error fetching SingPost announcements:', error);
     
-    return NextResponse.json(
-      { 
-        error: 'Failed to fetch service announcements',
-        message: error.message 
-      },
-      { status: 500 }
+    return secureApiResponse(
+      NextResponse.json(
+        {
+          error: 'Failed to fetch service announcements',
+          message: error.message,
+        },
+        { status: 500 }
+      )
     );
   }
 }

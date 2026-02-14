@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
 import { sanitizeAndRewrite } from '../proxy-utils';
+import { normalizeLangParam, rateLimit, secureApiResponse } from '../security';
 
 export async function GET(request) {
+  const limited = rateLimit(request, { keyPrefix: 'proxy-singpost', maxRequests: 25, windowMs: 60 * 1000 });
+  if (limited) return limited;
+
   try {
     const { searchParams } = new URL(request.url);
     const trackingid = (searchParams.get('trackingid') || '').trim();
-    const lang = searchParams.get('lang');
+    const lang = normalizeLangParam(searchParams.get('lang'));
     if (!trackingid) {
-      return NextResponse.json({ error: 'Missing trackingid' }, { status: 400 });
+      return secureApiResponse(NextResponse.json({ error: 'Missing trackingid' }, { status: 400 }));
     }
     if (!/^[A-Za-z0-9-]{6,50}$/.test(trackingid)) {
-      return NextResponse.json({ error: 'Invalid trackingid format' }, { status: 400 });
+      return secureApiResponse(NextResponse.json({ error: 'Invalid trackingid format' }, { status: 400 }));
     }
 
     const baseUrl = 'https://www.singpost.com';
@@ -29,14 +33,17 @@ export async function GET(request) {
     }
     const html = await resp.text();
     const content = sanitizeAndRewrite(html, baseUrl, { translateLang: lang });
-    return new NextResponse(content, {
-      status: 200,
-      headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, s-maxage=180, stale-while-revalidate=600',
-      },
-    });
+    return secureApiResponse(
+      new NextResponse(content, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Cache-Control': 'public, s-maxage=180, stale-while-revalidate=600',
+        },
+      }),
+      { isHtml: true }
+    );
   } catch (err) {
-    return NextResponse.json({ error: 'Proxy failed' }, { status: 500 });
+    return secureApiResponse(NextResponse.json({ error: 'Proxy failed' }, { status: 500 }));
   }
 }

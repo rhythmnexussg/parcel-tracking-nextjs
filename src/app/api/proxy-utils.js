@@ -11,6 +11,34 @@ export function sanitizeAndRewrite(html, baseUrl, options = {}) {
   $('meta[http-equiv="X-Frame-Options"]').remove();
   $('meta[http-equiv="refresh"]').remove();
 
+  // Remove executable inline attributes and javascript: URLs.
+  $('*').each(function () {
+    const $el = $(this);
+    const attributes = this.attribs || {};
+
+    Object.entries(attributes).forEach(([attrName, attrValue]) => {
+      const lowerName = attrName.toLowerCase();
+      const value = String(attrValue || '').trim();
+
+      if (lowerName.startsWith('on')) {
+        $el.removeAttr(attrName);
+        return;
+      }
+
+      if (lowerName === 'srcdoc') {
+        $el.removeAttr(attrName);
+        return;
+      }
+
+      if (
+        (lowerName === 'href' || lowerName === 'src' || lowerName === 'xlink:href') &&
+        /^javascript:/i.test(value)
+      ) {
+        $el.removeAttr(attrName);
+      }
+    });
+  });
+
   // Preserve inline event handlers; only remove obvious analytics/ad vendor scripts
   $('script').each(function () {
     const $s = $(this);

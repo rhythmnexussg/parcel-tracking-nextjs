@@ -1,16 +1,8 @@
 import crypto from 'crypto';
 import { NextResponse } from 'next/server';
+import { getCaptchaSecretOrThrow } from '../captcha-secret';
+import { rateLimit, secureApiResponse } from '../../security';
 
-const FALLBACK_CAPTCHA_SECRET = 'rnx-captcha-fallback-v1:6f4b1b6f6cf74ff8bcbf1f8d8a55c6c3';
-
-function getCaptchaSecret() {
-  return (
-    process.env.ACCESS_CAPTCHA_SECRET ||
-    process.env.ADMIN_SESSION_SECRET ||
-    process.env.ADMIN_OVERRIDE_SESSION_SECRET ||
-    FALLBACK_CAPTCHA_SECRET
-  );
-}
 const ACCESS_COOKIE_NAME = 'rnx_access_granted';
 const ACCESS_COOKIE_VALUE = '1';
 const ACCESS_COOKIE_DURATION_SECONDS = 60 * 60;
@@ -27,8 +19,11 @@ function getSafeRedirectPath(nextPath) {
 }
 
 export async function POST(request) {
+  const limited = rateLimit(request, { keyPrefix: 'captcha-verify', maxRequests: 20, windowMs: 60 * 1000 });
+  if (limited) return limited;
+
   try {
-    const captchaSecret = getCaptchaSecret();
+    const captchaSecret = getCaptchaSecretOrThrow();
 
     const body = await request.json();
     const token = (body?.token || '').toString().trim();
@@ -36,38 +31,38 @@ export async function POST(request) {
     const nextPath = getSafeRedirectPath(body?.nextPath || '/');
 
     if (!token || Number.isNaN(answer)) {
-      return NextResponse.json({ ok: false, error: 'invalid_request' }, { status: 400 });
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_request' }, { status: 400 }));
     }
 
     const [payloadBase64, signature] = token.split('.');
     if (!payloadBase64 || !signature) {
-      return NextResponse.json({ ok: false, error: 'invalid_token' }, { status: 400 });
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_token' }, { status: 400 }));
     }
 
     const expectedSignature = signPayload(payloadBase64, captchaSecret);
     const providedSignatureBuffer = Buffer.from(signature, 'utf-8');
     const expectedSignatureBuffer = Buffer.from(expectedSignature, 'utf-8');
     if (providedSignatureBuffer.length !== expectedSignatureBuffer.length) {
-      return NextResponse.json({ ok: false, error: 'invalid_signature' }, { status: 401 });
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_signature' }, { status: 401 }));
     }
     const signatureMatch = crypto.timingSafeEqual(providedSignatureBuffer, expectedSignatureBuffer);
 
     if (!signatureMatch) {
-      return NextResponse.json({ ok: false, error: 'invalid_signature' }, { status: 401 });
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_signature' }, { status: 401 }));
     }
 
     const payload = JSON.parse(Buffer.from(payloadBase64, 'base64url').toString('utf-8'));
     if (!payload || typeof payload.a !== 'number' || typeof payload.b !== 'number' || typeof payload.exp !== 'number') {
-      return NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 });
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
     }
 
     if (Date.now() > payload.exp) {
-      return NextResponse.json({ ok: false, error: 'expired' }, { status: 401 });
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'expired' }, { status: 401 }));
     }
 
     const expectedAnswer = payload.a + payload.b;
     if (answer !== expectedAnswer) {
-      return NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 });
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 }));
     }
 
     const response = NextResponse.json({ ok: true, redirectTo: nextPath });
@@ -79,8 +74,8 @@ export async function POST(request) {
       maxAge: ACCESS_COOKIE_DURATION_SECONDS,
     });
 
-    return response;
+    return secureApiResponse(response);
   } catch (_) {
-    return NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 });
+    return secureApiResponse(NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 }));
   }
 }

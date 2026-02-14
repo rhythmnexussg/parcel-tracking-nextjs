@@ -210,13 +210,31 @@ async function applyAdminSessionCookie(response) {
 }
 
 function applySecurityHeaders(response) {
+  const csp = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://pagead2.googlesyndication.com https://translate.google.com https://translate.googleapis.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data: https://fonts.gstatic.com",
+    "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com",
+    "frame-src 'self' https://www.google.com https://*.doubleclick.net",
+    "frame-ancestors 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    'upgrade-insecure-requests',
+  ].join('; ');
+
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
-  response.headers.set('Content-Security-Policy', "frame-ancestors 'self'; object-src 'none'; base-uri 'self'");
+  response.headers.set('Content-Security-Policy', csp);
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
   response.headers.set('Cross-Origin-Resource-Policy', 'same-site');
+  response.headers.set('X-DNS-Prefetch-Control', 'off');
+  response.headers.set('X-Permitted-Cross-Domain-Policies', 'none');
+  response.headers.set('Origin-Agent-Cluster', '?1');
   if (process.env.NODE_ENV === 'production') {
     response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   }
@@ -545,13 +563,6 @@ export async function middleware(request) {
     }
   }
 
-  if (isProtectedPath && !hasCaptchaCookie) {
-    const accessUrl = nextUrl.clone();
-    accessUrl.pathname = '/access';
-    accessUrl.searchParams.set('next', `${path}${nextUrl.search || ''}`);
-    return applySecurityHeaders(NextResponse.redirect(accessUrl));
-  }
-
   if (path === ADMIN_AUTH_PATH) {
     if (!isAdminSecurityConfigured()) {
       return applySecurityHeaders(new NextResponse('Admin override unavailable.', { status: 503 }));
@@ -621,6 +632,13 @@ export async function middleware(request) {
       }
       return applySecurityHeaders(response);
     }
+  }
+
+  if (isProtectedPath && !hasCaptchaCookie) {
+    const accessUrl = nextUrl.clone();
+    accessUrl.pathname = '/access';
+    accessUrl.searchParams.set('next', `${path}${nextUrl.search || ''}`);
+    return applySecurityHeaders(NextResponse.redirect(accessUrl));
   }
 
   const response = NextResponse.next();
