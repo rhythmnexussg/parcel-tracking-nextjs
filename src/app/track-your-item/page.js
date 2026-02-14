@@ -1363,7 +1363,6 @@ function App() {
             {/* Normal postal: toggle between SingPost and Destination */}
             {!/^\d{10}$/.test(trackingNumber) && !/^PX\d{9}SG$/.test(trackingNumber) && trackingUrl && (
               <>
-                {canEmbedDestination && (
                 <div className="embed-toggle-buttons" style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
                   <button
                     className={activeEmbed === 'singpost' ? 'btn-primary' : 'btn-secondary'}
@@ -1382,16 +1381,15 @@ function App() {
                     </button>
                   )}
                 </div>
-                )}
 
-                {canEmbedDestination && (activeEmbed === 'singpost' || destinationCountry === 'SG') && (
+                {(activeEmbed === 'singpost' || destinationCountry === 'SG') && (
                   <>
                     <iframe
                       key={`singpost-${trackingNumber}-${currentLanguage}`}
                       src={`/api/proxy-singpost?trackingid=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}`}
                       style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
                       title="SingPost Tracking"
-                      sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-forms allow-scripts"
+                      sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-forms allow-scripts allow-modals"
                     />
                     <div className="singpost-newtab-notice" style={{ marginTop: 10, padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
                       If reCAPTCHA appears in the embedded SingPost tracker, click “I am not a robot”. Search/verification opens in a new tab automatically.{' '}
