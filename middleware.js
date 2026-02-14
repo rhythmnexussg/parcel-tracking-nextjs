@@ -24,8 +24,6 @@ const ADMIN_SESSION_SECRET =
   process.env.ADMIN_SESSION_SECRET ||
   process.env.ADMIN_OVERRIDE_SESSION_SECRET ||
   '';
-const DEFAULT_ADMIN_USERNAME_SHA256 = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
-const DEFAULT_ADMIN_PASSWORD_SHA256 = 'ff12e04e4fee83fa63e75f010237fcd0a2f0ec670dfaf212b5ce436def365662';
 
 const textEncoder = new TextEncoder();
 
@@ -34,7 +32,7 @@ function hasEnvAdminCredentials() {
 }
 
 function isAdminCredentialsConfigured() {
-  return Boolean(hasEnvAdminCredentials() || (DEFAULT_ADMIN_USERNAME_SHA256 && DEFAULT_ADMIN_PASSWORD_SHA256));
+  return Boolean(hasEnvAdminCredentials());
 }
 
 function isAdminSessionConfigured() {
@@ -52,10 +50,6 @@ function getAdminSessionSecret() {
 
   if (hasEnvAdminCredentials()) {
     return `rnx-admin-session-v1:${ADMIN_OVERRIDE_USERNAME}:${ADMIN_OVERRIDE_PASSWORD}`;
-  }
-
-  if (DEFAULT_ADMIN_USERNAME_SHA256 && DEFAULT_ADMIN_PASSWORD_SHA256) {
-    return `rnx-admin-session-v1:${DEFAULT_ADMIN_USERNAME_SHA256}:${DEFAULT_ADMIN_PASSWORD_SHA256}`;
   }
 
   return '';
@@ -149,24 +143,6 @@ async function getAdminSessionTokenStatus(token) {
   };
 }
 
-async function sha256Hex(value) {
-  const digest = await crypto.subtle.digest('SHA-256', textEncoder.encode(value));
-  const digestBytes = new Uint8Array(digest);
-  return Array.from(digestBytes).map((byte) => byte.toString(16).padStart(2, '0')).join('');
-}
-
-async function isDefaultCredentialMatch(credentials) {
-  if (!credentials?.username || !credentials?.password) return false;
-  const [usernameHash, passwordHash] = await Promise.all([
-    sha256Hex(credentials.username),
-    sha256Hex(credentials.password),
-  ]);
-  return (
-    constantTimeEqual(usernameHash, DEFAULT_ADMIN_USERNAME_SHA256) &&
-    constantTimeEqual(passwordHash, DEFAULT_ADMIN_PASSWORD_SHA256)
-  );
-}
-
 async function isAdminAuthenticated(request) {
   if (!isAdminSecurityConfigured()) {
     return { authenticated: false, setSessionCookie: false, sessionExpired: false };
@@ -189,8 +165,7 @@ async function isAdminAuthenticated(request) {
     credentials.username === ADMIN_OVERRIDE_USERNAME &&
     credentials.password === ADMIN_OVERRIDE_PASSWORD
   );
-  const hasDefaultCredentialMatch = await isDefaultCredentialMatch(credentials);
-  const hasValidCredentials = hasEnvCredentialMatch || hasDefaultCredentialMatch;
+  const hasValidCredentials = hasEnvCredentialMatch;
 
   return {
     authenticated: hasValidCredentials,

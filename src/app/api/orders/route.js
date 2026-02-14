@@ -3,14 +3,24 @@ import { rateLimit, secureApiResponse } from '../security';
 
 const SHEET_ID = '1t-1V0WBpuFmRCLgctUZqm4-BXCdyyqG-NBrm8JgULQQ';
 const SHEET_RANGE = 'Current!A:J';
-const FALLBACK_API_KEY = 'AIzaSyA-2x10CBEwNEybXB07fN7xBeJLdIltH4M';
 
 export async function GET(request) {
   const limited = rateLimit(request, { keyPrefix: 'orders', maxRequests: 60, windowMs: 60 * 1000 });
   if (limited) return limited;
 
   try {
-    const apiKey = process.env.GOOGLE_SHEETS_API_KEY || FALLBACK_API_KEY;
+    const apiKey = process.env.GOOGLE_SHEETS_API_KEY;
+    if (!apiKey) {
+      return secureApiResponse(
+        NextResponse.json(
+          {
+            error: 'order_source_unavailable',
+            details: 'Server configuration missing GOOGLE_SHEETS_API_KEY.',
+          },
+          { status: 503 }
+        )
+      );
+    }
     const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(SHEET_RANGE)}?key=${apiKey}`;
 
     const response = await fetch(apiUrl, {
