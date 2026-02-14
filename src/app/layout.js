@@ -10,6 +10,20 @@ import { detectLanguageFromIPWithRestrictions, isAllowedAccessCountry } from "..
 
 const ACCESS_TAB_SESSION_KEY = "rnx_access_tab_verified";
 
+function isCaptchaRequiredPath(pathname) {
+  if (!pathname || typeof pathname !== "string") return false;
+
+  return (
+    pathname === "/" ||
+    pathname === "/about" ||
+    pathname === "/FAQ" ||
+    pathname === "/faq" ||
+    pathname === "/blog" ||
+    pathname.startsWith("/blog/") ||
+    pathname === "/track-your-item"
+  );
+}
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -45,6 +59,11 @@ export default function RootLayout({ children }) {
 
       // Always allow access checks to be bypassed for access and blocked pages
       if (pathname === "/access" || pathname === "/blocked") {
+        if (isActive) setAccessChecked(true);
+        return;
+      }
+
+      if (!isCaptchaRequiredPath(pathname)) {
         if (isActive) setAccessChecked(true);
         return;
       }

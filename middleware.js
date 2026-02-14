@@ -455,6 +455,20 @@ function isCaptchaExemptPath(path) {
   );
 }
 
+function isCaptchaRequiredPath(path) {
+  if (!path || typeof path !== 'string') return false;
+
+  return (
+    path === '/' ||
+    path === '/about' ||
+    path === '/FAQ' ||
+    path === '/faq' ||
+    path === '/blog' ||
+    path.startsWith('/blog/') ||
+    path === '/track-your-item'
+  );
+}
+
 function refreshAccessCookie(response) {
   response.cookies.set(ACCESS_COOKIE_NAME, ACCESS_COOKIE_VALUE, {
     httpOnly: true,
@@ -558,7 +572,7 @@ export async function middleware(request) {
   const platformVersionMajor = extractPlatformVersionMajor(platformVersionHeader);
   const requestedCountry = (nextUrl.searchParams.get('country') || nextUrl.searchParams.get('adminCountry') || '').trim().toUpperCase();
   const hasQueryCountryOverride = /^[A-Z]{2}$/.test(requestedCountry);
-  const isProtectedPath = !isCaptchaExemptPath(path);
+  const isProtectedPath = isCaptchaRequiredPath(path) && !isCaptchaExemptPath(path);
   const hasCaptchaCookie = request.cookies.get(ACCESS_COOKIE_NAME)?.value === ACCESS_COOKIE_VALUE;
 
   if (!isOsPolicyExemptPath(path)) {
