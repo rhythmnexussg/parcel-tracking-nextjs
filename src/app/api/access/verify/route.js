@@ -18,6 +18,17 @@ function getSafeRedirectPath(nextPath) {
   return nextPath;
 }
 
+function calculateExpectedAnswer(payload) {
+  const { a, b, op } = payload;
+
+  if (op === 'add') return a + b;
+  if (op === 'sub') return a - b;
+  if (op === 'mul') return a * b;
+  if (op === 'div') return b === 0 ? NaN : a / b;
+
+  return NaN;
+}
+
 export async function POST(request) {
   const limited = rateLimit(request, { keyPrefix: 'captcha-verify', maxRequests: 20, windowMs: 60 * 1000 });
   if (limited) return limited;
@@ -56,11 +67,19 @@ export async function POST(request) {
       return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
     }
 
+    if (!['add', 'sub', 'mul', 'div'].includes(payload.op)) {
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_operation' }, { status: 400 }));
+    }
+
     if (Date.now() > payload.exp) {
       return secureApiResponse(NextResponse.json({ ok: false, error: 'expired' }, { status: 401 }));
     }
 
-    const expectedAnswer = payload.a + payload.b;
+    const expectedAnswer = calculateExpectedAnswer(payload);
+    if (!Number.isFinite(expectedAnswer)) {
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
+    }
+
     if (answer !== expectedAnswer) {
       return secureApiResponse(NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 }));
     }
