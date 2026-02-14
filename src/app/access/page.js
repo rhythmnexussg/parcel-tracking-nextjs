@@ -107,6 +107,10 @@ export default function AccessPage() {
       const response = await fetch(challengeUrl, { cache: 'no-store' });
       const data = await response.json();
       if (!response.ok || !data?.question || !data?.token) {
+        if (data?.error === 'captcha_unavailable') {
+          setError('Captcha is temporarily unavailable. Please try again in a moment.');
+          return;
+        }
         throw new Error('Unable to load challenge');
       }
       setQuestion(data.question);
