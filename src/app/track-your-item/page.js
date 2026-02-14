@@ -1370,19 +1370,6 @@ function App() {
                       title="SingPost Tracking"
                       sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-forms allow-scripts allow-modals"
                     />
-                    <div className="singpost-newtab-notice" style={{ marginTop: 10, padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
-                      If reCAPTCHA appears in the embedded SingPost tracker, click “I am not a robot”. Search/verification opens in a new tab automatically.{' '}
-                      <a
-                        className="singpost-newtab-link"
-                        href={`https://www.singpost.com/track-items?trackingid=${encodeURIComponent(trackingNumber)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: '#0066cc', fontWeight: 'bold' }}
-                      >
-                        {t('clickHere')}
-                      </a>{' '}
-                      {t('toTrackNewTab')}
-                    </div>
                   </>
                 )}
 
