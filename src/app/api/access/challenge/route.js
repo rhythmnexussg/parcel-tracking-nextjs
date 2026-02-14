@@ -74,6 +74,37 @@ const NATIVE_QUESTION_START = {
   cy: 'Beth yw',
 };
 
+const MATCH_PROMPT = {
+  en: 'Match puzzle: select the same symbol as',
+  cs: 'Párovací úkol: vyberte stejný symbol jako',
+  nl: 'Match-puzzel: kies hetzelfde symbool als',
+  fi: 'Yhdistämistehtävä: valitse sama symboli kuin',
+  fr: 'Puzzle d’association : sélectionnez le même symbole que',
+  de: 'Zuordnungsrätsel: Wählen Sie dasselbe Symbol wie',
+  he: 'פאזל התאמה: בחר/י את אותו הסמל כמו',
+  hi: 'मैच पज़ल: वही चिन्ह चुनें जो',
+  id: 'Teka-teki cocokkan: pilih simbol yang sama dengan',
+  ga: 'Puzal meaitseála: roghnaigh an tsiombail chéanna le',
+  it: 'Puzzle di abbinamento: seleziona lo stesso simbolo di',
+  ja: 'マッチパズル：次と同じ記号を選んでください',
+  ko: '매칭 퍼즐: 다음과 같은 기호를 선택하세요',
+  ms: 'Teka-teki padanan: pilih simbol yang sama seperti',
+  no: 'Match-oppgave: velg samme symbol som',
+  pl: 'Puzzle dopasowania: wybierz ten sam symbol co',
+  pt: 'Quebra-cabeça de correspondência: selecione o mesmo símbolo que',
+  ru: 'Головоломка на соответствие: выберите такой же символ, как',
+  zh: '配对谜题：请选择与其相同的符号',
+  es: 'Rompecabezas de emparejar: selecciona el mismo símbolo que',
+  sv: 'Matchningspussel: välj samma symbol som',
+  tl: 'Match puzzle: piliin ang kaparehong simbolo ng',
+  th: 'ปริศนาจับคู่: เลือกสัญลักษณ์เดียวกันกับ',
+  'zh-hant': '配對謎題：請選擇與其相同的符號',
+  vi: 'Câu đố ghép cặp: chọn cùng ký hiệu với',
+  cy: 'Pos cydweddu: dewiswch yr un symbol â',
+};
+
+const MATCH_SYMBOL_POOL = ['★', '◆', '●', '■', '▲', '♥', '♣', '♠', '☀', '☂', '☕', '♫', '⚙', '✈', '⌛', '⚡'];
+
 function normalizeCaptchaLanguage(value) {
   const normalized = (value || '').trim().toLowerCase();
   return SUPPORTED_LANGS.has(normalized) ? normalized : 'en';
@@ -133,6 +164,32 @@ function buildQuestionText(lang, a, b, op, useEnglish) {
   return `${start} ${a} ${word} ${b}? (${symbol})`;
 }
 
+function shuffleArray(values) {
+  const arr = [...values];
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function createMatchChallenge(lang) {
+  const shuffledPool = shuffleArray(MATCH_SYMBOL_POOL);
+  const correctOption = shuffledPool[0];
+  const optionSet = shuffleArray([correctOption, shuffledPool[1], shuffledPool[2], shuffledPool[3]]);
+  const prompt = MATCH_PROMPT[lang] || MATCH_PROMPT.en;
+  const question = `${prompt} ${correctOption}`;
+
+  return {
+    question,
+    options: optionSet,
+    payload: {
+      mode: 'match',
+      correctOption,
+    },
+  };
+}
+
 export async function GET(request) {
   const limited = rateLimit(request, { keyPrefix: 'captcha-challenge', maxRequests: 20, windowMs: 60 * 1000 });
   if (limited) return limited;
@@ -141,13 +198,27 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const lang = normalizeCaptchaLanguage(searchParams.get('lang'));
     const captchaSecret = getCaptchaSecretOrThrow();
-    const { a, b, op } = createOperationChallenge();
     const exp = Date.now() + 5 * 60 * 1000;
 
-    const payloadBase64 = Buffer.from(JSON.stringify({ a, b, op, exp }), 'utf-8').toString('base64url');
+    const useMatchPuzzle = Math.random() < 0.5;
+    let question = '';
+    let options = null;
+    let payload = { mode: 'math' };
+
+    if (useMatchPuzzle) {
+      const matchChallenge = createMatchChallenge(lang);
+      question = matchChallenge.question;
+      options = matchChallenge.options;
+      payload = { ...payload, ...matchChallenge.payload, exp };
+    } else {
+      const { a, b, op } = createOperationChallenge();
+      question = buildQuestionText(lang, a, b, op, false);
+      payload = { ...payload, a, b, op, exp };
+    }
+
+    const payloadBase64 = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64url');
     const signature = crypto.createHmac('sha256', captchaSecret).update(payloadBase64).digest('base64url');
     const token = `${payloadBase64}.${signature}`;
-    const question = buildQuestionText(lang, a, b, op, false);
 
     return secureApiResponse(
       NextResponse.json(
@@ -155,7 +226,9 @@ export async function GET(request) {
           question,
           token,
           language: lang,
-          operation: op,
+          mode: payload.mode,
+          options,
+          expiresAt: exp,
         },
         {
           headers: {

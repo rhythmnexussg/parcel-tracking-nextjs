@@ -48,6 +48,7 @@ const CAPTCHA_UI_TEXT = {
     answerPlaceholder: 'Enter answer',
     verifyFailed: 'Verification failed. Please try again.',
     loadFailed: 'Unable to load captcha challenge. Please refresh and try again.',
+    expiredChallenge: 'Captcha expired after 5 minutes. A new challenge has been generated.',
     verifying: 'Verifying...',
     continueButton: 'Continue',
     refreshButton: 'Refresh',
@@ -87,6 +88,9 @@ export default function AccessPage() {
 
   const [selectedLang, setSelectedLang] = useState('');
   const [question, setQuestion] = useState('');
+  const [challengeMode, setChallengeMode] = useState('math');
+  const [challengeOptions, setChallengeOptions] = useState([]);
+  const [challengeExpiresAt, setChallengeExpiresAt] = useState(null);
   const [token, setToken] = useState('');
   const [answer, setAnswer] = useState('');
   const [error, setError] = useState('');
@@ -114,6 +118,9 @@ export default function AccessPage() {
         throw new Error('Unable to load challenge');
       }
       setQuestion(data.question);
+      setChallengeMode(data?.mode === 'match' ? 'match' : 'math');
+      setChallengeOptions(Array.isArray(data?.options) ? data.options : []);
+      setChallengeExpiresAt(Number.isFinite(data?.expiresAt) ? data.expiresAt : Date.now() + 5 * 60 * 1000);
       setToken(data.token);
       setAnswer('');
     } catch (_) {
@@ -148,6 +155,18 @@ export default function AccessPage() {
     }
   }, [loadChallenge, selectedLang, token, loading]);
 
+  useEffect(() => {
+    if (!challengeExpiresAt || !token) return;
+
+    const delayMs = Math.max(0, challengeExpiresAt - Date.now());
+    const timeoutId = window.setTimeout(async () => {
+      setError(text.expiredChallenge || CAPTCHA_UI_TEXT.en.expiredChallenge);
+      await loadChallenge(selectedLang);
+    }, delayMs);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [challengeExpiresAt, token, selectedLang, loadChallenge, text.expiredChallenge]);
+
   const onSubmit = async (event) => {
     event.preventDefault();
     if (!selectedLang) {
@@ -178,6 +197,11 @@ export default function AccessPage() {
       const data = await response.json();
 
       if (!response.ok || !data?.ok) {
+        if (data?.error === 'expired') {
+          setError(text.expiredChallenge || CAPTCHA_UI_TEXT.en.expiredChallenge);
+          await loadChallenge(selectedLang);
+          return;
+        }
         setError(text.verifyFailed);
         await loadChallenge(selectedLang);
         return;
@@ -254,6 +278,9 @@ export default function AccessPage() {
               setLanguage(nextLang);
               sessionStorage.setItem(CAPTCHA_LANG_SESSION_KEY, nextLang);
               setQuestion('');
+              setChallengeMode('math');
+              setChallengeOptions([]);
+              setChallengeExpiresAt(null);
               setToken('');
               setAnswer('');
               setError('');
@@ -281,21 +308,48 @@ export default function AccessPage() {
           <label style={{ display: 'block', marginBottom: '8px', color: '#374151' }}>
             {text.answerLabel}
           </label>
-          <input
-            type="number"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            placeholder={text.answerPlaceholder}
-            required
-            disabled={!selectedLang || !token || loading}
-            style={{
-              width: '100%',
-              padding: '10px 12px',
-              border: '1px solid #d1d5db',
-              borderRadius: '8px',
-              marginBottom: '12px',
-            }}
-          />
+          {challengeMode === 'match' ? (
+            <div style={{ marginBottom: '12px', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
+              {challengeOptions.map((symbol) => {
+                const isSelected = answer === symbol;
+                return (
+                  <button
+                    key={symbol}
+                    type="button"
+                    disabled={!selectedLang || !token || loading}
+                    onClick={() => setAnswer(symbol)}
+                    style={{
+                      padding: '10px 12px',
+                      border: `1px solid ${isSelected ? '#2563eb' : '#d1d5db'}`,
+                      borderRadius: '8px',
+                      background: isSelected ? '#eff6ff' : '#fff',
+                      color: '#111827',
+                      fontSize: '1.1rem',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {symbol}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <input
+              type="number"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder={text.answerPlaceholder}
+              required
+              disabled={!selectedLang || !token || loading}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                marginBottom: '12px',
+              }}
+            />
+          )}
 
           {error && (
             <p style={{ color: '#b91c1c', marginTop: 0, marginBottom: '12px' }}>{error}</p>
@@ -304,7 +358,7 @@ export default function AccessPage() {
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               type="submit"
-              disabled={!selectedLang || !token || loading}
+              disabled={!selectedLang || !token || loading || !answer}
               style={{
                 flex: 1,
                 padding: '10px 12px',

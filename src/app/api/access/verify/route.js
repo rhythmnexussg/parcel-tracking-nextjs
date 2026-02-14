@@ -29,6 +29,10 @@ function calculateExpectedAnswer(payload) {
   return NaN;
 }
 
+function normalizeInputValue(value) {
+  return String(value ?? '').trim();
+}
+
 export async function POST(request) {
   const limited = rateLimit(request, { keyPrefix: 'captcha-verify', maxRequests: 20, windowMs: 60 * 1000 });
   if (limited) return limited;
@@ -38,10 +42,11 @@ export async function POST(request) {
 
     const body = await request.json();
     const token = (body?.token || '').toString().trim();
-    const answer = Number(body?.answer);
+    const rawAnswer = body?.answer;
+    const normalizedAnswer = normalizeInputValue(rawAnswer);
     const nextPath = getSafeRedirectPath(body?.nextPath || '/');
 
-    if (!token || Number.isNaN(answer)) {
+    if (!token || !normalizedAnswer) {
       return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_request' }, { status: 400 }));
     }
 
@@ -63,25 +68,43 @@ export async function POST(request) {
     }
 
     const payload = JSON.parse(Buffer.from(payloadBase64, 'base64url').toString('utf-8'));
-    if (!payload || typeof payload.a !== 'number' || typeof payload.b !== 'number' || typeof payload.exp !== 'number') {
+    if (!payload || typeof payload.exp !== 'number' || !payload.mode) {
       return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
-    }
-
-    if (!['add', 'sub', 'mul', 'div'].includes(payload.op)) {
-      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_operation' }, { status: 400 }));
     }
 
     if (Date.now() > payload.exp) {
       return secureApiResponse(NextResponse.json({ ok: false, error: 'expired' }, { status: 401 }));
     }
 
-    const expectedAnswer = calculateExpectedAnswer(payload);
-    if (!Number.isFinite(expectedAnswer)) {
-      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
-    }
+    if (payload.mode === 'math') {
+      if (typeof payload.a !== 'number' || typeof payload.b !== 'number' || !['add', 'sub', 'mul', 'div'].includes(payload.op)) {
+        return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_operation' }, { status: 400 }));
+      }
 
-    if (answer !== expectedAnswer) {
-      return secureApiResponse(NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 }));
+      const answerNumber = Number(normalizedAnswer);
+      if (Number.isNaN(answerNumber)) {
+        return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_request' }, { status: 400 }));
+      }
+
+      const expectedAnswer = calculateExpectedAnswer(payload);
+      if (!Number.isFinite(expectedAnswer)) {
+        return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
+      }
+
+      if (answerNumber !== expectedAnswer) {
+        return secureApiResponse(NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 }));
+      }
+    } else if (payload.mode === 'match') {
+      const expectedOption = normalizeInputValue(payload.correctOption);
+      if (!expectedOption) {
+        return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
+      }
+
+      if (normalizedAnswer !== expectedOption) {
+        return secureApiResponse(NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 }));
+      }
+    } else {
+      return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_mode' }, { status: 400 }));
     }
 
     const response = NextResponse.json({ ok: true, redirectTo: nextPath });
