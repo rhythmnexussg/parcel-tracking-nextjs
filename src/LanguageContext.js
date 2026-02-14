@@ -89,7 +89,10 @@ export const LanguageProvider = ({ children }) => {
             if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
             return c;
           };
-          setLanguage(normalizeLang(ipResult.languageCode || 'en'));
+          const blockedDefaultLang = ipResult.countryCode === 'SG'
+            ? 'en'
+            : normalizeLang(ipResult.languageCode || 'en');
+          setLanguage(blockedDefaultLang);
           setShowLanguageModal(false);
           setLanguageOptions([]);
           return;
@@ -107,7 +110,10 @@ export const LanguageProvider = ({ children }) => {
           if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
           return c;
         };
-        setLanguage(normalizeLang(ipResult.languageCode));
+        const detectedDefaultLang = ipResult.countryCode === 'SG'
+          ? 'en'
+          : normalizeLang(ipResult.languageCode || 'en');
+        setLanguage(detectedDefaultLang);
         
         // Show modal for detected countries, except countries where English-only UX is desired
         const noLanguagePopupCountries = new Set(['AU', 'NZ']);

@@ -124,6 +124,22 @@ export function sanitizeAndRewrite(html, baseUrl, options = {}) {
     }
   });
 
+  // Normalize form actions so embedded pages don't post back to local routes like /track-items.
+  // Keep submission in-frame unless the upstream site itself forces a new context.
+  $('form').each(function () {
+    const $form = $(this);
+    const action = ($form.attr('action') || '').trim();
+
+    if (action.startsWith('/')) {
+      $form.attr('action', `${baseUrl}${action}`);
+    } else if (action && !/^https?:\/\//i.test(action) && !action.startsWith('#')) {
+      const normalizedAction = action.replace(/^\.\//, '');
+      $form.attr('action', `${baseUrl}/${normalizedAction}`);
+    }
+
+    $form.attr('target', '_self');
+  });
+
   let out = $.html();
   // Rewrite relative href/src/url()
   out = out
@@ -151,7 +167,7 @@ export function sanitizeAndRewrite(html, baseUrl, options = {}) {
 
   // Add base tag & viewport
   if (!/\<base\s/i.test(out)) {
-    out = out.replace(/<head>/i, `<head>\n<base href="${baseUrl}/" target="_blank">`);
+    out = out.replace(/<head>/i, `<head>\n<base href="${baseUrl}/">`);
   }
   if (!out.includes('viewport')) {
     out = out.replace(/<head>/i, '<head>\n<meta name="viewport" content="width=device-width, initial-scale=1">');

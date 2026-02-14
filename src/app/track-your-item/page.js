@@ -19,38 +19,15 @@ import { Navigation } from "../../components/Navigation";
 // --- Service Announcement Component ---
 const ServiceAnnouncement = ({ allowedDestinations }) => {
   const { t, tStrict, language: currentLanguage } = useLanguage();
-  const [content, setContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        // Build URL with country filter if restrictions apply
-        // Otherwise API will default to all 34 shipped countries
-        let url = '/api/singpost-announcements';
-        if (allowedDestinations && allowedDestinations.length > 0) {
-          url += `?countries=${allowedDestinations.join(',')}`;
-        }
-        
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch announcements');
-        }
-        
-        const html = await response.text();
-        setContent(html);
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error loading announcements:', error);
-        setHasError(true);
-        setIsLoading(false);
-      }
-    };
+    setIsLoading(true);
+    setHasError(false);
+  }, [allowedDestinations, currentLanguage]);
 
-    fetchAnnouncements();
-  }, [allowedDestinations]);
+  const iframeSrc = `/api/singpost-announcements${allowedDestinations && allowedDestinations.length > 0 ? '?countries=' + allowedDestinations.join(',') + '&' : '?'}lang=${currentLanguage}`;
 
   return (
     <div className="service-announcement-container" style={{
@@ -122,11 +99,11 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
         </div>
       )}
       
-      {!isLoading && !hasError && content && (
+      {!hasError && (
         <iframe
           className="service-announcement-iframe"
           key={`announcements-${currentLanguage}-${allowedDestinations ? allowedDestinations.join('-') : 'all'}`}
-          src={`/api/singpost-announcements${allowedDestinations && allowedDestinations.length > 0 ? '?countries=' + allowedDestinations.join(',') + '&' : '?'}lang=${currentLanguage}`}
+          src={iframeSrc}
           style={{
             width: '100%',
             minHeight: '500px',
@@ -134,7 +111,15 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
             backgroundColor: 'white'
           }}
           title="SingPost Service Announcements"
-          sandbox="allow-same-origin allow-popups allow-forms allow-scripts"
+          sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-forms allow-scripts"
+          onLoad={() => {
+            setIsLoading(false);
+            setHasError(false);
+          }}
+          onError={() => {
+            setHasError(true);
+            setIsLoading(false);
+          }}
         />
       )}
     </div>
@@ -416,9 +401,7 @@ const postalOperatorNames = {
 };
 
 const EMBED_SUPPORTED_DESTINATIONS = new Set([
-  'AU', 'AT', 'BE', 'CA', 'CZ', 'DE', 'ES', 'FR', 'HK', 'ID', 'IT', 'JP',
-  'KR', 'MO', 'MY', 'NL', 'NO', 'NZ', 'PH', 'PL', 'PT', 'SE', 'TH', 'TW',
-  'US', 'VN',
+  'CZ', 'ID', 'JP', 'KR', 'PL', 'SG',
 ]);
 
 function App() {
@@ -801,7 +784,11 @@ function App() {
         params.append("toDate", toDate);
       }
 
-      router.push(`/track-your-item?${params.toString()}`);
+      const nextUrl = `/track-your-item?${params.toString()}`;
+      const currentUrl = `${window.location.pathname}${window.location.search}`;
+      if (currentUrl !== nextUrl) {
+        router.push(nextUrl);
+      }
     }
 
     const results = await fetchOrderInfo(""); 
@@ -1019,6 +1006,7 @@ function App() {
   }, [trackingNumber, destinationCountry, postcode, orderNumber, fromDate, toDate, router, setCountrySpecificMessage, userCountry, allowedDestinations, t, isLoadingFromUrl]); 
   
   const operatorName = postalOperatorNames[destinationCountry] || (getCountryName(destinationCountry) ? `${getCountryName(destinationCountry)} Post` : "");
+  const canEmbedDestination = EMBED_SUPPORTED_DESTINATIONS.has(destinationCountry);
 
   return (
     <>
@@ -1352,6 +1340,7 @@ function App() {
             {/* Normal postal: toggle between SingPost and Destination */}
             {!/^\d{10}$/.test(trackingNumber) && !/^PX\d{9}SG$/.test(trackingNumber) && trackingUrl && (
               <>
+                {canEmbedDestination && (
                 <div className="embed-toggle-buttons" style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
                   <button
                     className={activeEmbed === 'singpost' ? 'btn-primary' : 'btn-secondary'}
@@ -1370,15 +1359,31 @@ function App() {
                     </button>
                   )}
                 </div>
+                )}
 
-                {(activeEmbed === 'singpost' || destinationCountry === 'SG') && (
-                  <iframe
-                    key={`singpost-${trackingNumber}-${currentLanguage}`}
-                    src={`/api/proxy-singpost?trackingid=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}`}
-                    style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
-                    title="SingPost Tracking"
-                    sandbox="allow-popups allow-forms allow-scripts"
-                  />
+                {canEmbedDestination && (activeEmbed === 'singpost' || destinationCountry === 'SG') && (
+                  <>
+                    <iframe
+                      key={`singpost-${trackingNumber}-${currentLanguage}`}
+                      src={`/api/proxy-singpost?trackingid=${encodeURIComponent(trackingNumber)}&lang=${currentLanguage}`}
+                      style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
+                      title="SingPost Tracking"
+                      sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation allow-forms allow-scripts"
+                    />
+                    <div className="singpost-newtab-notice" style={{ marginTop: 10, padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
+                      If reCAPTCHA appears in the embedded SingPost tracker, click “I am not a robot” and continue in a new tab if prompted.{' '}
+                      <a
+                        className="singpost-newtab-link"
+                        href={`https://www.singpost.com/track-items?trackingid=${encodeURIComponent(trackingNumber)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: '#0066cc', fontWeight: 'bold' }}
+                      >
+                        {t('clickHere')}
+                      </a>{' '}
+                      {t('toTrackNewTab')}
+                    </div>
+                  </>
                 )}
 
                 {activeEmbed === 'dest' && destinationCountry !== 'SG' && (() => {
@@ -1397,7 +1402,7 @@ function App() {
                       </div>
                     );
                   }
-                  if (EMBED_SUPPORTED_DESTINATIONS.has(destinationCountry)) {
+                  if (canEmbedDestination) {
                     const proxyUrl = (destinationCountry === 'CA' || destinationCountry === 'DE' || destinationCountry === 'GB')
                       ? `/api/proxy-destination?url=${trackingUrl}`
                       : `/api/proxy-destination?url=${trackingUrl}&lang=${currentLanguage}`;

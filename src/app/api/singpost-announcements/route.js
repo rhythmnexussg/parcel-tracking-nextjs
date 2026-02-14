@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio';
 import { normalizeLangParam, rateLimit, secureApiResponse } from '../security';
 
 export async function GET(request) {
-  const limited = rateLimit(request, { keyPrefix: 'singpost-announcements', maxRequests: 20, windowMs: 60 * 1000 });
+  const limited = rateLimit(request, { keyPrefix: 'singpost-announcements', maxRequests: 120, windowMs: 60 * 1000 });
   if (limited) return limited;
 
   try {

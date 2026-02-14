@@ -29,6 +29,20 @@ export default function RootLayout({ children }) {
     let isActive = true;
 
     const checkAccess = async () => {
+      const isLocalhost = (() => {
+        try {
+          const host = (window.location.hostname || '').toLowerCase();
+          return host === 'localhost' || host === '127.0.0.1' || host === '::1';
+        } catch (_) {
+          return false;
+        }
+      })();
+
+      if (isLocalhost) {
+        if (isActive) setAccessChecked(true);
+        return;
+      }
+
       // Always allow access checks to be bypassed for access and blocked pages
       if (pathname === "/access" || pathname === "/blocked") {
         if (isActive) setAccessChecked(true);

@@ -1195,6 +1195,16 @@ a:hover { text-decoration: underline; color: #006bb5; }
   padding-top: 20px;
 }
 
+.singpost-newtab-notice {
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.singpost-newtab-link {
+  display: inline-flex;
+  align-items: center;
+}
+
 .tracking-link {
   display: inline-block;
   background: #000000;
@@ -1287,6 +1297,18 @@ a:hover { text-decoration: underline; color: #006bb5; }
 
   .tracking-details p {
     font-size: 0.9rem;
+  }
+
+  .singpost-newtab-notice {
+    padding: 14px !important;
+    font-size: 0.95rem;
+    margin-top: 12px;
+  }
+
+  .singpost-newtab-link {
+    min-height: 44px;
+    padding: 8px 4px;
+    font-weight: 700;
   }
 
   .service-announcement-container {
@@ -1596,5 +1618,9 @@ a:hover { text-decoration: underline; color: #006bb5; }
 
   .access-match-options {
     grid-template-columns: 1fr !important;
+  }
+
+  .singpost-newtab-notice {
+    font-size: 0.9rem;
   }
 }

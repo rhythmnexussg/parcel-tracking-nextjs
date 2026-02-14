@@ -544,6 +544,15 @@ function expiredAdminSessionResponse() {
 export async function middleware(request) {
   const { nextUrl } = request;
   const path = nextUrl.pathname || '';
+  const hostHeader = (request.headers.get('host') || '').toLowerCase();
+  const hostname = (nextUrl.hostname || '').toLowerCase();
+  const isLocalhost =
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname === '::1' ||
+    hostHeader.startsWith('localhost:') ||
+    hostHeader.startsWith('127.0.0.1:') ||
+    hostHeader.startsWith('[::1]:');
   const userAgent = request.headers.get('user-agent') || '';
   const platformVersionHeader = request.headers.get('sec-ch-ua-platform-version') || '';
   const platformVersionMajor = extractPlatformVersionMajor(platformVersionHeader);
@@ -634,7 +643,7 @@ export async function middleware(request) {
     }
   }
 
-  if (isProtectedPath && !hasCaptchaCookie) {
+  if (!isLocalhost && isProtectedPath && !hasCaptchaCookie) {
     const accessUrl = nextUrl.clone();
     accessUrl.pathname = '/access';
     accessUrl.searchParams.set('next', `${path}${nextUrl.search || ''}`);
