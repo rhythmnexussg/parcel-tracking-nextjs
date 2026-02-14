@@ -13,7 +13,12 @@ import { detectLanguageFromIPWithRestrictions } from "../ipGeolocation";
 export const Navigation = () => {
   const { t } = useLanguage();
   const [userCountry, setUserCountry] = useState(null);
+  const [showCnyMessage, setShowCnyMessage] = useState(false);
   const searchParams = useSearchParams();
+  const translatedCnyMessage = t('cnyYearOfHorseMessage');
+  const cnyMessage = translatedCnyMessage && translatedCnyMessage !== 'cnyYearOfHorseMessage'
+    ? translatedCnyMessage
+    : '🧧 Happy Chinese New Year! Wishing you prosperity in the Year of the Horse 🐴';
 
   const overrideCountry =
     (searchParams.get('country') || searchParams.get('adminCountry') || '').trim().toUpperCase();
@@ -39,6 +44,13 @@ export const Navigation = () => {
     
     detectUserLocation();
   }, []);
+
+  useEffect(() => {
+    const now = new Date();
+    const cnyStart = new Date(2026, 1, 17, 0, 0, 0, 0);
+    const cnyEnd = new Date(2026, 2, 3, 23, 59, 59, 999);
+    setShowCnyMessage(now >= cnyStart && now <= cnyEnd);
+  }, []);
   
   return (
     <nav className="navbar">
@@ -49,6 +61,11 @@ export const Navigation = () => {
       </div>
       
       <div className="navbar-center">
+        {showCnyMessage ? (
+          <div className="navbar-cny-message">
+            {cnyMessage}
+          </div>
+        ) : null}
         <TimezoneHeader userCountry={userCountry} t={t} />
       </div>
       
