@@ -1301,6 +1301,29 @@ function App() {
                 )}
               </>
             )}
+
+            {!/^\d{10}$/.test(trackingNumber) && !/^PX\d{9}SG$/.test(trackingNumber) && trackingUrl && (
+              <>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => { setActiveEmbed('singpost'); scrollToEmbed(); }}
+                >
+                  {t('viewTrackingSingPost')}
+                </button>
+
+                {destinationCountry !== 'SG' && (
+                  <a
+                    href={trackingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-secondary"
+                  >
+                    {t('viewTrackingDestPost')} {operatorName}
+                  </a>
+                )}
+              </>
+            )}
           </div>
 
           {/* Embedded tracker: mount a single iframe to avoid repeated loads */}
