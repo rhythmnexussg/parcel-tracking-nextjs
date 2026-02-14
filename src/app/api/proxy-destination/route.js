@@ -92,7 +92,7 @@ export async function GET(request) {
         status: 200,
         headers: responseHeaders,
       }),
-      { isHtml: true }
+      { isHtml: true, allowFrameFromSelf: true }
     );
   } catch (err) {
     return secureApiResponse(NextResponse.json({ error: 'Proxy failed' }, { status: 500 }));

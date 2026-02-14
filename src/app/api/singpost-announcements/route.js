@@ -349,7 +349,7 @@ export async function GET(request) {
           'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600', // Cache for 5 minutes
         },
       }),
-      { isHtml: true }
+      { isHtml: true, allowFrameFromSelf: true }
     );
     
   } catch (error) {

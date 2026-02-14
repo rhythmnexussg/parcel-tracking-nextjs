@@ -79,10 +79,11 @@ export function normalizeLangParam(value) {
 
 export function secureApiResponse(response, options = {}) {
   const isHtml = Boolean(options.isHtml);
+  const allowFrameFromSelf = Boolean(options.allowFrameFromSelf);
 
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'no-referrer');
-  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Frame-Options', allowFrameFromSelf ? 'SAMEORIGIN' : 'DENY');
   response.headers.set('Cache-Control', response.headers.get('Cache-Control') || 'no-store');
   response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
 
@@ -91,10 +92,17 @@ export function secureApiResponse(response, options = {}) {
   }
 
   if (isHtml) {
-    response.headers.set(
-      'Content-Security-Policy',
-      "default-src 'none'; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; img-src https: data:; style-src 'unsafe-inline' https:; font-src https: data:"
-    );
+    if (allowFrameFromSelf) {
+      response.headers.set(
+        'Content-Security-Policy',
+        "default-src https: data: blob:; script-src 'unsafe-inline' 'unsafe-eval' https: data: blob:; style-src 'unsafe-inline' https: data:; img-src https: data: blob:; font-src https: data: blob:; connect-src https: data: blob:; frame-src https: data: blob:; object-src 'none'; base-uri 'self'; form-action https: 'self'; frame-ancestors 'self'"
+      );
+    } else {
+      response.headers.set(
+        'Content-Security-Policy',
+        "default-src 'none'; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; img-src https: data:; style-src 'unsafe-inline' https:; font-src https: data:"
+      );
+    }
   } else {
     response.headers.set(
       'Content-Security-Policy',

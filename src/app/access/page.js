@@ -298,7 +298,7 @@ export default function AccessPage() {
             {text.answerLabel}
           </label>
           {challengeMode === 'match' ? (
-            <div style={{ marginBottom: '12px', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
+            <div className="access-match-options" style={{ marginBottom: '12px', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
               {challengeOptions.map((symbol) => {
                 const isSelected = answer === symbol;
                 return (
@@ -344,7 +344,7 @@ export default function AccessPage() {
             <p style={{ color: '#b91c1c', marginTop: 0, marginBottom: '12px' }}>{error}</p>
           )}
 
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div className="access-action-buttons" style={{ display: 'flex', gap: '8px' }}>
             <button
               type="submit"
               disabled={!selectedLang || !token || loading || !answer}

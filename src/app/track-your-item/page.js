@@ -124,6 +124,7 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
       
       {!isLoading && !hasError && content && (
         <iframe
+          className="service-announcement-iframe"
           key={`announcements-${currentLanguage}-${allowedDestinations ? allowedDestinations.join('-') : 'all'}`}
           src={`/api/singpost-announcements${allowedDestinations && allowedDestinations.length > 0 ? '?countries=' + allowedDestinations.join(',') + '&' : '?'}lang=${currentLanguage}`}
           style={{
@@ -399,6 +400,12 @@ const postalOperatorNames = {
   VN: "VNPost",
   BN: "PosBru",
 };
+
+const EMBED_SUPPORTED_DESTINATIONS = new Set([
+  'AU', 'AT', 'BE', 'CA', 'CZ', 'DE', 'ES', 'FR', 'HK', 'ID', 'IT', 'JP',
+  'KR', 'MO', 'MY', 'NL', 'NO', 'NZ', 'PH', 'PL', 'PT', 'SE', 'TH', 'TW',
+  'US', 'VN',
+]);
 
 function App() {
   const { t, tStrict, language: currentLanguage } = useLanguage();
@@ -1331,7 +1338,7 @@ function App() {
             {/* Normal postal: toggle between SingPost and Destination */}
             {!/^\d{10}$/.test(trackingNumber) && !/^PX\d{9}SG$/.test(trackingNumber) && trackingUrl && (
               <>
-                <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+                <div className="embed-toggle-buttons" style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
                   <button
                     className={activeEmbed === 'singpost' ? 'btn-primary' : 'btn-secondary'}
                     onClick={() => setActiveEmbed('singpost')}
@@ -1376,42 +1383,21 @@ function App() {
                       </div>
                     );
                   }
-                  try {
-                    const u = new URL(trackingUrl);
-                    // All carriers use iframe embed (reenabled for USPS, Australia Post, Canada Post, Royal Mail)
-                    // Fallback to iframe for other allowed carriers
-                    const allowed = [
-                      // 'www.usps.com', 'tools.usps.com', 'es-tools.usps.com', 'zh-tools.usps.com',
-                      // 'www.canadapost-postescanada.ca',
-                      // 'auspost.com.au',
-                      // 'www.royalmail.com',
-                      // 'www.nzpost.co.nz', 
-                      /*'jouw.postnl.nl',*/ /*'track.bpost.cloud',*/ /*'www.dhl.com',*/ /*'www.laposte.fr',*/ /*'www.postnord.se',*/
-                      // 'www.post.at',
-                      /*'www.hongkongpost.hk',*/ 'emonitoring.poczta-polska.pl',  /*'www.correos.es',*/
-                      'service.epost.go.kr', 'trackings.post.japanpost.jp',
-                      // Additional destinations requested
-                      /*'bn.postglobal.online',*/ 'www.posindonesia.co.id', /*'israelpost.co.il',*/, /*'www.poste.it',*/
-                      /*'www.ctt.gov.mo',*/ /*'www.pos.com.my'*/, /*'sporing.posten.no',*/ /*'tracking.phlpost.gov.ph',*/
-                    /*'postserv.post.gov.tw',*/ /*'track.thailandpost.com',*/ /*'vnpost.vn',*/ /*'www.ems.com.cn',*/
-                      /*'www.posti.fi'*/, 'www.postaonline.cz', /*'www.speedpost.com.sg'*/
-                    ];
-                    if (allowed.includes(u.hostname)) {
-                      const proxyUrl = (destinationCountry === 'CA' || destinationCountry === 'DE' || destinationCountry === 'GB')
-                        ? `/api/proxy-destination?url=${trackingUrl}`
-                        : `/api/proxy-destination?url=${trackingUrl}&lang=${currentLanguage}`;
-                      return (
-                        <iframe
-                          key={`dest-${trackingNumber}-${destinationCountry}-${currentLanguage}`}
-                          src={proxyUrl}
-                          style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
-                          title="Destination Post Tracking"
-                          sandbox="allow-popups allow-forms allow-scripts"
-                          onError={(e) => { console.warn('Destination tracking embed failed:', e); }}
-                        />
-                      );
-                    }
-                  } catch {}
+                  if (EMBED_SUPPORTED_DESTINATIONS.has(destinationCountry)) {
+                    const proxyUrl = (destinationCountry === 'CA' || destinationCountry === 'DE' || destinationCountry === 'GB')
+                      ? `/api/proxy-destination?url=${trackingUrl}`
+                      : `/api/proxy-destination?url=${trackingUrl}&lang=${currentLanguage}`;
+                    return (
+                      <iframe
+                        key={`dest-${trackingNumber}-${destinationCountry}-${currentLanguage}`}
+                        src={proxyUrl}
+                        style={{ width: '100%', minHeight: '600px', border: 'none', backgroundColor: 'white' }}
+                        title="Destination Post Tracking"
+                        sandbox="allow-popups allow-forms allow-scripts"
+                        onError={(e) => { console.warn('Destination tracking embed failed:', e); }}
+                      />
+                    );
+                  }
                   return (
                     <div style={{ padding: 12, background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: 6 }}>
                       {operatorName} {t('operatorNoEmbed')}{' '}

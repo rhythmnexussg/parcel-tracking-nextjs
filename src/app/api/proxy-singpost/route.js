@@ -41,7 +41,7 @@ export async function GET(request) {
           'Cache-Control': 'public, s-maxage=180, stale-while-revalidate=600',
         },
       }),
-      { isHtml: true }
+      { isHtml: true, allowFrameFromSelf: true }
     );
   } catch (err) {
     return secureApiResponse(NextResponse.json({ error: 'Proxy failed' }, { status: 500 }));
