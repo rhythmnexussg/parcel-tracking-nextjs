@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLanguage } from '../../LanguageContext';
 
 const ACCESS_TAB_SESSION_KEY = 'rnx_access_tab_verified';
-const CAPTCHA_LANG_SESSION_KEY = 'rnx_captcha_language';
 
 const CAPTCHA_LANGUAGES = [
   { code: 'en', label: 'English' },
@@ -129,24 +128,15 @@ export default function AccessPage() {
   }, [selectedLang, text.chooseLanguageFirst, text.loadFailed]);
 
   useEffect(() => {
-    if (selectedLang) return;
-
     const isSupported = (code) => CAPTCHA_LANGUAGES.some((item) => item.code === code);
-    const savedLang = sessionStorage.getItem(CAPTCHA_LANG_SESSION_KEY) || '';
 
-    if (savedLang && isSupported(savedLang)) {
-      setSelectedLang(savedLang);
-      setLanguage(savedLang);
-      return;
+    const targetLang = (language && isSupported(language)) ? language : 'en';
+    if (selectedLang !== targetLang) {
+      setSelectedLang(targetLang);
     }
-
-    if (language && isSupported(language)) {
-      setSelectedLang(language);
-      return;
+    if (!language || !isSupported(language)) {
+      setLanguage('en');
     }
-
-    setSelectedLang('en');
-    setLanguage('en');
   }, [language, selectedLang, setLanguage]);
 
   useEffect(() => {
@@ -276,7 +266,6 @@ export default function AccessPage() {
               const nextLang = e.target.value;
               setSelectedLang(nextLang);
               setLanguage(nextLang);
-              sessionStorage.setItem(CAPTCHA_LANG_SESSION_KEY, nextLang);
               setQuestion('');
               setChallengeMode('math');
               setChallengeOptions([]);
