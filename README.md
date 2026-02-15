@@ -4,6 +4,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ### 1. Environment Setup
 
+**⚠️ SECURITY NOTE:** Your `.env.local` file is protected and will NOT be committed to git. See [SECURITY.md](SECURITY.md) for details.
+
 Copy the example environment file and configure your environment variables:
 
 ```bash
@@ -114,17 +116,24 @@ All four fields must match for the order to be found.
 
 ### For Production/Vercel Deployments
 
+**IMPORTANT:** Never commit credentials to git. They are automatically ignored.
+
 1. Go to your Vercel project settings
 2. Navigate to "Environment Variables"
 3. Add ONE of the following:
    - **For Service Account** (Recommended): 
      - Variable: `GOOGLE_SERVICE_ACCOUNT_KEY`
-     - Value: Paste the entire JSON content from your service account key file (as a single line)
+     - Value: Paste the entire JSON content from your `.env.local` file
+     - **Note:** Copy the value after `GOOGLE_SERVICE_ACCOUNT_KEY=` in your `.env.local`
    - **For API Key** (Public sheets only): 
      - Variable: `GOOGLE_SHEETS_API_KEY`
      - Value: Your API key
 4. Optionally add `GOOGLE_SHEET_ID` and `GOOGLE_SHEET_RANGE` if different from defaults
-5. Redeploy your application
+5. **Check all environments**: Production, Preview, Development
+6. Click **Save**
+7. **Redeploy** your application
+
+**Security:** Credentials are stored securely in Vercel and never exposed in your code or repository.
 
 ### Checking Logs
 
