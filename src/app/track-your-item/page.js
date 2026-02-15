@@ -236,25 +236,42 @@ function formatPostedDate(dateString) {
 async function fetchOrderInfo(query) {
   try {
     const response = await fetch('/api/orders', { cache: 'no-store' });
+    
     if (!response.ok) {
-      throw new Error('Order source unavailable');
+      const errorData = await response.json().catch(() => ({}));
+      const errorMessage = errorData?.message || 'Order database is temporarily unavailable. Please try again in a moment.';
+      
+      // Log detailed error for debugging
+      console.error("API Error:", {
+        status: response.status,
+        error: errorData?.error,
+        message: errorMessage,
+        details: errorData?.details
+      });
+      
+      throw new Error(errorMessage);
     }
 
     const data = await response.json();
-    const bodyRows = Array.isArray(data?.orders)
-      ? data.orders.map((r) => [
-          r.orderNumber,
-          r.email,
-          r.dialingCode,
-          r.phone,
-          r.trackingNumber,
-          r.destinationCountry,
-          r.postcode,
-          r.status,
-          r.postedDate,
-          r.shippedVia,
-        ])
-      : [];
+    
+    // Check if we have valid order data
+    if (!data || !Array.isArray(data.orders)) {
+      console.error("Invalid data format received from API:", data);
+      throw new Error('Invalid data received from order database.');
+    }
+    
+    const bodyRows = data.orders.map((r) => [
+      r.orderNumber,
+      r.email,
+      r.dialingCode,
+      r.phone,
+      r.trackingNumber,
+      r.destinationCountry,
+      r.postcode,
+      r.status,
+      r.postedDate,
+      r.shippedVia,
+    ]);
 
     if (!query) {
       return bodyRows.map((r) => ({
@@ -309,8 +326,8 @@ async function fetchOrderInfo(query) {
       shippedVia: r[9] || ""
     }));
   } catch (err) {
-    console.error("Error fetching Google Sheet:", err);
-    alert('Order database is temporarily unavailable. Please try again in a moment.');
+    console.error("Error fetching order data:", err);
+    alert(err.message || 'Order database is temporarily unavailable. Please try again in a moment.');
     return [];
   }
 }
