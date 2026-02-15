@@ -88,7 +88,7 @@ export default function RootLayout({ children }) {
           strategy="lazyOnload"
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable}`} suppressHydrationWarning>
         <LanguageProvider>
           <AccessGuard>{children}</AccessGuard>
         </LanguageProvider>

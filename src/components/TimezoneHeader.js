@@ -91,7 +91,13 @@ const countryTimezones = {
 const TimezoneHeader = ({ userCountry, t }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { language: currentLanguage } = useLanguage();
+  
+  // Prevent hydration mismatch by only rendering time on client
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   // Helper function to extract region/state name from timezone name
   const getTimezoneLabel = (name) => {
@@ -172,6 +178,21 @@ const TimezoneHeader = ({ userCountry, t }) => {
   };
 
   const getTimezoneCode = (name, timezone) => {
+    // Special handling for Australian timezones - check DST and adjust code dynamically
+    if (timezone === 'Australia/Sydney') {
+      const inDST = isDST(timezone);
+      return inDST ? 'AEDT' : 'AEST';
+    }
+    if (timezone === 'Australia/Adelaide') {
+      const inDST = isDST(timezone);
+      return inDST ? 'ACDT' : 'ACST';
+    }
+    // Special handling for New Zealand - check DST and adjust code dynamically
+    if (timezone === 'Pacific/Auckland') {
+      const inDST = isDST(timezone);
+      return inDST ? 'NZDT' : 'NZST';
+    }
+    
     const fromName = getCodeFromName(name);
     return fromName || timezoneAbbreviationMap[timezone] || null;
   };
@@ -397,6 +418,38 @@ const TimezoneHeader = ({ userCountry, t }) => {
   };
   
   // Format today's date for a given timezone
+  // Check if a timezone is currently observing DST
+  const isDST = (timezone) => {
+    try {
+      const now = new Date();
+      const january = new Date(now.getFullYear(), 0, 1);
+      const july = new Date(now.getFullYear(), 6, 1);
+      
+      const janOffset = getUTCOffsetAt(timezone, january);
+      const julOffset = getUTCOffsetAt(timezone, july);
+      const currentOffset = getUTCOffsetAt(timezone, now);
+      
+      // In Southern Hemisphere, DST is active when offset is greater (July is winter)
+      const maxOffset = Math.max(janOffset, julOffset);
+      return currentOffset === maxOffset && janOffset !== julOffset;
+    } catch (error) {
+      console.error(`Error checking DST for ${timezone}:`, error);
+      return false;
+    }
+  };
+
+  // Check if it's at or past 3am in a specific timezone
+  const isPast3AM = (timezone) => {
+    try {
+      const timeInZone = new Date(currentTime.toLocaleString('en-US', { timeZone: timezone }));
+      const hour = timeInZone.getHours();
+      return hour >= 3;
+    } catch (error) {
+      console.error(`Error checking time for ${timezone}:`, error);
+      return false;
+    }
+  };
+
   const formatDate = (timezone) => {
     try {
       const localeByLanguage = {
@@ -580,6 +633,59 @@ const TimezoneHeader = ({ userCountry, t }) => {
   
   const userLocalInfo = getUserLocalInfo();
   
+  // Special handling for Australian users - rename to AEDT/ACDT when DST is active  
+  const getAustralianTimezones = () => {
+    if (userCountry !== 'AU' || !Array.isArray(userLocalInfo)) {
+      return userLocalInfo;
+    }
+
+    const result = [];
+    
+    // Check DST status
+    const sydneyDST = isDST('Australia/Sydney');
+    const adelaideDST = isDST('Australia/Adelaide');
+    
+    // Sydney/Melbourne - use AEDT during DST, otherwise AEST
+    if (sydneyDST) {
+      result.push({
+        ...userLocalInfo[0],
+        name: 'AEDT (Sydney/Melbourne)',
+        timezoneCode: 'AEDT',
+        hasCodeInName: true,
+      });
+    } else {
+      // Keep original AEST name and code
+      result.push(userLocalInfo[0]);
+    }
+    
+    // Adelaide - use ACDT during DST, otherwise ACST
+    if (adelaideDST) {
+      result.push({
+        ...userLocalInfo[1],
+        name: 'ACDT (Adelaide)',
+        timezoneCode: 'ACDT',
+        hasCodeInName: true,
+      });
+    } else {
+      // Keep original ACST name and code
+      result.push(userLocalInfo[1]);
+    }
+    
+    // AWST (Perth) - index 2 - no DST, always use original
+    result.push(userLocalInfo[2]);
+    
+    return result;
+  };
+
+  const displayTimezones = userCountry === 'AU' && Array.isArray(userLocalInfo) 
+    ? getAustralianTimezones() 
+    : userLocalInfo;
+  
+  // Don't render until mounted to avoid hydration mismatch
+  if (!isMounted) {
+    return null;
+  }
+  
   // If user is in Singapore, show only Singapore time
   if (!userCountry || userCountry === 'SG') {
     return (
@@ -609,9 +715,10 @@ const TimezoneHeader = ({ userCountry, t }) => {
   }
 
   // Check if this is a 6-timezone country (US or CA) or 11-timezone country (RU)
-  const isSixTimezoneCountry = Array.isArray(userLocalInfo) && userLocalInfo.length === 6;
-  const isElevenTimezoneCountry = Array.isArray(userLocalInfo) && userLocalInfo.length === 11;
-  const shouldUseGridLayout = isSixTimezoneCountry || isElevenTimezoneCountry;
+  const isSixTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 6;
+  const isElevenTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 11;
+  const isAustralia = userCountry === 'AU';
+  const shouldUseGridLayout = isSixTimezoneCountry || isElevenTimezoneCountry || isAustralia;
 
   return (
     <div style={{
@@ -629,15 +736,67 @@ const TimezoneHeader = ({ userCountry, t }) => {
       padding: isMobile ? '4px 0' : (isElevenTimezoneCountry ? '8px 0' : '4px 0'),
       minHeight: isElevenTimezoneCountry ? '120px' : 'auto',
     }}>
-      {userLocalInfo && (
-        Array.isArray(userLocalInfo) ? (
+      {displayTimezones && (
+        Array.isArray(displayTimezones) ? (
           // Multiple timezones
           shouldUseGridLayout ? (
-            isElevenTimezoneCountry ? (
+            isAustralia ? (
+              // Special layout for Australia: Show timezones in rows with SGT at the end
+              <>
+                <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '6px' : '6px', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
+                  {displayTimezones.map((info, index) => (
+                    <div key={index} style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: isMobile ? '2px' : '1px',
+                      padding: isMobile ? '6px 10px' : '4px 6px',
+                      backgroundColor: '#e8f4f8',
+                      borderRadius: isMobile ? '6px' : '4px',
+                      border: '1px solid #b3d9e6',
+                      whiteSpace: 'nowrap',
+                      minWidth: isMobile ? '100px' : '80px',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
+                        <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
+                        <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
+                          {getTimezoneDisplayWithUTC(info)}
+                        </span>
+                      </div>
+                      <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{info.localTime}</span>
+                      <span style={{ fontSize: isMobile ? '0.65rem' : '0.6rem', color: '#5a6c7d' }}>{info.localDate}</span>
+                      <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.56rem' : '0.5rem', color: info.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
+                        {info.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
+                      </span>
+                    </div>
+                  ))}
+                  {/* Singapore time at the end for Australian users */}
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: isMobile ? '2px' : '1px',
+                    padding: isMobile ? '6px 10px' : '4px 6px',
+                    backgroundColor: '#fff3e0',
+                    borderRadius: isMobile ? '6px' : '4px',
+                    border: '1px solid #ffcc80',
+                    whiteSpace: 'nowrap',
+                    minWidth: isMobile ? '90px' : '70px',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '2px' }}>
+                      <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>🇸🇬</span>
+                      <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
+                    </div>
+                    <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{singaporeTime}</span>
+                    <span style={{ fontSize: isMobile ? '0.65rem' : '0.6rem', color: '#5a6c7d' }}>{singaporeDate}</span>
+                  </div>
+                </div>
+              </>
+            ) : isElevenTimezoneCountry ? (
               // Special layout for Russia: 5-5-1 grid (works for both mobile and desktop)
               <>
                 <div style={{ display: 'flex', gap: isMobile ? '6px' : '6px', justifyContent: 'center', width: '100%' }}>
-                  {userLocalInfo.slice(0, 5).map((info, index) => (
+                  {displayTimezones.slice(0, 5).map((info, index) => (
                     <div key={index} style={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -666,7 +825,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: isMobile ? '6px' : '6px', justifyContent: 'center', width: '100%' }}>
-                  {userLocalInfo.slice(5, 10).map((info, index) => (
+                  {displayTimezones.slice(5, 10).map((info, index) => (
                     <div key={index + 5} style={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -710,13 +869,13 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '2px' : '2px' }}>
                       <span style={{ fontSize: isMobile ? '0.8rem' : '0.75rem' }}>{countryFlags[userCountry] || '🌍'}</span>
                       <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d', fontWeight: '600', textAlign: 'center' }}>
-                        {getTimezoneDisplayWithUTC(userLocalInfo[10])}
+                        {getTimezoneDisplayWithUTC(displayTimezones[10])}
                       </span>
                     </div>
-                    <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{userLocalInfo[10].localTime}</span>
-                    <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d' }}>{userLocalInfo[10].localDate}</span>
-                    <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.5rem' : '0.5rem', color: userLocalInfo[10].isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
-                      {userLocalInfo[10].timeDiffText.replace('hours', 'h').replace('hour', 'h')}
+                    <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', fontWeight: '700' }}>{displayTimezones[10].localTime}</span>
+                    <span style={{ fontSize: isMobile ? '0.6rem' : '0.55rem', color: '#5a6c7d' }}>{displayTimezones[10].localDate}</span>
+                    <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.5rem' : '0.5rem', color: displayTimezones[10].isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic' })}>
+                      {displayTimezones[10].timeDiffText.replace('hours', 'h').replace('hour', 'h')}
                     </span>
                   </div>
                   {/* Singapore time next to it */}
@@ -742,7 +901,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
               // Grid layout for 6-timezone countries (US/CA) - works for both mobile and desktop
             <>
               <div style={{ display: 'flex', gap: isMobile ? '8px' : '6px', justifyContent: 'center', width: '100%' }}>
-                {userLocalInfo.slice(0, 3).map((info, index) => (
+                {displayTimezones.slice(0, 3).map((info, index) => (
                   <div key={index} style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -771,7 +930,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: isMobile ? '8px' : '6px', justifyContent: 'center', width: '100%' }}>
-                {userLocalInfo.slice(3, 6).map((info, index) => (
+                {displayTimezones.slice(3, 6).map((info, index) => (
                   <div key={index + 3} style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -825,7 +984,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
           ) : (
             // Standard horizontal layout for countries with multiple but fewer timezones
             <>
-              {userLocalInfo.map((info, index) => (
+              {displayTimezones.map((info, index) => (
                 <div key={index} style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -888,12 +1047,12 @@ const TimezoneHeader = ({ userCountry, t }) => {
             }}>
               <span style={{ fontSize: isMobile ? '1rem' : '0.8rem' }}>{countryFlags[userCountry] || '🌍'}</span>
               <span style={{ fontSize: isMobile ? '0.7rem' : '0.6rem', color: '#5a6c7d', fontWeight: '600' }}>
-                {userLocalInfo.timezoneCode ? `${userLocalInfo.timezoneCode} (${userLocalInfo.utcOffsetLabel})` : userLocalInfo.utcOffsetLabel}
+                {displayTimezones.timezoneCode ? `${displayTimezones.timezoneCode} (${displayTimezones.utcOffsetLabel})` : displayTimezones.utcOffsetLabel}
               </span>
-              <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{userLocalInfo.localTime}</span>
-              <span style={{ fontSize: isMobile ? '0.65rem' : '0.6rem', color: '#5a6c7d' }}>{userLocalInfo.localDate}</span>
-              <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.56rem' : '0.5rem', color: userLocalInfo.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic', marginLeft: isMobile ? '0' : '4px' })}>
-                {userLocalInfo.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
+              <span style={{ fontSize: isMobile ? '0.8rem' : '0.7rem', fontWeight: '700' }}>{displayTimezones.localTime}</span>
+              <span style={{ fontSize: isMobile ? '0.65rem' : '0.6rem', color: '#5a6c7d' }}>{displayTimezones.localDate}</span>
+              <span style={getBoundedDiffTextStyle({ fontSize: isMobile ? '0.56rem' : '0.5rem', color: displayTimezones.isSameTime ? '#27ae60' : '#7f8c8d', fontStyle: 'italic', marginLeft: isMobile ? '0' : '4px' })}>
+                {displayTimezones.timeDiffText.replace('hours', 'h').replace('hour', 'h')}
               </span>
             </div>
             <div style={{

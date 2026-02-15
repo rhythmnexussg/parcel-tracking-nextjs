@@ -87,6 +87,12 @@ export const translations = {
     hoursAhead: "hours ahead of Singapore",
     hourBehind: "hour behind Singapore",
     hoursBehind: "hours behind Singapore",
+    // Australian DST Notification
+    australianDSTTitle: "Australian Daylight Saving Time Active",
+    australianDSTBothMessage: "Both AEDT (Australian Eastern Daylight Time) and ACDT (Australian Central Daylight Time) are currently in effect.",
+    australianAEDTMessage: "AEDT (Australian Eastern Daylight Time) is currently in effect for Sydney, Melbourne, and surrounding areas.",
+    australianACDTMessage: "ACDT (Australian Central Daylight Time) is currently in effect for Adelaide and South Australia.",
+    australianDSTNote: "Delivery times displayed above reflect the current daylight saving time.",
     epacDeliveryNote: "Please KINDLY note that all ePAC items sent to the destination should all be delivered to your mailbox, doorstep, parcel locker or left in a safe place!",
     countriesNoMailbox: "Countries known to have mailbox/letterbox delivery unavailable: Brunei, China, India, Israel, Macau SAR China, Philippines, Poland and Vietnam.",
     rhythmNexusNotResponsible: "Rhythm Nexus is NOT RESPONSIBLE for handling the deliveries as it is out of our control and we would kindly prefer for you to track your item status instead.",

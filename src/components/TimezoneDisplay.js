@@ -76,8 +76,11 @@ const countryFlags = {
 const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   
   useEffect(() => {
+    setIsMounted(true);
+    
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -97,7 +100,7 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
   }, []);
   
   // If no destination country selected, don't show anything
-  if (!destinationCountry) return null;
+  if (!destinationCountry || !isMounted) return null;
   
   // If user is in Singapore, only show Singapore time
   const isUserInSingapore = userCountry === 'SG';
@@ -132,14 +135,56 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
       const january = new Date(currentTime.getFullYear(), 0, 1);
       const july = new Date(currentTime.getFullYear(), 6, 1);
       
-      const janOffset = january.toLocaleString('en-US', { timeZone: timezone, timeZoneName: 'short' });
-      const julOffset = july.toLocaleString('en-US', { timeZone: timezone, timeZoneName: 'short' });
-      const currentOffset = currentTime.toLocaleString('en-US', { timeZone: timezone, timeZoneName: 'short' });
+      const janOffset = new Date().toLocaleString('en-US', { timeZone: timezone, hour: 'numeric', timeZoneName: 'short' }).match(/GMT([+-]\d+(?:\.\d+)?)/)?.[1];
+      const julOffset = new Date(july).toLocaleString('en-US', { timeZone: timezone, hour: 'numeric', timeZoneName: 'short' }).match(/GMT([+-]\d+(?:\.\d+)?)/)?.[1];
       
-      return janOffset !== julOffset && currentOffset !== janOffset;
+      if (!janOffset || !julOffset) return false;
+      
+      const janOffsetNum = parseFloat(janOffset);
+      const julOffsetNum = parseFloat(julOffset);
+      const currentOffsetNum = parseFloat(new Date().toLocaleString('en-US', { timeZone: timezone, hour: 'numeric', timeZoneName: 'short' }).match(/GMT([+-]\d+(?:\.\d+)?)/)?.[1] || 0);
+      
+      // For Southern Hemisphere (Australia), DST is when offset is GREATER (more positive)
+      const maxOffset = Math.max(janOffsetNum, julOffsetNum);
+      return currentOffsetNum === maxOffset && janOffsetNum !== julOffsetNum;
     } catch (error) {
       return false;
     }
+  };
+  
+  // Check if it's past 3am in the given timezone (when DST notification should disappear)
+  const isPast3AM = (timezone) => {
+    try {
+      const timeString = currentTime.toLocaleString('en-US', {
+        timeZone: timezone,
+        hour: 'numeric',
+        hour12: false
+      });
+      const hour = parseInt(timeString.match(/\d+/)?.[0] || '0');
+      return hour >= 3;
+    } catch (error) {
+      return false;
+    }
+  };
+  
+  // Get dynamic timezone name with DST-aware abbreviation
+  const getTimezoneName = (timezone, baseName) => {
+    if (timezone === 'Australia/Sydney') {
+      const inDST = isDST(timezone);
+      const code = inDST ? 'AEDT' : 'AEST';
+      return `Sydney/Melbourne (${code})`;
+    }
+    if (timezone === 'Australia/Adelaide') {
+      const inDST = isDST(timezone);
+      const code = inDST ? 'ACDT' : 'ACST';
+      return `Adelaide (${code})`;
+    }
+    if (timezone === 'Pacific/Auckland') {
+      const inDST = isDST(timezone);
+      const code = inDST ? 'NZDT' : 'NZST';
+      return `Auckland (${code})`;
+    }
+    return baseName;
   };
   
   const getTimeDifference = (timezone) => {
@@ -224,6 +269,7 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
               const destTime = formatTime(tz.timezone, destinationCountry);
               const diffHours = getTimeDifference(tz.timezone);
               const timeDiffText = getTimeDiffText(diffHours);
+              const displayName = getTimezoneName(tz.timezone, tz.name);
               
               return (
                 <div key={index} style={{
@@ -248,7 +294,7 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                     whiteSpace: 'nowrap',
                   }}>
                     <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>{countryFlags[destinationCountry] || '🌍'}</span>
-                    {!isMobile && <span style={{ fontSize: '0.8rem', color: '#5a6c7d' }}>{tz.name}</span>}
+                    {!isMobile && <span style={{ fontSize: '0.8rem', color: '#5a6c7d' }}>{displayName}</span>}
                     <span style={{ fontSize: isMobile ? '0.85rem' : '1rem' }}>{destTime?.time}</span>
                   </div>
                   {isMobile && (
@@ -260,7 +306,7 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                     }}>
-                      {tz.name.replace(/\(.*?\)/g, '').trim()}
+                      {displayName.replace(/\(.*?\)/g, '').trim()}
                     </span>
                   )}
                   {!isMobile && (
