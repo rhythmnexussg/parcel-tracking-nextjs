@@ -5,7 +5,6 @@ import Link from "next/link";
 import "../../App.css";
 import { useLanguage } from "../../LanguageContext";
 import { Navigation } from "../../components/Navigation";
-import { AdBlock } from "../../components/AdBlock";
 
 function BlogIndex() {
   const { t } = useLanguage();
@@ -72,7 +71,6 @@ function BlogIndex() {
           ))}
         </div>
 
-        <AdBlock />
         <p className="text-muted">© {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}</p>
       </div>
     </>

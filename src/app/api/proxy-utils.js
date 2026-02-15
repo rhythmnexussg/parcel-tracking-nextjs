@@ -48,7 +48,6 @@ export function sanitizeAndRewrite(html, baseUrl, options = {}) {
       src.includes('google-analytics') ||
       src.includes('gtag') ||
       src.includes('doubleclick') ||
-      src.includes('adsbygoogle') ||
       src.includes('hotjar') ||
       src.includes('optimizely')
     )) {

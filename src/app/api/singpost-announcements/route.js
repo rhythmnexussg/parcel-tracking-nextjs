@@ -215,7 +215,6 @@ export async function GET(request) {
         src.includes('google-analytics') ||
         src.includes('gtag') ||
         src.includes('doubleclick') ||
-        src.includes('adsbygoogle') ||
         src.includes('hotjar') ||
         src.includes('optimizely')
       )) {

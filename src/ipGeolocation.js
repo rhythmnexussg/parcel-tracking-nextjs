@@ -75,6 +75,53 @@ const countryCodeAliases = {
   UK: 'GB',
 };
 
+const GEO_CACHE_KEY = 'rnx_geo_cache_v1';
+const GEO_CACHE_TTL_MS = 10 * 60 * 1000;
+let inMemoryGeoCache = null;
+
+function readGeoCache() {
+  if (typeof window === 'undefined') return null;
+
+  const now = Date.now();
+  if (inMemoryGeoCache && now - inMemoryGeoCache.timestamp < GEO_CACHE_TTL_MS) {
+    return inMemoryGeoCache.value;
+  }
+
+  try {
+    const raw = sessionStorage.getItem(GEO_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object') return null;
+    if (!parsed.timestamp || !parsed.value) return null;
+    if (now - parsed.timestamp >= GEO_CACHE_TTL_MS) {
+      sessionStorage.removeItem(GEO_CACHE_KEY);
+      return null;
+    }
+    inMemoryGeoCache = parsed;
+    return parsed.value;
+  } catch (_) {
+    return null;
+  }
+}
+
+function writeGeoCache(value) {
+  if (typeof window === 'undefined' || !value || typeof value !== 'object') return;
+  if (value.error) return;
+
+  const payload = {
+    timestamp: Date.now(),
+    value,
+  };
+
+  inMemoryGeoCache = payload;
+
+  try {
+    sessionStorage.setItem(GEO_CACHE_KEY, JSON.stringify(payload));
+  } catch (_) {
+    // ignore storage errors
+  }
+}
+
 export function normalizeCountryCode(countryCode) {
   if (!countryCode) return null;
   const normalized = String(countryCode).trim().toUpperCase();
@@ -768,6 +815,11 @@ export async function detectLanguageFromIPWithRestrictions() {
     };
   }
 
+  const cachedResult = readGeoCache();
+  if (cachedResult) {
+    return cachedResult;
+  }
+
   try {
     // Add timeout to prevent hanging
     const controller = new AbortController();
@@ -961,6 +1013,7 @@ export async function detectLanguageFromIPWithRestrictions() {
     };
 
     console.log('Final Result:', result);
+    writeGeoCache(result);
     return result;
   } catch (error) {
     console.error('Error in enhanced IP detection:', error);

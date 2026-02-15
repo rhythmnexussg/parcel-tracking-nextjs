@@ -5,7 +5,6 @@ import "../App.css";
 import { useLanguage } from "../LanguageContext";
 import { detectLanguageFromIPWithRestrictions } from "../ipGeolocation";
 import { Navigation } from "../components/Navigation";
-import { AdBlock } from "../components/AdBlock";
 
 export default function Home() {
   const { t } = useLanguage();
@@ -94,8 +93,6 @@ export default function Home() {
             </a>
           </div>
         </div>
-
-        <AdBlock />
 
         <p className="text-muted">
           © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}

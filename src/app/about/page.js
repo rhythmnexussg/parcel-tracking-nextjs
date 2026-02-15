@@ -4,7 +4,6 @@ import React from "react";
 import "../../App.css";
 import { useLanguage } from "../../LanguageContext";
 import { Navigation } from "../../components/Navigation";
-import { AdBlock } from "../../components/AdBlock";
 
 export default function About() {
   const { t } = useLanguage();
@@ -34,8 +33,6 @@ export default function About() {
           </p>
         </div>
         
-        <AdBlock />
-
         <p className="text-muted">
           © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
         </p>

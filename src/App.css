@@ -1,9 +1,6 @@
 /* =========================================
    1. Global Resets & Layout
    ========================================= */
-/* IMPORT: Changed to 'Nunito' to match the rounded/bubbly logo font */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
-
 * {
   box-sizing: border-box;
   margin: 0;

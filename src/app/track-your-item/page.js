@@ -314,50 +314,6 @@ async function fetchOrderInfo(query) {
     return [];
   }
 }
-
-
-// Separate component for Ads
-const AdBlock = () => {
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      // ignore
-    }
-  }, []);
-
-  return (
-    <>
-      <div className="my-4">
-        <ins className="adsbygoogle"
-          style={{ display: "block" }}
-          data-ad-client="ca-pub-4194808111663749"
-          data-ad-slot="5003292159"
-          data-ad-format="auto">
-        </ins>
-      </div>
-      <div className="my-4">
-        <ins className="adsbygoogle"
-          style={{ display: "block" }}
-          data-ad-client="ca-pub-4194808111663749"
-          data-ad-slot="8978895256"
-          data-ad-format="fluid"
-          data-ad-layout-key="+30+qw+o-1s+9a">
-        </ins>
-      </div>
-      <div className="my-4 text-center">
-        <ins className="adsbygoogle"
-          style={{ display: "block", textAlign: "center" }}
-          data-ad-client="ca-pub-4194808111663749"
-          data-ad-slot="6134983374"
-          data-ad-format="fluid"
-          data-ad-layout="in-article">
-        </ins>
-      </div>
-    </>
-  );
-};
-
 // Helper function to get epac service name by country code using translations
 const getEpacName = (countryCode, t) => {
   if (!countryCode || !t) return "";
@@ -524,14 +480,6 @@ function App() {
       setCountrySpecificMessage(destinationCountry);
     }
   }, [currentLanguage, destinationCountry, tStrict, setCountrySpecificMessage]);
-
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.log("AdSense error:", e);
-    }
-  }, []);
 
   useEffect(() => {
     if (searchResults.length > 0) {
@@ -1022,8 +970,6 @@ function App() {
             <p>{t('contactSupportError')}</p>
           </div>
         )}
-
-        <AdBlock />
 
         <div className="text-center">
             {/* LOGO REMOVED FROM HERE */}
