@@ -169,21 +169,75 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
   
   // Get dynamic timezone name with DST-aware abbreviation
   const getTimezoneName = (timezone, baseName) => {
+    const inDST = isDST(timezone);
+    
+    // Australia - Southern Hemisphere DST
     if (timezone === 'Australia/Sydney') {
-      const inDST = isDST(timezone);
       const code = inDST ? 'AEDT' : 'AEST';
       return `Sydney/Melbourne (${code})`;
     }
     if (timezone === 'Australia/Adelaide') {
-      const inDST = isDST(timezone);
       const code = inDST ? 'ACDT' : 'ACST';
       return `Adelaide (${code})`;
     }
+    
+    // New Zealand - Southern Hemisphere DST
     if (timezone === 'Pacific/Auckland') {
-      const inDST = isDST(timezone);
       const code = inDST ? 'NZDT' : 'NZST';
       return `Auckland (${code})`;
     }
+    
+    // USA - Northern Hemisphere DST
+    if (timezone === 'America/New_York') {
+      const code = inDST ? 'EDT' : 'EST';
+      return `Eastern (${code})`;
+    }
+    if (timezone === 'America/Chicago') {
+      const code = inDST ? 'CDT' : 'CST';
+      return `Central (${code})`;
+    }
+    if (timezone === 'America/Denver') {
+      const code = inDST ? 'MDT' : 'MST';
+      return `Mountain (${code})`;
+    }
+    if (timezone === 'America/Los_Angeles') {
+      const code = inDST ? 'PDT' : 'PST';
+      return `Pacific (${code})`;
+    }
+    if (timezone === 'America/Anchorage') {
+      const code = inDST ? 'AKDT' : 'AKST';
+      return `Alaska (${code})`;
+    }
+    if (timezone === 'Pacific/Honolulu') {
+      return `Hawaii (HST)`;
+    }
+    
+    // Canada - Northern Hemisphere DST
+    if (timezone === 'America/St_Johns') {
+      const code = inDST ? 'NDT' : 'NST';
+      return `Newfoundland (${code})`;
+    }
+    if (timezone === 'America/Halifax') {
+      const code = inDST ? 'ADT' : 'AST';
+      return `Atlantic (${code})`;
+    }
+    if (timezone === 'America/Toronto') {
+      const code = inDST ? 'EDT' : 'EST';
+      return `Eastern (${code})`;
+    }
+    if (timezone === 'America/Winnipeg') {
+      const code = inDST ? 'CDT' : 'CST';
+      return `Central (${code})`;
+    }
+    if (timezone === 'America/Edmonton') {
+      const code = inDST ? 'MDT' : 'MST';
+      return `Mountain (${code})`;
+    }
+    if (timezone === 'America/Vancouver') {
+      const code = inDST ? 'PDT' : 'PST';
+      return `Pacific (${code})`;
+    }
+    
     return baseName;
   };
   

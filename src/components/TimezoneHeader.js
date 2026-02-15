@@ -178,20 +178,49 @@ const TimezoneHeader = ({ userCountry, t }) => {
   };
 
   const getTimezoneCode = (name, timezone) => {
-    // Special handling for Australian timezones - check DST and adjust code dynamically
-    if (timezone === 'Australia/Sydney') {
-      const inDST = isDST(timezone);
-      return inDST ? 'AEDT' : 'AEST';
-    }
-    if (timezone === 'Australia/Adelaide') {
-      const inDST = isDST(timezone);
-      return inDST ? 'ACDT' : 'ACST';
-    }
-    // Special handling for New Zealand - check DST and adjust code dynamically
-    if (timezone === 'Pacific/Auckland') {
-      const inDST = isDST(timezone);
-      return inDST ? 'NZDT' : 'NZST';
-    }
+    const inDST = isDST(timezone);
+    
+    // Australia - Southern Hemisphere DST
+    if (timezone === 'Australia/Sydney') return inDST ? 'AEDT' : 'AEST';
+    if (timezone === 'Australia/Adelaide') return inDST ? 'ACDT' : 'ACST';
+    
+    // New Zealand - Southern Hemisphere DST
+    if (timezone === 'Pacific/Auckland') return inDST ? 'NZDT' : 'NZST';
+    
+    // USA - Northern Hemisphere DST
+    if (timezone === 'America/New_York') return inDST ? 'EDT' : 'EST';
+    if (timezone === 'America/Chicago') return inDST ? 'CDT' : 'CST';
+    if (timezone === 'America/Denver') return inDST ? 'MDT' : 'MST';
+    if (timezone === 'America/Los_Angeles') return inDST ? 'PDT' : 'PST';
+    if (timezone === 'America/Anchorage') return inDST ? 'AKDT' : 'AKST';
+    if (timezone === 'Pacific/Honolulu') return 'HST'; // Hawaii doesn't observe DST
+    
+    // Canada - Northern Hemisphere DST
+    if (timezone === 'America/St_Johns') return inDST ? 'NDT' : 'NST';
+    if (timezone === 'America/Halifax') return inDST ? 'ADT' : 'AST';
+    if (timezone === 'America/Toronto') return inDST ? 'EDT' : 'EST';
+    if (timezone === 'America/Winnipeg') return inDST ? 'CDT' : 'CST';
+    if (timezone === 'America/Edmonton') return inDST ? 'MDT' : 'MST';
+    if (timezone === 'America/Vancouver') return inDST ? 'PDT' : 'PST';
+    
+    // Europe - Northern Hemisphere DST
+    if (timezone === 'Europe/London') return inDST ? 'BST' : 'GMT';
+    if (timezone === 'Europe/Dublin') return inDST ? 'IST' : 'GMT';
+    if (timezone === 'Europe/Lisbon') return inDST ? 'WEST' : 'WET';
+    if (timezone === 'Europe/Paris') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Berlin') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Vienna') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Brussels') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Prague') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Rome') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Amsterdam') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Oslo') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Warsaw') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Madrid') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Stockholm') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Zurich') return inDST ? 'CEST' : 'CET';
+    if (timezone === 'Europe/Helsinki') return inDST ? 'EEST' : 'EET';
+    if (timezone === 'Asia/Jerusalem') return inDST ? 'IDT' : 'IST';
     
     const fromName = getCodeFromName(name);
     return fromName || timezoneAbbreviationMap[timezone] || null;
