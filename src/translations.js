@@ -1,8 +1,11 @@
 ﻿// Language translations for Rhythm Nexus - Complete with all languages
 export const translations = {
   en: {
+      goodFridayEasterGreeting: "Happy Easter! Wishing you peace and joy during Good Friday and Easter.",
+      christmasGreeting: "Merry Christmas and Happy New Year! Wishing you peace and joy from December 25th to January 5th.",
+      captchaSystemRequirements: "Minimum system requirements: Windows 10 or 11, macOS 10.15+, or Android/iOS latest version.",
     // Navigation
-    home: "Home", blog: "Blog", aboutUs: "About Us", faq: "FAQ", contact: "Contact", trackPackage: "Track Package", cnyYearOfHorseMessage: "🧧 Happy Chinese New Year! Wishing you prosperity in the Year of the Horse 🐴",
+    home: "Home", blog: "Blog", aboutUs: "About Us", faq: "FAQ", contact: "Contact", trackPackage: "Track Package", cnyYearOfHorseMessage: "🧧 Happy Lunar New Year! Wishing you prosperity and joy in the Year of the Horse!",
     // Tracking
     parcelTracking: "Parcel Tracking", serviceAnnouncement: "Service Announcement", trackingNumber: "Tracking Number", destinationCountry: "Destination Country",
     usaStormAdvisory: "Severe winter storm is affecting several parts of USA. This will affect both postal and express delivery for packages into USA.",
@@ -263,7 +266,7 @@ export const translations = {
   },
   
   de: {
-    home: "Startseite", blog: "Blog", aboutUs: "Über Uns", faq: "FAQ", contact: "Kontakt", trackPackage: "Paket Verfolgen", cnyYearOfHorseMessage: "🧧 Frohes Chinesisches Neujahr! Wir wünschen Ihnen Wohlstand im Jahr des Pferdes 🐴",
+    home: "Startseite", blog: "Blog", aboutUs: "Über Uns", faq: "FAQ", contact: "Kontakt", trackPackage: "Paket Verfolgen", cnyYearOfHorseMessage: "🧧 Frohes Mondneujahr! Wir wünschen Ihnen Wohlstand und Freude im Jahr des Pferdes! 🐴",
     parcelTracking: "Paketverfolgung", serviceAnnouncement: "Dienstankündigung", trackingNumber: "Tracking-Nummer", destinationCountry: "Zielland", postcode: "Postleitzahl",
     usaStormAdvisory: "Schwerer Wintersturm betrifft mehrere Teile der USA. Dies beeinträchtigt sowohl Post- als auch Expresszustellung für Sendungen in die USA.",
     orderNumber: "Bestellnummer (Beispiel: RTNX1234567890)", fromDate: "Von Datum (ERFORDERLICH)", toDate: "Bis Datum (ERFORDERLICH)",
@@ -494,7 +497,7 @@ export const translations = {
   },
   
   fr: {
-    home: "Accueil", blog: "Blog", aboutUs: "À Propos", faq: "FAQ", contact: "Contact", trackPackage: "Suivi de Colis", cnyYearOfHorseMessage: "🧧 Bonne année chinoise ! Nous vous souhaitons prospérité pour l’Année du Cheval 🐴",
+    home: "Accueil", blog: "Blog", aboutUs: "À Propos", faq: "FAQ", contact: "Contact", trackPackage: "Suivi de Colis", cnyYearOfHorseMessage: "🧧 Bonne année lunaire ! Nous vous souhaitons prospérité et joie pour l’Année du Cheval ! 🐴",
     parcelTracking: "Suivi de Colis", usaStormAdvisory: "Une forte tempête hivernale touche plusieurs régions des États‑Unis. Cela affectera la distribution postale et express des colis vers les États‑Unis.", serviceAnnouncement: "Annonce de Service", trackingNumber: "Numéro de Suivi", destinationCountry: "Pays de Destination", postcode: "Code Postal",
     orderNumber: "Numéro de Commande (Exemple: RTNX1234567890)", fromDate: "De la Date (REQUIS)", toDate: "À la Date (REQUIS)",
     trackParcel: "Suivre le Colis", selectCourier: "-- Sélectionner Coursier / Pays --", singaporeCouriers: "Coursiers Singapouriens",
@@ -719,7 +722,7 @@ export const translations = {
   },
   
   es: {
-    home: "Inicio", blog: "Blog", aboutUs: "Acerca De", faq: "Preguntas Frecuentes", contact: "Contacto", trackPackage: "Rastrear Paquete", cnyYearOfHorseMessage: "🧧 ¡Feliz Año Nuevo Chino! Te deseamos prosperidad en el Año del Caballo 🐴",
+    home: "Inicio", blog: "Blog", aboutUs: "Acerca De", faq: "Preguntas Frecuentes", contact: "Contacto", trackPackage: "Rastrear Paquete", cnyYearOfHorseMessage: "🧧 ¡Feliz Año Nuevo Lunar! Te deseamos prosperidad y alegría en el Año del Caballo! 🐴",
     parcelTracking: "Rastreo de Paquetes", usaStormAdvisory: "Una fuerte tormenta invernal afecta a varias partes de EE. UU. Esto afectará la entrega postal y exprés de paquetes hacia EE. UU.", serviceAnnouncement: "Anuncio de Servicio", trackingNumber: "Número de Rastreo", destinationCountry: "País de Destino", postcode: "Código Postal",
     orderNumber: "Número de Pedido (Ejemplo: RTNX1234567890)", fromDate: "Desde Fecha (REQUERIDO)", toDate: "Hasta Fecha (REQUERIDO)",
     trackParcel: "Rastrear Paquete", selectCourier: "-- Seleccionar Mensajería / País --", singaporeCouriers: "Mensajerías de Singapur",
@@ -1159,7 +1162,10 @@ export const translations = {
   },
   
   zh: {
-    home: "首页", blog: "博客", aboutUs: "关于我们", faq: "常见问题", contact: "联系我们", trackPackage: "追踪包裹", cnyYearOfHorseMessage: "🧧 新春快乐！祝您马年兴旺发达 🐴",
+      goodFridayEasterGreeting: "复活节快乐！祝您在耶稣受难日和复活节期间平安喜乐。",
+      christmasGreeting: "圣诞快乐，新年快乐！祝您在12月25日至1月5日期间平安喜乐。",
+      captchaSystemRequirements: "最低系统要求：Windows 10或11，macOS 10.15+，或最新版本的Android/iOS。",
+    home: "首页", blog: "博客", aboutUs: "关于我们", faq: "常见问题", contact: "联系我们", trackPackage: "追踪包裹", cnyYearOfHorseMessage: "🧧 新年快乐！祝您马年万事如意，阖家幸福！",
     parcelTracking: "包裹追踪", usaStormAdvisory: "严重的冬季风暴正影响美国多个地区。这将影响寄往美国的包裹的邮政和快递投递。", serviceAnnouncement: "服务公告", trackingNumber: "追踪号码", destinationCountry: "目标国家", postcode: "邮政编码",
     orderNumber: "订单号（示例：RTNX1234567890）", fromDate: "从日期（必需）", toDate: "至日期（必需）",
     trackParcel: "追踪包裹", selectCourier: "-- 选择快递/国家 --", optionSingPost: "🇸🇬 新加坡邮政 (SingPost)", singaporeCouriers: "新加坡快递商",
@@ -1622,7 +1628,19 @@ export const translations = {
   },
 
   "zh-hant": {
-    home: "首頁", blog: "博客", aboutUs: "關於我們", faq: "常見問題", contact: "聯絡我們", trackPackage: "追蹤包裹", cnyYearOfHorseMessage: "🧧 新春快樂！祝您馬年興旺發達 🐴",
+      goodFridayEasterGreeting: "復活節快樂！祝您在耶穌受難日和復活節期間平安喜樂。",
+      christmasGreeting: "聖誕快樂，新年快樂！祝您在12月25日至1月5日期間平安喜樂。",
+      captchaSystemRequirements: "最低系統要求：Windows 10或11，macOS 10.15+，或最新版本的Android/iOS。",
+      goodFridayEasterGreeting: "Frohe Ostern! Frieden und Freude zu Karfreitag und Ostern.",
+      christmasGreeting: "Frohe Weihnachten und ein gutes neues Jahr! Frieden und Freude vom 25. Dezember bis 5. Januar.",
+      captchaSystemRequirements: "Mindestanforderungen: Windows 10 oder 11, macOS 10.15+, oder aktuelle Android/iOS-Version.",
+      goodFridayEasterGreeting: "Joyeuses Pâques ! Paix et joie pour le Vendredi Saint et Pâques.",
+      christmasGreeting: "Joyeux Noël et bonne année ! Paix et joie du 25 décembre au 5 janvier.",
+      captchaSystemRequirements: "Configuration minimale : Windows 10 ou 11, macOS 10.15+, ou version Android/iOS la plus récente.",
+      goodFridayEasterGreeting: "¡Feliz Pascua! Paz y alegría en Viernes Santo y Pascua.",
+      christmasGreeting: "¡Feliz Navidad y próspero Año Nuevo! Paz y alegría del 25 de diciembre al 5 de enero.",
+      captchaSystemRequirements: "Requisitos mínimos: Windows 10 o 11, macOS 10.15+, o la última versión de Android/iOS.",
+    home: "首頁", blog: "博客", aboutUs: "關於我們", faq: "常見問題", contact: "聯絡我們", trackPackage: "追蹤包裹", cnyYearOfHorseMessage: "🧧 新年快樂！祝您馬年萬事如意，闔家幸福！",
     parcelTracking: "包裹追蹤", usaStormAdvisory: "嚴重的冬季風暴正影響美國多個地區。這將影響寄往美國的包裹之郵政與快遞配送。", serviceAnnouncement: "服務公告", trackingNumber: "追蹤號碼", destinationCountry: "目標國家", postcode: "郵政編碼",
     orderNumber: "訂單號（示例：RTNX1234567890）", fromDate: "從日期（必需）", toDate: "至日期（必需）",
     trackParcel: "追蹤包裹", selectCourier: "-- 選擇快遞/國家 --", optionSingPost: "🇸🇬 新加坡郵政 (SingPost)", singaporeCouriers: "新加坡快遞商",
@@ -2083,7 +2101,10 @@ export const translations = {
   },
   
   pt: {
-    home: "Início", blog: "Blog", aboutUs: "Sobre Nós", faq: "Perguntas Frequentes", contact: "Contato", trackPackage: "Rastrear Encomenda", cnyYearOfHorseMessage: "🧧 Feliz Ano Novo Chinês! Desejamos prosperidade no Ano do Cavalo 🐴",
+      goodFridayEasterGreeting: "Feliz Páscoa! Paz e alegria na Sexta-feira Santa e Páscoa.",
+      christmasGreeting: "Feliz Natal e Ano Novo! Paz e alegria de 25 de dezembro a 5 de janeiro.",
+      captchaSystemRequirements: "Requisitos mínimos: Windows 10 ou 11, macOS 10.15+, ou versão mais recente de Android/iOS.",
+    home: "Início", blog: "Blog", aboutUs: "Sobre Nós", faq: "Perguntas Frequentes", contact: "Contato", trackPackage: "Rastrear Encomenda", cnyYearOfHorseMessage: "🧧 Feliz Ano Novo Lunar! Desejamos prosperidade e alegria no Ano do Cavalo! 🐴",
     parcelTracking: "Rastreamento de Encomendas", usaStormAdvisory: "Uma forte tempestade de inverno está afetando várias partes dos EUA. Isso afetará a entrega postal e expressa de encomendas para os EUA.", serviceAnnouncement: "Anúncio de Serviço", trackingNumber: "Número de Rastreamento", destinationCountry: "País de Destino", postcode: "Código Postal",
     orderNumber: "Número do Pedido (Exemplo: RTNX1234567890)", fromDate: "Data De (NECESSÁRIO)", toDate: "Data Até (NECESSÁRIO)",
     trackParcel: "Rastrear Encomenda", selectCourier: "-- Selecionar Transportadora / País --", optionSingPost: "🇸🇬 Singapore Post (SingPost)", singaporeCouriers: "Transportadoras de Singapura",
@@ -2544,7 +2565,10 @@ export const translations = {
   },
   
   hi: {
-    home: "होम", blog: "ब्लॉग", aboutUs: "हमारे बारे में", faq: "अक्सर पूछे जाने वाले प्रश्न", contact: "संपर्क करें", trackPackage: "पार्सल ट्रैक करें", cnyYearOfHorseMessage: "🧧 चीनी नव वर्ष की शुभकामनाएँ! घोड़े के वर्ष में समृद्धि की कामना है 🐴",
+      goodFridayEasterGreeting: "ईस्टर की शुभकामनाएँ! गुड फ्राइडे और ईस्टर पर शांति और खुशी की कामना।",
+      christmasGreeting: "क्रिसमस और नव वर्ष की शुभकामनाएँ! 25 दिसंबर से 5 जनवरी तक शांति और खुशी की कामना।",
+      captchaSystemRequirements: "न्यूनतम सिस्टम आवश्यकताएँ: Windows 10 या 11, macOS 10.15+, या Android/iOS का नवीनतम संस्करण।",
+    home: "होम", blog: "ब्लॉग", aboutUs: "हमारे बारे में", faq: "अक्सर पूछे जाने वाले प्रश्न", contact: "संपर्क करें", trackPackage: "पार्सल ट्रैक करें", cnyYearOfHorseMessage: "🧧 लूनर न्यू ईयर की शुभकामनाएँ! घोड़े के वर्ष में समृद्धि और खुशी की कामना है! 🐴",
     parcelTracking: "पार्सल ट्रैकिंग", usaStormAdvisory: "USA के कई हिस्सों में भीषण शीतकालीन तूफान का प्रभाव पड़ रहा है। इससे USA के लिए डाक और एक्सप्रेस वितरण प्रभावित होगा।", serviceAnnouncement: "सेवा घोषणा", trackingNumber: "ट्रैकिंग नंबर", destinationCountry: "गंतव्य देश", postcode: "पिन कोड",
     orderNumber: "ऑर्डर नंबर (उदाहरण: RTNX1234567890)", fromDate: "से तारीख (आवश्यक)", toDate: "तक तारीख (आवश्यक)",
     trackParcel: "पार्सल ट्रैक करें", selectCourier: "-- कूरियर / देश चुनें --", optionSingPost: "🇸🇬 सिंगापुर पोस्ट (SingPost)", singaporeCouriers: "सिंगापुर कूरियर",
@@ -2805,7 +2829,10 @@ export const translations = {
   },
   
   th: {
-    home: "หน้าหลัก", blog: "บล็อก", aboutUs: "เกี่ยวกับเรา", faq: "คำถามที่พบบ่อย", contact: "ติดต่อเรา", trackPackage: "ติดตามพัสดุ", cnyYearOfHorseMessage: "🧧 สุขสันต์วันตรุษจีน! ขอให้คุณรุ่งเรืองในปีมะเมีย 🐴",
+      goodFridayEasterGreeting: "สุขสันต์วันอีสเตอร์! ขอให้มีความสงบสุขและความสุขในวันศุกร์ประเสริฐและวันอีสเตอร์.",
+      christmasGreeting: "สุขสันต์วันคริสต์มาสและปีใหม่! ขอให้มีความสงบสุขและความสุขตั้งแต่วันที่ 25 ธันวาคมถึง 5 มกราคม.",
+      captchaSystemRequirements: "ข้อกำหนดขั้นต่ำ: Windows 10 หรือ 11, macOS 10.15+, หรือ Android/iOS เวอร์ชันล่าสุด.",
+    home: "หน้าหลัก", blog: "บล็อก", aboutUs: "เกี่ยวกับเรา", faq: "คำถามที่พบบ่อย", contact: "ติดต่อเรา", trackPackage: "ติดตามพัสดุ", cnyYearOfHorseMessage: "🧧 สุขสันต์วันปีใหม่ทางจันทรคติ! ขอให้คุณรุ่งเรืองและมีความสุขในปีมะเมีย! 🐴",
     parcelTracking: "การติดตามพัสดุ", usaStormAdvisory: "พายุฤดูหนาวรุนแรงกำลังกระทบหลายพื้นที่ของสหรัฐฯ จะส่งผลต่อการจัดส่งไปรษณีย์และด่วนไปยังสหรัฐฯ", serviceAnnouncement: "ประกาศบริการ", trackingNumber: "หมายเลขติดตาม", destinationCountry: "ประเทศปลายทาง", postcode: "รหัสไปรษณีย์",
     orderNumber: "หมายเลขคำสั่งซื้อ (ตัวอย่าง: RTNX1234567890)", fromDate: "จากวันที่ (จำเป็น)", toDate: "ถึงวันที่ (จำเป็น)",
     trackParcel: "ติดตามพัสดุ", selectCourier: "-- เลือกผู้ขนส่ง / ประเทศ --", optionSingPost: "🇸🇬 สไปรษณีย์สิงคโปร์ (SingPost)", singaporeCouriers: "บริษัทขนส่งสิงคโปร์",
@@ -3066,7 +3093,10 @@ export const translations = {
   },
   
   ms: {
-    home: "Laman Utama", blog: "Blog", aboutUs: "Tentang Kami", faq: "Soalan Lazim", contact: "Hubungi", trackPackage: "Jejak Bungkusan", cnyYearOfHorseMessage: "🧧 Selamat Tahun Baharu Cina! Semoga anda makmur dalam Tahun Kuda 🐴",
+      goodFridayEasterGreeting: "Selamat Hari Easter! Semoga damai dan gembira pada Good Friday dan Easter.",
+      christmasGreeting: "Selamat Hari Krismas dan Tahun Baru! Damai dan gembira dari 25 Disember hingga 5 Januari.",
+      captchaSystemRequirements: "Keperluan minimum: Windows 10 atau 11, macOS 10.15+, atau versi Android/iOS terkini.",
+    home: "Laman Utama", blog: "Blog", aboutUs: "Tentang Kami", faq: "Soalan Lazim", contact: "Hubungi", trackPackage: "Jejak Bungkusan", cnyYearOfHorseMessage: "🧧 Selamat Tahun Baru Lunar! Semoga anda makmur dan gembira dalam Tahun Kuda! 🐴",
     parcelTracking: "Penjejakan Bungkusan", usaStormAdvisory: "Ribut musim sejuk yang teruk menjejaskan beberapa bahagian di AS. Ini akan menjejaskan penghantaran pos dan ekspres bagi bungkusan ke AS.", serviceAnnouncement: "Pengumuman Perkhidmatan", trackingNumber: "Nombor Penjejakan", destinationCountry: "Negara Destinasi", postcode: "Poskod",
     orderNumber: "Nombor Pesanan (Contoh: RTNX1234567890)", fromDate: "Dari Tarikh (DIPERLUKAN)", toDate: "Hingga Tarikh (DIPERLUKAN)",
     trackParcel: "Jejak Bungkusan", selectCourier: "-- Pilih Kurier / Negara --", optionSingPost: "🇸🇬 Pos Singapura (SingPost)", singaporeCouriers: "Kurier Singapura",
@@ -3307,7 +3337,10 @@ export const translations = {
   },
   
   nl: {
-    home: "Home", blog: "Blog", aboutUs: "Over Ons", faq: "Veelgestelde Vragen", contact: "Contact", trackPackage: "Pakket Volgen", cnyYearOfHorseMessage: "🧧 Gelukkig Chinees Nieuwjaar! Wij wensen je voorspoed in het Jaar van het Paard 🐴",
+      goodFridayEasterGreeting: "Vrolijk Pasen! Vrede en vreugde met Goede Vrijdag en Pasen.",
+      christmasGreeting: "Prettige Kerst en een Gelukkig Nieuwjaar! Vrede en vreugde van 25 december tot 5 januari.",
+      captchaSystemRequirements: "Minimale systeemvereisten: Windows 10 of 11, macOS 10.15+, of nieuwste Android/iOS-versie.",
+    home: "Home", blog: "Blog", aboutUs: "Over Ons", faq: "Veelgestelde Vragen", contact: "Contact", trackPackage: "Pakket Volgen", cnyYearOfHorseMessage: "🧧 Gelukkig Lunar Nieuwjaar! Wij wensen je voorspoed en vreugde in het Jaar van het Paard! 🐴",
     parcelTracking: "Pakket Tracking", usaStormAdvisory: "Een zware winterstorm treft meerdere delen van de VS. Dit beïnvloedt zowel post‑ als expresbezorging van pakketten naar de VS.", serviceAnnouncement: "Dienstaankondiging", trackingNumber: "Trackingnummer", destinationCountry: "Bestemmingsland", postcode: "Postcode",
     orderNumber: "Bestelnummer (Voorbeeld: RTNX1234567890)", fromDate: "Van Datum (VEREIST)", toDate: "Tot Datum (VEREIST)",
     trackParcel: "Pakket Volgen", selectCourier: "-- Koerier / Land Selecteren --", optionSingPost: "🇸🇬 Singapore Post (SingPost)", singaporeCouriers: "Singapore Koeriers",
@@ -3727,7 +3760,10 @@ export const translations = {
   },
   
   id: {
-    home: "Beranda", blog: "Blog", aboutUs: "Tentang Kami", faq: "FAQ", contact: "Kontak", trackPackage: "Lacak Paket", cnyYearOfHorseMessage: "🧧 Selamat Tahun Baru Imlek! Semoga Anda makmur di Tahun Kuda 🐴",
+      goodFridayEasterGreeting: "Selamat Paskah! Damai dan sukacita di Good Friday dan Paskah.",
+      christmasGreeting: "Selamat Natal dan Tahun Baru! Damai dan sukacita dari 25 Desember hingga 5 Januari.",
+      captchaSystemRequirements: "Persyaratan minimum: Windows 10 atau 11, macOS 10.15+, atau versi Android/iOS terbaru.",
+    home: "Beranda", blog: "Blog", aboutUs: "Tentang Kami", faq: "FAQ", contact: "Kontak", trackPackage: "Lacak Paket", cnyYearOfHorseMessage: "🧧 Selamat Tahun Baru Lunar! Semoga Anda makmur dan bahagia di Tahun Kuda! 🐴",
     parcelTracking: "Pelacakan Paket", usaStormAdvisory: "Badai musim dingin parah mempengaruhi beberapa bagian AS. Ini akan memengaruhi pengiriman pos dan ekspres untuk paket ke AS.", serviceAnnouncement: "Pengumuman Layanan", trackingNumber: "Nomor Pelacakan", destinationCountry: "Negara Tujuan", postcode: "Kode Pos",
     orderNumber: "Nomor Pesanan (Contoh: RTNX1234567890)", fromDate: "Dari Tanggal (WAJIB)", toDate: "Hingga Tanggal (WAJIB)",
     trackParcel: "Lacak Paket", selectCourier: "-- Pilih Kurir / Negara --", singaporeCouriers: "Kurir Singapura",
@@ -4139,7 +4175,10 @@ export const translations = {
   },
   
   cs: {
-    home: "Domů", blog: "Blog", aboutUs: "O Nás", faq: "Časté Dotazy", contact: "Kontakt", trackPackage: "Sledovat Balík", cnyYearOfHorseMessage: "🧧 Šťastný čínský nový rok! Přejeme vám prosperitu v roce Koně 🐴",
+      goodFridayEasterGreeting: "Veselé Velikonoce! Mír a radost na Velký pátek a Velikonoce.",
+      christmasGreeting: "Veselé Vánoce a šťastný nový rok! Mír a radost od 25. prosince do 5. ledna.",
+      captchaSystemRequirements: "Minimální požadavky: Windows 10 nebo 11, macOS 10.15+, nebo nejnovější verze Android/iOS.",
+    home: "Domů", blog: "Blog", aboutUs: "O Nás", faq: "Časté Dotazy", contact: "Kontakt", trackPackage: "Sledovat Balík", cnyYearOfHorseMessage: "🧧 Šťastný lunární nový rok! Přejeme vám prosperitu a radost v roce Koně! 🐴",
     parcelTracking: "Sledování Balíku", usaStormAdvisory: "Silná zimní bouře postihuje několik částí USA. Ovlivní to poštovní i expresní doručování zásilek do USA.", serviceAnnouncement: "Oznámení služby", trackingNumber: "Sledovací Číslo", destinationCountry: "Cílová Země", postcode: "PSČ",
     orderNumber: "Číslo Objednávky (Příklad: RTNX1234567890)", fromDate: "Od Data (POŽADOVÁNO)", toDate: "Do Data (POŽADOVÁNO)",
     trackParcel: "Sledovat Balík", selectCourier: "-- Vybrat Kurýra / Zemi --", singaporeCouriers: "Singapurští Kurýři",
@@ -4558,7 +4597,10 @@ export const translations = {
   },
   
   it: {
-    home: "Home", blog: "Blog", aboutUs: "Chi Siamo", faq: "Domande Frequenti", contact: "Contatto", trackPackage: "Traccia Pacco", cnyYearOfHorseMessage: "🧧 Buon Capodanno Cinese! Ti auguriamo prosperità nell’Anno del Cavallo 🐴",
+      goodFridayEasterGreeting: "Buona Pasqua! Pace e gioia per il Venerdì Santo e Pasqua.",
+      christmasGreeting: "Buon Natale e Felice Anno Nuovo! Pace e gioia dal 25 dicembre al 5 gennaio.",
+      captchaSystemRequirements: "Requisiti minimi: Windows 10 o 11, macOS 10.15+, o versione Android/iOS più recente.",
+    home: "Home", blog: "Blog", aboutUs: "Chi Siamo", faq: "Domande Frequenti", contact: "Contatto", trackPackage: "Traccia Pacco", cnyYearOfHorseMessage: "🧧 Buon Capodanno Lunare! Ti auguriamo prosperità e gioia nell’Anno del Cavallo! 🐴",
     parcelTracking: "Tracciamento Pacchi", usaStormAdvisory: "Una grave tempesta invernale sta colpendo diverse parti degli Stati Uniti. Questo influenzerà la consegna postale ed espressa dei pacchi verso gli Stati Uniti.", serviceAnnouncement: "Annuncio di Servizio", trackingNumber: "Numero di Tracciamento", destinationCountry: "Paese di Destinazione", postcode: "CAP",
     orderNumber: "Numero Ordine (Esempio: RTNX1234567890)", fromDate: "Da Data (RICHIESTO)", toDate: "A Data (RICHIESTO)",
     trackParcel: "Traccia Pacco", selectCourier: "-- Seleziona Corriere / Paese --", singaporeCouriers: "Corrieri Singapore",
@@ -4798,7 +4840,13 @@ export const translations = {
   },
   
   he: {
-    home: "בית", blog: "בלוג", aboutUs: "אודות", faq: "שאלות נפוצות", contact: "צור קשר", trackPackage: "מעקב חבילה", cnyYearOfHorseMessage: "🧧 שנה סינית חדשה שמחה! מאחלים לך שגשוג בשנת הסוס 🐴",
+      goodFridayEasterGreeting: "חג פסח שמח! שלום ושמחה ביום שישי הטוב ובפסח.",
+      christmasGreeting: "חג מולד שמח ושנה טובה! שלום ושמחה מ-25 בדצמבר עד 5 בינואר.",
+      captchaSystemRequirements: "דרישות מערכת מינימליות: Windows 10 או 11, macOS 10.15+, או גרסה עדכנית של Android/iOS.",
+      goodFridayEasterGreeting: "イースターおめでとうございます！グッドフライデーとイースターに平和と喜びを。",
+      christmasGreeting: "メリークリスマスと新年おめでとうございます！12月25日から1月5日まで平和と喜びを。",
+      captchaSystemRequirements: "最小システム要件：Windows 10または11、macOS 10.15+、または最新のAndroid/iOSバージョン。",
+    home: "בית", blog: "בלוג", aboutUs: "אודות", faq: "שאלות נפוצות", contact: "צור קשר", trackPackage: "מעקב חבילה", cnyYearOfHorseMessage: "🧧 שנה לונארית חדשה שמחה! מאחלים לך שגשוג ושמחה בשנת הסוס! 🐴",
     parcelTracking: "מעקב חבילות", usaStormAdvisory: "סערת חורף קשה משפיעה על אזורים רבים בארה\"ב. הדבר ישפיע על משלוחי דואר ואקספרס של חבילות לארה\"ב.", serviceAnnouncement: "הודעת שירות", trackingNumber: "מספר מעקב", destinationCountry: "מדינת יעד", postcode: "מיקוד",
     orderNumber: "מספר הזמנה (דוגמה: RTNX1234567890)", fromDate: "מתאריך (נדרש)", toDate: "עד תאריך (נדרש)",
     trackParcel: "מעקב אחר חבילה", selectCourier: "-- בחר שליח / מדינה --", singaporeCouriers: "שליחים מסינגפור",
@@ -5207,7 +5255,7 @@ export const translations = {
   },
   
   pl: {
-    home: "Strona Główna", blog: "Blog", aboutUs: "O Nas", faq: "Najczęściej Zadawane Pytania", contact: "Kontakt", trackPackage: "Śledź Paczkę", cnyYearOfHorseMessage: "🧧 Szczęśliwego Chińskiego Nowego Roku! Życzymy pomyślności w Roku Konia 🐴",
+    home: "Strona Główna", blog: "Blog", aboutUs: "O Nas", faq: "Najczęściej Zadawane Pytania", contact: "Kontakt", trackPackage: "Śledź Paczkę", cnyYearOfHorseMessage: "🧧 Szczęśliwego Nowego Roku Księżycowego! Życzymy pomyślności i radości w Roku Konia! 🐴",
     parcelTracking: "Śledzenie Paczki", usaStormAdvisory: "Silna burza zimowa dotyka kilka regionów USA. Wpłynie to na doręczanie przesyłek pocztowych i kurierskich do USA.", serviceAnnouncement: "Ogłoszenie Serwisowe", trackingNumber: "Numer Śledzenia", destinationCountry: "Kraj Docelowy", postcode: "Kod Pocztowy",
     orderNumber: "Numer Zamówienia (Przykład: RTNX1234567890)", fromDate: "Od Daty (WYMAGANE)", toDate: "Do Daty (WYMAGANE)",
     trackParcel: "Śledź Paczkę", selectCourier: "-- Wybierz Kuriera / Kraj --", singaporeCouriers: "Kurierzy z Singapuru",
@@ -5446,7 +5494,10 @@ export const translations = {
   },
   
   ko: {
-    home: "홈", blog: "블로그", aboutUs: "회사 소개", faq: "자주 묻는 질문", contact: "문의", trackPackage: "소포 추적", cnyYearOfHorseMessage: "🧧 새해 복 많이 받으세요! 말의 해에 번영을 기원합니다 🐴",
+      goodFridayEasterGreeting: "부활절 축하합니다! 성금요일과 부활절에 평화와 기쁨을 기원합니다.",
+      christmasGreeting: "메리 크리스마스와 새해 복 많이 받으세요! 12월 25일부터 1월 5일까지 평화와 기쁨을 기원합니다.",
+      captchaSystemRequirements: "최소 시스템 요구 사항: Windows 10 또는 11, macOS 10.15+, 또는 최신 Android/iOS 버전.",
+    home: "홈", blog: "블로그", aboutUs: "회사 소개", faq: "자주 묻는 질문", contact: "문의", trackPackage: "소포 추적", cnyYearOfHorseMessage: "🧧 즐거운 음력 설날! 말의 해에 번영과 기쁨을 기원합니다! 🐴",
     parcelTracking: "소포 추적", usaStormAdvisory: "미국 여러 지역에 심한 겨울 폭풍이 발생하고 있습니다. 미국으로 향하는 우편 및 특급 배송에 영향을 미칩니다.", serviceAnnouncement: "서비스 공지", trackingNumber: "추적 번호", destinationCountry: "목적지 국가", postcode: "우편번호",
     orderNumber: "주문 번호 (예: RTNX1234567890)", fromDate: "시작 날짜 (필수)", toDate: "종료 날짜 (필수)",
     trackParcel: "소포 추적", selectCourier: "-- 택배사 / 국가 선택 --", singaporeCouriers: "싱가포르 택배사",
@@ -5667,7 +5718,13 @@ export const translations = {
   },
   
   no: {
-    home: "Hjem", blog: "Blogg", aboutUs: "Om Oss", faq: "Ofte Stilte Spørsmål", contact: "Kontakt", trackPackage: "Spor Pakke", cnyYearOfHorseMessage: "🧧 Godt kinesisk nyttår! Vi ønsker deg velstand i Hestens år 🐴",
+      goodFridayEasterGreeting: "God påske! Fred og glede på langfredag og påske.",
+      christmasGreeting: "God jul og godt nyttår! Fred og glede fra 25. desember til 5. januar.",
+      captchaSystemRequirements: "Minimum systemkrav: Windows 10 eller 11, macOS 10.15+, eller nyeste Android/iOS-versjon.",
+      goodFridayEasterGreeting: "Wesołych Świąt Wielkanocnych! Pokój i radość w Wielki Piątek i Wielkanoc.",
+      christmasGreeting: "Wesołych Świąt Bożego Narodzenia i Szczęśliwego Nowego Roku! Pokój i radość od 25 grudnia do 5 stycznia.",
+      captchaSystemRequirements: "Minimalne wymagania systemowe: Windows 10 lub 11, macOS 10.15+, lub najnowsza wersja Android/iOS.",
+    home: "Hjem", blog: "Blogg", aboutUs: "Om Oss", faq: "Ofte Stilte Spørsmål", contact: "Kontakt", trackPackage: "Spor Pakke", cnyYearOfHorseMessage: "🧧 Godt månenyttår! Vi ønsker deg velstand og glede i Hestens år! 🐴",
     parcelTracking: "Pakkesporing", usaStormAdvisory: "En kraftig vinterstorm rammer flere deler av USA. Dette vil påvirke både post‑ og ekspresslevering av pakker til USA.", serviceAnnouncement: "Tjenestekunngjøring", trackingNumber: "Sporingsnummer", destinationCountry: "Destinasjonsland", postcode: "Postnummer",
     orderNumber: "Ordrenummer (Eksempel: RTNX1234567890)", fromDate: "Fra Dato (PÅKREVD)", toDate: "Til Dato (PÅKREVD)",
     trackParcel: "Spor Pakke", selectCourier: "-- Velg Kurir / Land --", singaporeCouriers: "Singapore Kurerer",
@@ -5864,7 +5921,7 @@ export const translations = {
   },
   
   sv: {
-    home: "Hem", blog: "Blogg", aboutUs: "Om Oss", faq: "Vanliga Frågor", contact: "Kontakt", trackPackage: "Spåra Paket", cnyYearOfHorseMessage: "🧧 Gott kinesiskt nyår! Vi önskar dig välstånd under Hästens år 🐴",
+    home: "Hem", blog: "Blogg", aboutUs: "Om Oss", faq: "Vanliga Frågor", contact: "Kontakt", trackPackage: "Spåra Paket", cnyYearOfHorseMessage: "🧧 Gott månyår! Vi önskar dig välstånd och glädje under Hästens år! 🐴",
     parcelTracking: "Paketspårning", usaStormAdvisory: "En kraftig vinterstorm påverkar flera delar av USA. Detta påverkar post‑ och expressleveranser av paket till USA.", serviceAnnouncement: "Servicemeddellande", trackingNumber: "Spårningsnummer", destinationCountry: "Destinationsland", postcode: "Postnummer",
     orderNumber: "Ordernummer (Exempel: RTNX1234567890)", fromDate: "Från Datum (KRÄVS)", toDate: "Till Datum (KRÄVS)",
     trackParcel: "Spåra Paket", selectCourier: "-- Välj Kurir / Land --", singaporeCouriers: "Singapore Kurirer",
@@ -6062,7 +6119,7 @@ export const translations = {
   },
   
   tl: {
-    home: "Home", blog: "Blog", aboutUs: "Tungkol sa Amin", faq: "FAQ", contact: "Contact", trackPackage: "Track Package", cnyYearOfHorseMessage: "🧧 Maligayang Chinese New Year! Nawa’y sumagana ka sa Taon ng Kabayo 🐴",
+    home: "Home", blog: "Blog", aboutUs: "Tungkol sa Amin", faq: "FAQ", contact: "Contact", trackPackage: "Track Package", cnyYearOfHorseMessage: "🧧 Maligayang Lunar New Year! Nawa’y sumagana at maging masaya ka sa Taon ng Kabayo! 🐴",
     parcelTracking: "Parcel Tracking", usaStormAdvisory: "May matinding winter storm na tumatama sa ilang parts ng USA. Maaapektuhan nito ang both postal at express delivery ng packages papasok sa USA.", serviceAnnouncement: "Patalastas ng Serbisyo", trackingNumber: "Tracking Number", destinationCountry: "Destination Country", postcode: "Postcode",
     orderNumber: "Order Number (Halimbawa: RTNX1234567890)", fromDate: "From Date (REQUIRED)", toDate: "To Date (REQUIRED)",
     trackParcel: "Track Parcel", selectCourier: "-- Pumili ng Courier / Bansa --", singaporeCouriers: "Singapore Couriers",
@@ -6261,7 +6318,7 @@ export const translations = {
   },
   
   vi: {
-    home: "Trang Chủ", blog: "Blog", aboutUs: "Về Chúng Tôi", faq: "Câu Hỏi Thường Gặp", contact: "Liên Hệ", trackPackage: "Theo Dõi Kiện Hàng", cnyYearOfHorseMessage: "🧧 Chúc mừng Tết Nguyên Đán! Chúc bạn thịnh vượng trong Năm Ngọ 🐴",
+    home: "Trang Chủ", blog: "Blog", aboutUs: "Về Chúng Tôi", faq: "Câu Hỏi Thường Gặp", contact: "Liên Hệ", trackPackage: "Theo Dõi Kiện Hàng", cnyYearOfHorseMessage: "🧧 Chúc mừng Tết Âm Lịch! Chúc bạn thịnh vượng và vui vẻ trong Năm Ngọ! 🐴",
     parcelTracking: "Theo Dõi Kiện Hàng", usaStormAdvisory: "Bão mùa đông nghiêm trọng đang ảnh hưởng đến nhiều khu vực của Hoa Kỳ. Điều này sẽ ảnh hưởng đến việc chuyển phát bưu chính và chuyển phát nhanh các kiện hàng vào Hoa Kỳ.", serviceAnnouncement: "Thông Báo Dịch Vụ", trackingNumber: "Số Theo Dõi", destinationCountry: "Quốc Gia Đích", postcode: "Mã Bưu Chính",
     orderNumber: "Số Đơn Hàng (Ví dụ: RTNX1234567890)", fromDate: "Từ Ngày (BẮT BUỘC)", toDate: "Đến Ngày (BẮT BUỘC)",
     optionSingPost: "🇸🇬 Singapore Post (SingPost)",
@@ -6463,7 +6520,7 @@ export const translations = {
 
   fi: {
       usaStormAdvisory: "Kova talvimyrsky vaikuttaa Yhdysvaltojen useilla alueilla. Tämä vaikuttaa sekä postiin että pikakuljetuksiin Yhdysvaltoihin.",
-    home: "Etusivu", blog: "Blogi", aboutUs: "Tietoa meistä", faq: "UKK", contact: "Ota yhteyttä", trackPackage: "Seuraa pakettia", cnyYearOfHorseMessage: "🧧 Hyvää kiinalaista uutta vuotta! Toivotamme sinulle vaurautta Hevosen vuonna 🐴",
+    home: "Etusivu", blog: "Blogi", aboutUs: "Tietoa meistä", faq: "UKK", contact: "Ota yhteyttä", trackPackage: "Seuraa pakettia", cnyYearOfHorseMessage: "🧧 Hyvää kuun uutta vuotta! Toivotamme sinulle vaurautta ja iloa Hevosen vuonna! 🐴",
     parcelTracking: "Paketin seuranta", serviceAnnouncement: "Palveluilmoitus", trackingNumber: "Seurantanumero", destinationCountry: "Kohdemaa", postcode: "Postinumero",
     orderNumber: "Tilausnumero (Esimerkki: RTNX1234567890)", fromDate: "Alkaen (VAADITAAN)", toDate: "Päättyen (VAADITAAN)",
     trackParcel: "Seuraa pakettia", selectCourier: "-- Valitse kuriiri / maa --", singaporeCouriers: "Singaporen kuriirit",
@@ -6720,8 +6777,20 @@ export const translations = {
   },
 
   ru: {
+        goodFridayEasterGreeting: "С Пасхой! Мира и радости в Страстную пятницу и Пасху.",
+        christmasGreeting: "С Рождеством и Новым годом! Мира и радости с 25 декабря по 5 января.",
+        captchaSystemRequirements: "Минимальные системные требования: Windows 10 или 11, macOS 10.15+, или последняя версия Android/iOS.",
+        goodFridayEasterGreeting: "Glad påsk! Fred och glädje på långfredag och påsk.",
+        christmasGreeting: "God jul och gott nytt år! Fred och glädje från 25 december till 5 januari.",
+        captchaSystemRequirements: "Minsta systemkrav: Windows 10 eller 11, macOS 10.15+, eller senaste Android/iOS-version.",
+        goodFridayEasterGreeting: "Maligayang Easter! Kapayapaan at saya sa Good Friday at Easter.",
+        christmasGreeting: "Maligayang Pasko at Bagong Taon! Kapayapaan at saya mula Disyembre 25 hanggang Enero 5.",
+        captchaSystemRequirements: "Minimum system requirements: Windows 10 o 11, macOS 10.15+, o latest Android/iOS version.",
+        goodFridayEasterGreeting: "Chúc mừng Phục Sinh! Bình an và niềm vui trong ngày Thứ Sáu Tuần Thánh và Phục Sinh.",
+        christmasGreeting: "Chúc mừng Giáng Sinh và Năm Mới! Bình an và niềm vui từ 25/12 đến 5/1.",
+        captchaSystemRequirements: "Yêu cầu hệ thống tối thiểu: Windows 10 hoặc 11, macOS 10.15+, hoặc phiên bản Android/iOS mới nhất.",
       usaStormAdvisory: "Сильная зимняя буря затрагивает несколько регионов США. Это повлияет на почтовую и экспресс‑доставку посылок в США.",
-    home: "Главная", blog: "Блог", aboutUs: "О нас", faq: "FAQ", contact: "Контакты", trackPackage: "Отследить посылку", cnyYearOfHorseMessage: "🧧 С Китайским Новым годом! Желаем вам процветания в Год Лошади 🐴",
+    home: "Главная", blog: "Блог", aboutUs: "О нас", faq: "FAQ", contact: "Контакты", trackPackage: "Отследить посылку", cnyYearOfHorseMessage: "🧧 С Лунным Новым годом! Желаем вам процветания и радости в Год Лошади! 🐴",
     parcelTracking: "Отслеживание посылки", serviceAnnouncement: "Сервисное объявление", trackingNumber: "Номер отслеживания", destinationCountry: "Страна назначения", postcode: "Почтовый индекс",
     orderNumber: "Номер заказа (пример: RTNX1234567890)", fromDate: "С даты (ОБЯЗАТЕЛЬНО)", toDate: "По дату (ОБЯЗАТЕЛЬНО)",
     trackParcel: "Отследить посылку", selectCourier: "-- Выберите курьера / страну --", singaporeCouriers: "Курьеры Сингапура",
@@ -6979,9 +7048,12 @@ export const translations = {
   },
 
   cy: {
+        goodFridayEasterGreeting: "Pasg Hapus! Heddwch a llawenydd ar Dydd Gwener y Groglith ac ar y Pasg.",
+        christmasGreeting: "Nadolig Llawen a Blwyddyn Newydd Dda! Heddwch a llawenydd o 25 Rhagfyr i 5 Ionawr.",
+        captchaSystemRequirements: "Gofynion system isaf: Windows 10 neu 11, macOS 10.15+, neu fersiwn ddiweddaraf Android/iOS.",
       usaStormAdvisory: "Storm aeaf ddifrifol yn effeithio ar sawl rhan o’r UDA. Bydd hyn yn effeithio ar wasanaethau post a chyflym ar becynnau i’r UDA.",
     // Navigation
-    home: "Hafan", blog: "Blog", aboutUs: "Amdanom Ni", faq: "Cwestiynau Cyffredin", contact: "Cysylltu", trackPackage: "Olrhain Parsel", cnyYearOfHorseMessage: "🧧 Blwyddyn Newydd Tsieineaidd hapus! Dymunwn ffyniant i chi ym Mlwyddyn y Ceffyl 🐴",
+    home: "Hafan", blog: "Blog", aboutUs: "Amdanom Ni", faq: "Cwestiynau Cyffredin", contact: "Cysylltu", trackPackage: "Olrhain Parsel", cnyYearOfHorseMessage: "🧧 Blwyddyn Newydd y Lleuad hapus! Dymunwn ffyniant a llawenydd i chi ym Mlwyddyn y Ceffyl! 🐴",
     // Tracking
     parcelTracking: "Olrhain Parsel", serviceAnnouncement: "Hysbysiad Gwasanaeth", trackingNumber: "Rhif Olrhain", destinationCountry: "Gwlad Cyrchfan",
     postcode: "Cod Post", orderNumber: "Rhif Archeb (Enghraifft: RTNX1234567890)",
