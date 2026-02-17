@@ -38,6 +38,25 @@ export async function POST(request) {
   if (limited) return limited;
 
   try {
+    // Admin bypass logic
+    const adminHeader = request.headers.get('x-admin-auth');
+    const adminEnv = process.env.ADMIN_OVERRIDE_SESSION_SECRET || process.env.ADMIN_SESSION_SECRET;
+    const isAdmin = adminHeader === adminEnv;
+
+    if (isAdmin) {
+      const nextPath = getSafeRedirectPath((await request.json())?.nextPath || '/');
+      const response = NextResponse.json({ ok: true, redirectTo: nextPath, bypassed: true });
+      response.cookies.set(ACCESS_COOKIE_NAME, ACCESS_COOKIE_VALUE, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: ACCESS_COOKIE_DURATION_SECONDS,
+      });
+      return secureApiResponse(response);
+    }
+
+    // ...existing code...
     const captchaSecret = getCaptchaSecretOrThrow();
 
     const body = await request.json();

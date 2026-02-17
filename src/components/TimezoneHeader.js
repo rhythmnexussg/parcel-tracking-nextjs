@@ -220,7 +220,10 @@ const TimezoneHeader = ({ userCountry, t }) => {
     if (timezone === 'Europe/Stockholm') return inDST ? 'CEST' : 'CET';
     if (timezone === 'Europe/Zurich') return inDST ? 'CEST' : 'CET';
     if (timezone === 'Europe/Helsinki') return inDST ? 'EEST' : 'EET';
-    if (timezone === 'Asia/Jerusalem') return inDST ? 'IDT' : 'IST';
+    // Israel: IST (UTC+2) standard, IDT (UTC+3) daylight
+    if (timezone === 'Asia/Jerusalem') {
+      return inDST ? 'IDT' : 'IST';
+    }
     
     const fromName = getCodeFromName(name);
     return fromName || timezoneAbbreviationMap[timezone] || null;
@@ -296,7 +299,13 @@ const TimezoneHeader = ({ userCountry, t }) => {
       'AT', 'BE', 'CH', 'CZ', 'DE', 'ES', 'FI', 'FR', 'GB', 'IE',
       'IT', 'NL', 'NO', 'PL', 'PT', 'SE',
     ]);
-    const supportsDstNotice = userCountry === 'AU' || userCountry === 'NZ' || userCountry === 'US' || userCountry === 'CA' || europeCountries.has(userCountry);
+    const supportsDstNotice =
+      userCountry === 'AU' ||
+      userCountry === 'NZ' ||
+      userCountry === 'US' ||
+      userCountry === 'CA' ||
+      userCountry === 'IL' ||
+      europeCountries.has(userCountry);
     if (!supportsDstNotice) return null;
 
     const timezoneData = countryTimezones[userCountry];
@@ -709,6 +718,16 @@ const TimezoneHeader = ({ userCountry, t }) => {
   const displayTimezones = userCountry === 'AU' && Array.isArray(userLocalInfo) 
     ? getAustralianTimezones() 
     : userLocalInfo;
+
+  // Ensure Israel's IST/IDT and UTC offset are always shown in navbar
+  if (userCountry === 'IL' && displayTimezones) {
+    // For Israel, always show abbreviation and UTC offset
+    if (!Array.isArray(displayTimezones)) {
+      displayTimezones.name = 'Israel';
+      displayTimezones.timezoneCode = getTimezoneCode(null, 'Asia/Jerusalem');
+      displayTimezones.utcOffsetLabel = formatUTCOffset(getUTCOffset('Asia/Jerusalem'));
+    }
+  }
   
   // Don't render until mounted to avoid hydration mismatch
   if (!isMounted) {
