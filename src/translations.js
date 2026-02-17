@@ -1,6 +1,7 @@
 ﻿// Language translations for Rhythm Nexus - Complete with all languages
 export const translations = {
   en: {
+        systemRequirements: "Minimum supported system versions:\nWindows: Windows 10 or above\nmacOS: macOS 12 or above\nAndroid: Android 13 or above\niPhone/iOS: iOS 17 or above\nLinux: A currently supported distribution release with active security updates",
       goodFridayEasterGreeting: "Happy Easter! Wishing you peace and joy during Good Friday and Easter.",
       christmasGreeting: "Merry Christmas and Happy New Year! Wishing you peace and joy from December 25th to January 5th.",
       captchaSystemRequirements: "Minimum system requirements: Windows 10 or 11, macOS 10.15+, or Android/iOS latest version.",
@@ -1162,6 +1163,7 @@ export const translations = {
   },
   
   zh: {
+        systemRequirements: "最低支持系统版本：\nWindows：Windows 10或以上\nmacOS：macOS 12或以上\nAndroid：Android 13或以上\niPhone/iOS：iOS 17或以上\nLinux：当前受支持的发行版，具有主动安全更新",
       goodFridayEasterGreeting: "复活节快乐！祝您在耶稣受难日和复活节期间平安喜乐。",
       christmasGreeting: "圣诞快乐，新年快乐！祝您在12月25日至1月5日期间平安喜乐。",
       captchaSystemRequirements: "最低系统要求：Windows 10或11，macOS 10.15+，或最新版本的Android/iOS。",
@@ -1628,6 +1630,10 @@ export const translations = {
   },
 
   "zh-hant": {
+        systemRequirements: "最低支援系統版本：\nWindows：Windows 10或以上\nmacOS：macOS 12或以上\nAndroid：Android 13或以上\niPhone/iOS：iOS 17或以上\nLinux：目前支援的發行版本，具有主動安全更新",
+        systemRequirements: "Minimale unterstützte Systemversionen:\nWindows: Windows 10 oder höher\nmacOS: macOS 12 oder höher\nAndroid: Android 13 oder höher\niPhone/iOS: iOS 17 oder höher\nLinux: Eine derzeit unterstützte Distribution mit aktiven Sicherheitsupdates.",
+        systemRequirements: "Versions minimales prises en charge :\nWindows : Windows 10 ou supérieur\nmacOS : macOS 12 ou supérieur\nAndroid : Android 13 ou supérieur\niPhone/iOS : iOS 17 ou supérieur\nLinux : Une distribution actuellement prise en charge avec des mises à jour de sécurité actives.",
+        systemRequirements: "Versiones mínimas soportadas:\nWindows: Windows 10 o superior\nmacOS: macOS 12 o superior\nAndroid: Android 13 o superior\niPhone/iOS: iOS 17 o superior\nLinux: Una distribución actualmente soportada con actualizaciones de seguridad activas.",
       goodFridayEasterGreeting: "復活節快樂！祝您在耶穌受難日和復活節期間平安喜樂。",
       christmasGreeting: "聖誕快樂，新年快樂！祝您在12月25日至1月5日期間平安喜樂。",
       captchaSystemRequirements: "最低系統要求：Windows 10或11，macOS 10.15+，或最新版本的Android/iOS。",
@@ -2101,6 +2107,7 @@ export const translations = {
   },
   
   pt: {
+        systemRequirements: "Versões mínimas suportadas do sistema:\nWindows: Windows 10 ou superior\nmacOS: macOS 12 ou superior\nAndroid: Android 13 ou superior\niPhone/iOS: iOS 17 ou superior\nLinux: Uma distribuição atualmente suportada com atualizações de segurança ativas.",
       goodFridayEasterGreeting: "Feliz Páscoa! Paz e alegria na Sexta-feira Santa e Páscoa.",
       christmasGreeting: "Feliz Natal e Ano Novo! Paz e alegria de 25 de dezembro a 5 de janeiro.",
       captchaSystemRequirements: "Requisitos mínimos: Windows 10 ou 11, macOS 10.15+, ou versão mais recente de Android/iOS.",
@@ -2565,6 +2572,7 @@ export const translations = {
   },
   
   hi: {
+        systemRequirements: "न्यूनतम समर्थित सिस्टम संस्करण:\nWindows: Windows 10 या ऊपर\nmacOS: macOS 12 या ऊपर\nAndroid: Android 13 या ऊपर\niPhone/iOS: iOS 17 या ऊपर\nLinux: सक्रिय सुरक्षा अपडेट के साथ वर्तमान में समर्थित वितरण।",
       goodFridayEasterGreeting: "ईस्टर की शुभकामनाएँ! गुड फ्राइडे और ईस्टर पर शांति और खुशी की कामना।",
       christmasGreeting: "क्रिसमस और नव वर्ष की शुभकामनाएँ! 25 दिसंबर से 5 जनवरी तक शांति और खुशी की कामना।",
       captchaSystemRequirements: "न्यूनतम सिस्टम आवश्यकताएँ: Windows 10 या 11, macOS 10.15+, या Android/iOS का नवीनतम संस्करण।",
@@ -2829,6 +2837,7 @@ export const translations = {
   },
   
   th: {
+        systemRequirements: "เวอร์ชันระบบที่รองรับขั้นต่ำ:\nWindows: Windows 10 หรือสูงกว่า\nmacOS: macOS 12 หรือสูงกว่า\nAndroid: Android 13 หรือสูงกว่า\niPhone/iOS: iOS 17 หรือสูงกว่า\nLinux: ดิสทริบิวชันที่รองรับในปัจจุบันพร้อมอัปเดตความปลอดภัยที่ใช้งานอยู่",
       goodFridayEasterGreeting: "สุขสันต์วันอีสเตอร์! ขอให้มีความสงบสุขและความสุขในวันศุกร์ประเสริฐและวันอีสเตอร์.",
       christmasGreeting: "สุขสันต์วันคริสต์มาสและปีใหม่! ขอให้มีความสงบสุขและความสุขตั้งแต่วันที่ 25 ธันวาคมถึง 5 มกราคม.",
       captchaSystemRequirements: "ข้อกำหนดขั้นต่ำ: Windows 10 หรือ 11, macOS 10.15+, หรือ Android/iOS เวอร์ชันล่าสุด.",
@@ -3093,6 +3102,7 @@ export const translations = {
   },
   
   ms: {
+        systemRequirements: "Versi minimum sistem yang disokong:\nWindows: Windows 10 atau ke atas\nmacOS: macOS 12 atau ke atas\nAndroid: Android 13 atau ke atas\niPhone/iOS: iOS 17 atau ke atas\nLinux: Pengedaran yang disokong dengan kemas kini keselamatan aktif.",
       goodFridayEasterGreeting: "Selamat Hari Easter! Semoga damai dan gembira pada Good Friday dan Easter.",
       christmasGreeting: "Selamat Hari Krismas dan Tahun Baru! Damai dan gembira dari 25 Disember hingga 5 Januari.",
       captchaSystemRequirements: "Keperluan minimum: Windows 10 atau 11, macOS 10.15+, atau versi Android/iOS terkini.",
@@ -3337,6 +3347,7 @@ export const translations = {
   },
   
   nl: {
+        systemRequirements: "Minimaal ondersteunde systeemversies:\nWindows: Windows 10 of hoger\nmacOS: macOS 12 of hoger\nAndroid: Android 13 of hoger\niPhone/iOS: iOS 17 of hoger\nLinux: Een momenteel ondersteunde distributie met actieve beveiligingsupdates.",
       goodFridayEasterGreeting: "Vrolijk Pasen! Vrede en vreugde met Goede Vrijdag en Pasen.",
       christmasGreeting: "Prettige Kerst en een Gelukkig Nieuwjaar! Vrede en vreugde van 25 december tot 5 januari.",
       captchaSystemRequirements: "Minimale systeemvereisten: Windows 10 of 11, macOS 10.15+, of nieuwste Android/iOS-versie.",
@@ -3760,6 +3771,7 @@ export const translations = {
   },
   
   id: {
+        systemRequirements: "Versi sistem minimum yang didukung:\nWindows: Windows 10 atau lebih tinggi\nmacOS: macOS 12 atau lebih tinggi\nAndroid: Android 13 atau lebih tinggi\niPhone/iOS: iOS 17 atau lebih tinggi\nLinux: Distribusi yang didukung dengan pembaruan keamanan aktif.",
       goodFridayEasterGreeting: "Selamat Paskah! Damai dan sukacita di Good Friday dan Paskah.",
       christmasGreeting: "Selamat Natal dan Tahun Baru! Damai dan sukacita dari 25 Desember hingga 5 Januari.",
       captchaSystemRequirements: "Persyaratan minimum: Windows 10 atau 11, macOS 10.15+, atau versi Android/iOS terbaru.",
@@ -4175,6 +4187,7 @@ export const translations = {
   },
   
   cs: {
+        systemRequirements: "Minimální podporované verze systému:\nWindows: Windows 10 nebo vyšší\nmacOS: macOS 12 nebo vyšší\nAndroid: Android 13 nebo vyšší\niPhone/iOS: iOS 17 nebo vyšší\nLinux: Aktuálně podporovaná distribuce s aktivními bezpečnostními aktualizacemi.",
       goodFridayEasterGreeting: "Veselé Velikonoce! Mír a radost na Velký pátek a Velikonoce.",
       christmasGreeting: "Veselé Vánoce a šťastný nový rok! Mír a radost od 25. prosince do 5. ledna.",
       captchaSystemRequirements: "Minimální požadavky: Windows 10 nebo 11, macOS 10.15+, nebo nejnovější verze Android/iOS.",
@@ -4597,6 +4610,7 @@ export const translations = {
   },
   
   it: {
+        systemRequirements: "Versioni minime supportate del sistema:\nWindows: Windows 10 o superiore\nmacOS: macOS 12 o superiore\nAndroid: Android 13 o superiore\niPhone/iOS: iOS 17 o superiore\nLinux: Una distribuzione attualmente supportata con aggiornamenti di sicurezza attivi.",
       goodFridayEasterGreeting: "Buona Pasqua! Pace e gioia per il Venerdì Santo e Pasqua.",
       christmasGreeting: "Buon Natale e Felice Anno Nuovo! Pace e gioia dal 25 dicembre al 5 gennaio.",
       captchaSystemRequirements: "Requisiti minimi: Windows 10 o 11, macOS 10.15+, o versione Android/iOS più recente.",
@@ -4840,6 +4854,8 @@ export const translations = {
   },
   
   he: {
+        systemRequirements: "גרסאות מערכת נתמכות מינימלית:\nWindows: Windows 10 ומעלה\nmacOS: macOS 12 ומעלה\nAndroid: Android 13 ומעלה\niPhone/iOS: iOS 17 ומעלה\nLinux: הפצה נתמכת עם עדכוני אבטחה פעילים.",
+        systemRequirements: "最低サポートシステムバージョン：\nWindows：Windows 10以上\nmacOS：macOS 12以上\nAndroid：Android 13以上\niPhone/iOS：iOS 17以上\nLinux：現在サポートされているディストリビューション（アクティブなセキュリティアップデート付き）",
       goodFridayEasterGreeting: "חג פסח שמח! שלום ושמחה ביום שישי הטוב ובפסח.",
       christmasGreeting: "חג מולד שמח ושנה טובה! שלום ושמחה מ-25 בדצמבר עד 5 בינואר.",
       captchaSystemRequirements: "דרישות מערכת מינימליות: Windows 10 או 11, macOS 10.15+, או גרסה עדכנית של Android/iOS.",
@@ -5494,6 +5510,7 @@ export const translations = {
   },
   
   ko: {
+        systemRequirements: "최소 지원 시스템 버전:\nWindows: Windows 10 이상\nmacOS: macOS 12 이상\nAndroid: Android 13 이상\niPhone/iOS: iOS 17 이상\nLinux: 현재 지원되는 배포판(활성 보안 업데이트 포함)",
       goodFridayEasterGreeting: "부활절 축하합니다! 성금요일과 부활절에 평화와 기쁨을 기원합니다.",
       christmasGreeting: "메리 크리스마스와 새해 복 많이 받으세요! 12월 25일부터 1월 5일까지 평화와 기쁨을 기원합니다.",
       captchaSystemRequirements: "최소 시스템 요구 사항: Windows 10 또는 11, macOS 10.15+, 또는 최신 Android/iOS 버전.",
@@ -5718,6 +5735,8 @@ export const translations = {
   },
   
   no: {
+        systemRequirements: "Minimum støttede systemversjoner:\nWindows: Windows 10 eller nyere\nmacOS: macOS 12 eller nyere\nAndroid: Android 13 eller nyere\niPhone/iOS: iOS 17 eller nyere\nLinux: En støttet distribusjon med aktive sikkerhetsoppdateringer.",
+        systemRequirements: "Minimalne obsługiwane wersje systemu:\nWindows: Windows 10 lub nowszy\nmacOS: macOS 12 lub nowszy\nAndroid: Android 13 lub nowszy\niPhone/iOS: iOS 17 lub nowszy\nLinux: Obsługiwana dystrybucja z aktywnymi aktualizacjami zabezpieczeń.",
       goodFridayEasterGreeting: "God påske! Fred og glede på langfredag og påske.",
       christmasGreeting: "God jul og godt nyttår! Fred og glede fra 25. desember til 5. januar.",
       captchaSystemRequirements: "Minimum systemkrav: Windows 10 eller 11, macOS 10.15+, eller nyeste Android/iOS-versjon.",
@@ -6777,6 +6796,10 @@ export const translations = {
   },
 
   ru: {
+          systemRequirements: "Минимально поддерживаемые версии системы:\nWindows: Windows 10 или выше\nmacOS: macOS 12 или выше\nAndroid: Android 13 или выше\niPhone/iOS: iOS 17 или выше\nLinux: Поддерживаемый дистрибутив с активными обновлениями безопасности.",
+          systemRequirements: "Minsta stödda systemversioner:\nWindows: Windows 10 eller senare\nmacOS: macOS 12 eller senare\nAndroid: Android 13 eller senare\niPhone/iOS: iOS 17 eller senare\nLinux: En för närvarande stödd distribution med aktiva säkerhetsuppdateringar.",
+          systemRequirements: "Minimum supported system versions:\nWindows: Windows 10 o mas mataas\nmacOS: macOS 12 o mas mataas\nAndroid: Android 13 o mas mataas\niPhone/iOS: iOS 17 o mas mataas\nLinux: Isang kasalukuyang sinusuportahang distribution na may aktibong security updates.",
+          systemRequirements: "Phiên bản hệ thống được hỗ trợ tối thiểu:\nWindows: Windows 10 trở lên\nmacOS: macOS 12 trở lên\nAndroid: Android 13 trở lên\niPhone/iOS: iOS 17 trở lên\nLinux: Bản phân phối hiện được hỗ trợ với các bản cập nhật bảo mật đang hoạt động.",
         goodFridayEasterGreeting: "С Пасхой! Мира и радости в Страстную пятницу и Пасху.",
         christmasGreeting: "С Рождеством и Новым годом! Мира и радости с 25 декабря по 5 января.",
         captchaSystemRequirements: "Минимальные системные требования: Windows 10 или 11, macOS 10.15+, или последняя версия Android/iOS.",
@@ -7048,6 +7071,7 @@ export const translations = {
   },
 
   cy: {
+          systemRequirements: "Fersiynau system a gefnogir yn isafswm:\nWindows: Windows 10 neu uwch\nmacOS: macOS 12 neu uwch\nAndroid: Android 13 neu uwch\niPhone/iOS: iOS 17 neu uwch\nLinux: Dosbarthiad sy'n cael ei gefnogi ar hyn o bryd gyda diweddariadau diogelwch gweithredol.",
         goodFridayEasterGreeting: "Pasg Hapus! Heddwch a llawenydd ar Dydd Gwener y Groglith ac ar y Pasg.",
         christmasGreeting: "Nadolig Llawen a Blwyddyn Newydd Dda! Heddwch a llawenydd o 25 Rhagfyr i 5 Ionawr.",
         captchaSystemRequirements: "Gofynion system isaf: Windows 10 neu 11, macOS 10.15+, neu fersiwn ddiweddaraf Android/iOS.",
