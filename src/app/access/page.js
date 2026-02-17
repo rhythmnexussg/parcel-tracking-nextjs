@@ -192,7 +192,6 @@ export default function AccessPage() {
           width: '100%',
           background: '#ffffff',
           border: '1px solid #e5e7eb',
-          systemRequirements: 'Minimum supported system versions:\nWindows: Windows 10 or above\nmacOS: macOS 12 or above\nAndroid: Android 13 or above\niPhone/iOS: iOS 17 or above\nLinux: A currently supported distribution release with active security updates',
           borderRadius: '12px',
           padding: '24px',
           boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
@@ -216,7 +215,8 @@ export default function AccessPage() {
             whiteSpace: 'pre-line',
           }}
         >
-          {text.systemRequirements}
+          <p style={{ margin: '0 0 6px', color: '#1f2937' }}>{text.systemRequirementsTitle || 'Minimum supported system versions'}</p>
+          <span>{text.systemRequirements}</span>
         </div>
 
         <form onSubmit={onSubmit}>
