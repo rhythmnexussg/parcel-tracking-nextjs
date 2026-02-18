@@ -9,6 +9,8 @@ const ACCESS_TAB_SESSION_KEY = 'rnx_access_tab_verified';
 
 const CAPTCHA_LANGUAGES = [
   { code: 'en', label: 'English' },
+  { code: 'zh', label: '简体中文 (Chinese Simplified)' },
+  { code: 'zh-hant', label: '繁體中文 (Chinese Traditional)' },
   { code: 'cs', label: 'Čeština (Czech)' },
   { code: 'nl', label: 'Nederlands (Dutch)' },
   { code: 'fi', label: 'Suomi (Finnish)' },
@@ -19,6 +21,7 @@ const CAPTCHA_LANGUAGES = [
   { code: 'id', label: 'Bahasa Indonesia (Indonesian)' },
   { code: 'ga', label: 'Gaeilge (Irish)' },
   { code: 'it', label: 'Italiano (Italian)' },
+  { code: 'mi', label: 'Māori (Te Reo Māori)' },
   { code: 'ja', label: '日本語 (Japanese)' },
   { code: 'ko', label: '한국어 (Korean)' },
   { code: 'ms', label: 'Bahasa Melayu (Malay)' },
@@ -26,14 +29,20 @@ const CAPTCHA_LANGUAGES = [
   { code: 'pl', label: 'Polski (Polish)' },
   { code: 'pt', label: 'Português (Portuguese)' },
   { code: 'ru', label: 'Русский (Russian)' },
-  { code: 'zh', label: '简体中文 (Chinese Simplified)' },
   { code: 'es', label: 'Español (Spanish)' },
   { code: 'sv', label: 'Svenska (Swedish)' },
+  { code: 'ta', label: 'தமிழ் (Tamil)' },
   { code: 'tl', label: 'Tagalog (Filipino)' },
   { code: 'th', label: 'ไทย (Thai)' },
-  { code: 'zh-hant', label: '繁體中文 (Chinese Traditional)' },
   { code: 'vi', label: 'Tiếng Việt (Vietnamese)' },
   { code: 'cy', label: 'Cymraeg (Welsh)' },
+];
+
+const ORDERED_CAPTCHA_LANGUAGES = [
+  ...CAPTCHA_LANGUAGES.filter((item) => item.code === 'en'),
+  ...CAPTCHA_LANGUAGES
+    .filter((item) => item.code !== 'en')
+    .sort((left, right) => left.label.localeCompare(right.label, 'en', { sensitivity: 'base' })),
 ];
 
 const CAPTCHA_UI_TEXT = {};
@@ -94,7 +103,7 @@ export default function AccessPage() {
   }, [selectedLang, text.chooseLanguageFirst, text.loadFailed]);
 
   useEffect(() => {
-    const isSupported = (code) => CAPTCHA_LANGUAGES.some((item) => item.code === code);
+    const isSupported = (code) => ORDERED_CAPTCHA_LANGUAGES.some((item) => item.code === code);
 
     const targetLang = (language && isSupported(language)) ? language : 'en';
     if (selectedLang !== targetLang) {
@@ -247,7 +256,7 @@ export default function AccessPage() {
             required
           >
             <option value="">{text.selectLanguagePlaceholder}</option>
-            {CAPTCHA_LANGUAGES.map((langOption) => (
+            {ORDERED_CAPTCHA_LANGUAGES.map((langOption) => (
               <option key={langOption.code} value={langOption.code}>
                 {langOption.label}
               </option>

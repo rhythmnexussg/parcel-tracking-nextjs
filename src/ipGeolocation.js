@@ -219,7 +219,8 @@ const multiLanguageCountries = {
   ],
   'IN': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳' }
+    { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳' },
+    { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' }
   ],
   'ID': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -249,7 +250,8 @@ const multiLanguageCountries = {
   'MY': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
-    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇲🇾' }
+    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇲🇾' },
+    { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' }
   ],
   'NL': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -313,7 +315,8 @@ const multiLanguageCountries = {
   'SG': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
-    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇸🇬' }
+    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇸🇬' },
+    { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' }
   ],
   'RU': [
     { code: 'ru', name: 'Русский (Russian)', flag: '🇷🇺' },
@@ -323,7 +326,8 @@ const multiLanguageCountries = {
     { code: 'en', name: 'English', flag: '🇦🇺' }
   ],
   'NZ': [
-    { code: 'en', name: 'English', flag: '🇳🇿' }
+    { code: 'en', name: 'English', flag: '🇳🇿' },
+    { code: 'mi', name: 'Māori', flag: '🇳🇿' }
   ]
 };
 

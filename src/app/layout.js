@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Nunito } from "next/font/google";
+import { Geist, Geist_Mono, Nunito, Noto_Sans_Tamil } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "../LanguageContext";
 import Script from "next/script";
@@ -18,6 +18,12 @@ const nunito = Nunito({
   variable: "--font-nunito",
   subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
+  display: "swap",
+});
+
+const notoSansTamil = Noto_Sans_Tamil({
+  variable: "--font-noto-sans-tamil",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -88,7 +94,7 @@ export default function RootLayout({ children }) {
           strategy="lazyOnload"
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable}`} suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${notoSansTamil.variable}`} suppressHydrationWarning>
         <LanguageProvider>
           <AccessGuard>{children}</AccessGuard>
         </LanguageProvider>

@@ -15,7 +15,7 @@ html, body {
   height: 100%;
   margin: 0;
   /* UPDATED: Font family set to Nunito */
-  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Nunito', 'Noto Sans Tamil', 'Nirmala UI', 'Latha', 'Vijaya', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;

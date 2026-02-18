@@ -33,7 +33,9 @@ const getLanguageName = (code) => {
     'fi': 'Suomi (Finnish)',
     'tl': 'Tagalog',
     'vi': 'Tiếng Việt (Vietnamese)',
-    'cy': 'Cymraeg (Welsh)'
+    'cy': 'Cymraeg (Welsh)',
+    'ta': 'தமிழ் (Tamil)',
+    'mi': 'Māori (Te Reo Māori)'
   };
   return names[code] || 'English';
 };
@@ -153,6 +155,17 @@ export const LanguageProvider = ({ children }) => {
 
     detectInitialLanguage();
   }, [isMounted]);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    const langCode = language || 'en';
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = langCode;
+      if (document.body) {
+        document.body.setAttribute('data-language', langCode);
+      }
+    }
+  }, [language, isMounted]);
 
   const handleLanguageSelect = (langCode) => {
     const normalizeLang = (code) => {

@@ -19,9 +19,21 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-nunito), var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-nunito), var(--font-geist-sans), var(--font-noto-sans-tamil), "Noto Sans Tamil", "Nirmala UI", "Latha", "Vijaya", Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:lang(ta) {
+  font-family: var(--font-noto-sans-tamil), "Noto Sans Tamil", "Nirmala UI", "Latha", "Vijaya", var(--font-nunito), var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+body[data-language="ta"] {
+  font-family: var(--font-noto-sans-tamil), "Noto Sans Tamil", "Nirmala UI", "Latha", "Vijaya", var(--font-nunito), var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+body[data-language="ta"] :is(select, option, optgroup, button, input, textarea, label, p, span, div, a, li, h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-noto-sans-tamil), "Noto Sans Tamil", "Nirmala UI", "Latha", "Vijaya", var(--font-nunito), var(--font-geist-sans), Arial, Helvetica, sans-serif !important;
 }
 
 * {

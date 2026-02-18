@@ -5,7 +5,7 @@ import { rateLimit, secureApiResponse } from '../../security';
 
 const SUPPORTED_LANGS = new Set([
   'en', 'cs', 'nl', 'fi', 'fr', 'de', 'he', 'hi', 'id', 'ga', 'it', 'ja',
-  'ko', 'ms', 'no', 'pl', 'pt', 'ru', 'zh', 'es', 'sv', 'tl', 'th', 'zh-hant',
+  'ko', 'ms', 'no', 'pl', 'pt', 'ru', 'zh', 'es', 'sv', 'ta', 'tl', 'th', 'mi', 'zh-hant',
   'vi', 'cy',
 ]);
 
@@ -38,8 +38,10 @@ const LOCALIZED_OPERATOR_WORDS = {
   zh: { add: '加', sub: '减', mul: '乘以', div: '除以' },
   es: { add: 'más', sub: 'menos', mul: 'multiplicado por', div: 'dividido por' },
   sv: { add: 'plus', sub: 'minus', mul: 'gånger', div: 'delat med' },
+  ta: { add: 'கூட்டு', sub: 'கழித்தல்', mul: 'பெருக்கல்', div: 'வகுத்தல்' },
   tl: { add: 'plus', sub: 'minus', mul: 'times', div: 'divided by' },
   th: { add: 'บวก', sub: 'ลบ', mul: 'คูณ', div: 'หาร' },
+  mi: { add: 'tāpiri', sub: 'tango', mul: 'whakarea', div: 'wehe' },
   'zh-hant': { add: '加', sub: '減', mul: '乘以', div: '除以' },
   vi: { add: 'cộng', sub: 'trừ', mul: 'nhân', div: 'chia' },
   cy: { add: 'plws', sub: 'minws', mul: 'wedi lluosi â', div: 'wedi rhannu â' },
@@ -67,8 +69,10 @@ const NATIVE_QUESTION_START = {
   zh: '请计算',
   es: 'Cuánto es',
   sv: 'Vad är',
+  ta: 'எவ்வளவு',
   tl: 'Magkano ang',
   th: 'เท่าไหร่',
+  mi: 'E hia te',
   'zh-hant': '請計算',
   vi: 'Bằng bao nhiêu',
   cy: 'Beth yw',
@@ -96,8 +100,10 @@ const MATCH_PROMPT = {
   zh: '配对谜题：请选择与其相同的符号',
   es: 'Rompecabezas de emparejar: selecciona el mismo símbolo que',
   sv: 'Matchningspussel: välj samma symbol som',
+  ta: 'பொருத்தும் புதிர்: இதே குறியீட்டைத் தேர்ந்தெடுக்கவும்',
   tl: 'Match puzzle: piliin ang kaparehong simbolo ng',
   th: 'ปริศนาจับคู่: เลือกสัญลักษณ์เดียวกันกับ',
+  mi: 'Panga ōrite: tīpakohia te tohu ōrite ki',
   'zh-hant': '配對謎題：請選擇與其相同的符號',
   vi: 'Câu đố ghép cặp: chọn cùng ký hiệu với',
   cy: 'Pos cydweddu: dewiswch yr un symbol â',

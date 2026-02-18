@@ -32,6 +32,8 @@ const languageEnglishNames = {
   tl: 'Tagalog',
   vi: 'Vietnamese',
   cy: 'Welsh',
+  ta: 'Tamil',
+  mi: 'Maori',
 };
 
 export const LanguageSelector = () => {
