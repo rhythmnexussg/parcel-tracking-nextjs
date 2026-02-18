@@ -22,7 +22,7 @@ export const translations = {
     expiredChallenge: "Challenge expired. Loading new challenge...",
     verifyFailed: "Verification failed. Please try again.",
     // Navigation
-    home: "Home", blog: "Blog", aboutUs: "About Us", faq: "FAQ", contact: "Contact", trackPackage: "Track Package", cnyYearOfHorseMessage: "🧧 Happy Lunar New Year! Wishing you prosperity and joy in the Year of the Horse!",
+    home: "Home", blog: "Blog", aboutUs: "About Us", faq: "FAQ", contact: "Contact", trackPackage: "Track Package", cnyYearOfHorseMessage: "🧧 Happy Lunar New Year! Wishing you prosperity and joy in the Year of the Horse! 🐴",
     // Holiday Messages
     hariRayaMessage: "🌙 Selamat Hari Raya Aidilfitri! Wishing you and your family peace, joy, and blessings! 🌟",
     deepavaliMessage: "🪔 Happy Deepavali! May the festival of lights bring you joy, prosperity, and success! ✨",
@@ -1472,7 +1472,7 @@ export const translations = {
       goodFridayEasterGreeting: "复活节快乐！祝您在耶稣受难日和复活节期间平安喜乐。",
       christmasGreeting: "圣诞快乐，新年快乐！祝您在12月25日至1月5日期间平安喜乐。",
       captchaSystemRequirements: "最低系统要求：Windows 10或11，macOS 10.15+，或最新版本的Android/iOS。",
-    home: "首页", blog: "博客", aboutUs: "关于我们", faq: "常见问题", contact: "联系我们", trackPackage: "追踪包裹", cnyYearOfHorseMessage: "🧧 新年快乐！祝您马年万事如意，阖家幸福！",
+    home: "首页", blog: "博客", aboutUs: "关于我们", faq: "常见问题", contact: "联系我们", trackPackage: "追踪包裹", cnyYearOfHorseMessage: "🧧 新年快乐！祝您马年万事如意，阖家幸福！🐴",
     // Holiday Messages
     diwaliMessage: "🪔 排灯节快乐！愿光明节为您带来欢乐、繁荣和成功！✨",
     vesakMessage: "☸️ 卫塞节快乐！祝您在这神圣的日子获得平安、智慧和觉悟！🙏",
@@ -1974,7 +1974,7 @@ export const translations = {
       goodFridayEasterGreeting: "¡Feliz Pascua! Paz y alegría en Viernes Santo y Pascua.",
       christmasGreeting: "¡Feliz Navidad y próspero Año Nuevo! Paz y alegría del 25 de diciembre al 5 de enero.",
       captchaSystemRequirements: "Requisitos mínimos: Windows 10 o 11, macOS 10.15+, o la última versión de Android/iOS.",
-    home: "首頁", blog: "博客", aboutUs: "關於我們", faq: "常見問題", contact: "聯絡我們", trackPackage: "追蹤包裹", cnyYearOfHorseMessage: "🧧 新年快樂！祝您馬年萬事如意，闔家幸福！",
+    home: "首頁", blog: "博客", aboutUs: "關於我們", faq: "常見問題", contact: "聯絡我們", trackPackage: "追蹤包裹", cnyYearOfHorseMessage: "🧧 新年快樂！祝您馬年萬事如意，闔家幸福！🐴",
     // Holiday Messages
     hariRayaMessage: "🌙 開齋節快樂！祝您和家人平安、喜樂、蒙福！🌟",
     deepavaliMessage: "🪔 屠妖節快樂！願光明節為您帶來歡樂、繁榮和成功！✨",
