@@ -8,10 +8,11 @@ import logo from "../assets/images/logo.jpg";
 import { useLanguage } from "../LanguageContext";
 import { LanguageSelector } from "../LanguageSelector";
 import TimezoneHeader from "./TimezoneHeader";
+import HolidayNotification from "./HolidayNotification";
 import { detectLanguageFromIPWithRestrictions } from "../ipGeolocation";
 
 export const Navigation = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [userCountry, setUserCountry] = useState(null);
   const [showCnyMessage, setShowCnyMessage] = useState(false);
   const searchParams = useSearchParams();
@@ -47,9 +48,20 @@ export const Navigation = () => {
 
   useEffect(() => {
     const now = new Date();
-    const cnyStart = new Date(2026, 1, 17, 0, 0, 0, 0);
-    const cnyEnd = new Date(2026, 2, 3, 23, 59, 59, 999);
-    setShowCnyMessage(now >= cnyStart && now <= cnyEnd);
+    const year = now.getFullYear();
+    
+    // Lunar New Year dates (15-day celebration)
+    const cnyDates = {
+      2026: { start: new Date(2026, 1, 17, 0, 0, 0, 0), end: new Date(2026, 2, 3, 23, 59, 59, 999) },
+      2027: { start: new Date(2027, 1, 6, 0, 0, 0, 0), end: new Date(2027, 1, 20, 23, 59, 59, 999) }
+    };
+    
+    const cnyPeriod = cnyDates[year];
+    if (cnyPeriod) {
+      setShowCnyMessage(now >= cnyPeriod.start && now <= cnyPeriod.end);
+    } else {
+      setShowCnyMessage(false);
+    }
   }, []);
   
   return (
@@ -66,6 +78,7 @@ export const Navigation = () => {
             {cnyMessage}
           </div>
         ) : null}
+        <HolidayNotification userCountry={userCountry} t={t} currentLanguage={language} />
         <TimezoneHeader userCountry={userCountry} t={t} />
       </div>
       
