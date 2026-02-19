@@ -11487,8 +11487,8 @@ export const translations = {
     "statusHeldByCustms": "A ddelir gan y Tollau"
   },
   "ta": {
-    "systemRequirementsTitle": "Kurainthapatcha aadharavu kanini pathippugal",
-    "systemRequirements": "Windows: Windows 10 alladhu adharku mel\nmacOS: macOS 12 alladhu adharku mel\nAndroid: Android 13 alladhu adharku mel\niPhone/iOS: iOS 17 alladhu adharku mel\nLinux: Seyalilulla paadhukaappu updates-udan tharpothu aadharikkappadum distribution release",
+    "systemRequirementsTitle": "குறைந்தபட்ச ஆதரவு கணினி பதிப்புகள்",
+    "systemRequirements": "Windows: Windows 10 அல்லது அதற்கு மேல்\nmacOS: macOS 12 அல்லது அதற்கு மேல்\nAndroid: Android 13 அல்லது அதற்கு மேல்\niPhone/iOS: iOS 17 அல்லது அதற்கு மேல்\nLinux: செயலில் உள்ள பாதுகாப்பு புதுப்பிப்புகளுடன் தற்போது ஆதரிக்கப்படும் விநியோக வெளியீடு",
     "goodFridayEasterGreeting": "ஈஸ்டர் வாழ்த்துக்கள்! புனித வெள்ளி மற்றும் ஈஸ்டர் நாட்களில் உங்களுக்கு அமைதி மற்றும் மகிழ்ச்சியை விரும்புகிறேன்.",
     "christmasGreeting": "இனிய கிறிஸ்துமஸ் மற்றும் புத்தாண்டு வாழ்த்துக்கள்! டிசம்பர் 25 முதல் ஜனவரி 5 வரை உங்களுக்கு அமைதியும் மகிழ்ச்சியும் வாழ்த்துக்கள்.",
     "captchaSystemRequirements": "குறைந்தபட்ச கணினி தேவைகள்: Windows 10 அல்லது 11, macOS 10.15+, அல்லது Android/iOS சமீபத்திய பதிப்பு.",

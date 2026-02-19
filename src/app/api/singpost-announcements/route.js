@@ -313,9 +313,9 @@ export async function GET(request) {
           'sk': 'sk', 'sl': 'sl', 'bg': 'bg', 'hr': 'hr', 'lt': 'lt', 'lv': 'lv', 'et': 'et', 'tr': 'tr',
           'ru': 'ru', 'uk': 'uk', 'ar': 'ar', 'he': 'he', 'id': 'id', 'ms': 'ms', 'th': 'th', 'vi': 'vi',
           'ja': 'ja', 'ko': 'ko', 'zh': 'zh-CN', 'zh-cn': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-hant': 'zh-TW', 'zh-tw': 'zh-TW',
-          'cy': 'cy'
+          'cy': 'cy', 'ta': 'ta', 'mi': 'mi', 'hi': 'hi', 'ga': 'ga', 'tl': 'tl'
         };
-        const gtLang = langCodeMap[targetLang] || targetLang;
+        const gtLang = langCodeMap[targetLang] || 'en';
         const injection = `
 <script>(function(){
   try { document.cookie = 'googtrans=/auto/${gtLang}; path=/'; } catch(e) {}
