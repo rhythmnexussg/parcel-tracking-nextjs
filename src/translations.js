@@ -12245,7 +12245,7 @@ export const languageMap = {
   "tl": "Tagalog",
   "vi": "Tiếng Việt",
   "cy": "Cymraeg",
-  "ta": "Tamil",
+  "ta": "தமிழ்",
   "mi": "Māori"
 };
 
