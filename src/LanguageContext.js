@@ -118,7 +118,7 @@ export const LanguageProvider = ({ children }) => {
         setLanguage(detectedDefaultLang);
         
         // Show modal for detected countries, except countries where English-only UX is desired
-        const noLanguagePopupCountries = new Set(['AU', 'NZ']);
+        const noLanguagePopupCountries = new Set(['AU']);
         if (ipResult.countryCode && !noLanguagePopupCountries.has(ipResult.countryCode)) {
           console.log('🎉 SHOWING LANGUAGE MODAL - Detected country, no saved preference');
           console.log(`   Country: ${ipResult.countryCode}`);

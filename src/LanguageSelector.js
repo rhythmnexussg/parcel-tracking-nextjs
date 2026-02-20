@@ -25,6 +25,7 @@ const languageEnglishNames = {
   ga: 'Irish',
   pl: 'Polish',
   ko: 'Korean',
+  mi: 'Maori',
   no: 'Norwegian',
   ru: 'Russian',
   sv: 'Swedish',

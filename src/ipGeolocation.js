@@ -38,7 +38,7 @@ const countryToLanguageMap = {
   'CA': 'fr',
   'AU': 'en',
   'NZ': 'en',
-  'SG': 'ms',        // Singapore → Malay
+  'SG': 'en',        // Singapore → Malay
 };
 
 // Countries allowed to access the site (shipping destinations)
