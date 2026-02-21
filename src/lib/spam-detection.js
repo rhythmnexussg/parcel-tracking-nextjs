@@ -87,6 +87,58 @@ const SPAM_KEYWORDS = [
   'lead generation', 'email list', 'bulk email', 'mass email'
 ];
 
+const SPAM_OBFUSCATION_CHAR_MAP = {
+  '0': 'o',
+  '1': 'i',
+  '2': 'z',
+  '3': 'e',
+  '4': 'a',
+  '5': 's',
+  '6': 'g',
+  '7': 't',
+  '8': 'b',
+  '9': 'g',
+  '@': 'a',
+  '$': 's',
+  '!': 'i',
+  '|': 'l',
+  '+': 't',
+  '€': 'e',
+  '£': 'l',
+  '¥': 'y'
+};
+
+function normalizeForSpamMatching(text) {
+  const value = typeof text === 'string' ? text : '';
+  if (!value) {
+    return { spaced: '', compact: '' };
+  }
+
+  const lowered = value
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+  const deobfuscated = Array.from(lowered)
+    .map((char) => SPAM_OBFUSCATION_CHAR_MAP[char] || char)
+    .join('');
+
+  const spaced = deobfuscated
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim()
+    .replace(/\s+/g, ' ');
+
+  return {
+    spaced,
+    compact: spaced.replace(/\s+/g, '')
+  };
+}
+
+const NORMALIZED_SPAM_KEYWORDS = SPAM_KEYWORDS.map((keyword) => ({
+  original: keyword,
+  compact: normalizeForSpamMatching(keyword).compact
+}));
+
 const SUPPORTED_FORM_LANGUAGES = new Set([
   'en', 'de', 'fr', 'es', 'ja', 'zh', 'zh-hant', 'pt', 'hi', 'th',
   'ms', 'nl', 'id', 'cs', 'it', 'he', 'ga', 'pl', 'ko', 'no',
@@ -376,11 +428,12 @@ export function detectSpam(message, name = '', email = '') {
   }
 
   const combinedText = `${name} ${email} ${message}`.toLowerCase();
+  const normalizedCombined = normalizeForSpamMatching(combinedText);
   
   // Check for spam keywords
-  const foundKeywords = SPAM_KEYWORDS.filter(keyword => 
-    combinedText.includes(keyword.toLowerCase())
-  );
+  const foundKeywords = NORMALIZED_SPAM_KEYWORDS
+    .filter(({ compact }) => compact && normalizedCombined.compact.includes(compact))
+    .map(({ original }) => original);
 
   if (foundKeywords.length > 0) {
     const confidence = foundKeywords.length > 2 ? 'high' : foundKeywords.length > 1 ? 'medium' : 'low';
@@ -403,8 +456,9 @@ export function detectSpam(message, name = '', email = '') {
   ];
 
   const matchedSeoPatterns = seoScamPatterns.reduce((count, pattern) => {
-    const matches = combinedText.match(pattern);
-    return matches ? count + 1 : count;
+    const originalMatches = combinedText.match(pattern);
+    const normalizedMatches = normalizedCombined.spaced.match(pattern);
+    return count + (originalMatches ? 1 : 0) + (normalizedMatches ? 1 : 0);
   }, 0);
 
   if (matchedSeoPatterns >= 2) {
