@@ -87,6 +87,81 @@ const SPAM_KEYWORDS = [
   'lead generation', 'email list', 'bulk email', 'mass email'
 ];
 
+const SUPPORTED_FORM_LANGUAGES = new Set([
+  'en', 'de', 'fr', 'es', 'ja', 'zh', 'zh-hant', 'pt', 'hi', 'th',
+  'ms', 'nl', 'id', 'cs', 'it', 'he', 'ga', 'pl', 'ko', 'no',
+  'ru', 'sv', 'fi', 'tl', 'vi', 'cy', 'ta', 'mi'
+]);
+
+function normalizeLanguageCode(language) {
+  const code = (language || 'en').toLowerCase();
+  if (code === 'zh-cn' || code === 'zh-hans') return 'zh';
+  if (code === 'zh-tw' || code === 'zh-hk' || code === 'zh-hant') return 'zh-hant';
+  return code;
+}
+
+function normalizeDetectedLanguageCode(language) {
+  const code = (language || '').toLowerCase();
+  if (!code) return '';
+
+  if (code.startsWith('zh')) {
+    if (code.includes('hant') || code.includes('tw') || code.includes('hk')) {
+      return 'zh-hant';
+    }
+    return 'zh';
+  }
+
+  if (code === 'fil') return 'tl';
+  if (code === 'iw') return 'he';
+  if (code === 'nb' || code === 'nn') return 'no';
+
+  return code.split('-')[0];
+}
+
+function containsCommonEnglishWords(text) {
+  if (!text || typeof text !== 'string') return false;
+
+  const sanitized = text
+    .replace(/https?:\/\/\S+/gi, ' ')
+    .replace(/\bwww\.\S+/gi, ' ')
+    .replace(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/gi, ' ')
+    .replace(/\b[A-Z]{2,}\d+[A-Z0-9-]*\b/g, ' ')
+    .toLowerCase();
+
+  const englishWordPattern = /\b(the|and|is|are|you|your|please|help|thanks|thank|order|shipping|delivery|package|parcel|my|i|we|can|could|would|need|want|for|with|from|this|that|to|in|on|of|how|what|when|where|why)\b/g;
+  return englishWordPattern.test(sanitized);
+}
+
+function doesMessageLanguageMatchSelection(selectedLanguage, detectedLanguage) {
+  const selected = normalizeLanguageCode(selectedLanguage || 'en');
+  const detected = normalizeDetectedLanguageCode(detectedLanguage || selected);
+
+  return selected === detected;
+}
+
+async function translateToEnglish(text) {
+  if (!text || !text.trim()) {
+    return { translatedText: '', detectedLanguage: '' };
+  }
+
+  const endpoint = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
+  const response = await fetch(endpoint, { cache: 'no-store' });
+
+  if (!response.ok) {
+    throw new Error(`Translation request failed with status ${response.status}`);
+  }
+
+  const payload = await response.json();
+  if (!Array.isArray(payload) || !Array.isArray(payload[0])) {
+    return { translatedText: text, detectedLanguage: '' };
+  }
+
+  return {
+    translatedText: payload[0].map(part => part?.[0] || '').join('') || text,
+    detectedLanguage: normalizeDetectedLanguageCode(payload[2] || '')
+  };
+}
+
 /**
  * Validates email address format and domain
  * @param {string} email - Email address to validate
@@ -209,10 +284,14 @@ export function detectSpam(message, name = '', email = '') {
 /**
  * Complete validation for contact form submission
  * @param {Object} data - Form data
- * @returns {Object} - { valid: boolean, error: string }
+ * @returns {Object} - { valid: boolean, error: string, translatedMessage?: string, sourceLanguage?: string }
  */
-export function validateContactSubmission(data) {
-  const { name, email, message, enquiryType } = data;
+export async function validateContactSubmission(data) {
+  const { name, email, message, enquiryType, language } = data;
+  const normalizedRequestedLanguage = normalizeLanguageCode(language || 'en');
+  const sourceLanguage = SUPPORTED_FORM_LANGUAGES.has(normalizedRequestedLanguage)
+    ? normalizedRequestedLanguage
+    : 'en';
 
   // Validate email
   const emailValidation = validateEmail(email);
@@ -222,15 +301,63 @@ export function validateContactSubmission(data) {
 
   // Check for spam if message exists
   if (message) {
-    const spamCheck = detectSpam(message, name, email);
-    if (spamCheck.isSpam && spamCheck.confidence !== 'low') {
-      console.log('Spam detected:', spamCheck);
-      return { 
-        valid: false, 
-        error: 'Your submission appears to be spam. If this is a legitimate enquiry, please contact us through alternative channels. We do not accept unsolicited offers for SEO, website design, loans, or similar services.' 
+    let translatedMessage = message;
+    let detectedMessageLanguage = sourceLanguage;
+
+    try {
+      const translationResult = await translateToEnglish(message);
+      translatedMessage = translationResult.translatedText || message;
+      detectedMessageLanguage = translationResult.detectedLanguage || sourceLanguage;
+    } catch (translationError) {
+      console.error('Language verification failed:', translationError);
+      return {
+        valid: false,
+        error: 'Unable to verify message language right now. Please try again shortly.'
       };
     }
+
+    if (!doesMessageLanguageMatchSelection(sourceLanguage, detectedMessageLanguage)) {
+      return {
+        valid: false,
+        error: 'Please write your message only in the language you selected in the form.'
+      };
+    }
+
+    if (sourceLanguage !== 'en' && containsCommonEnglishWords(message)) {
+      return {
+        valid: false,
+        error: 'Please avoid English words when a non-English language is selected.'
+      };
+    }
+
+    const spamCheckOriginal = detectSpam(message, name, email);
+    const spamCheckTranslated = translatedMessage !== message
+      ? detectSpam(translatedMessage, name, email)
+      : { isSpam: false, confidence: 'low' };
+
+    const isSpam =
+      (spamCheckOriginal.isSpam && spamCheckOriginal.confidence !== 'low') ||
+      (spamCheckTranslated.isSpam && spamCheckTranslated.confidence !== 'low');
+
+    if (isSpam) {
+      console.log('Spam detected:', {
+        original: spamCheckOriginal,
+        translated: spamCheckTranslated
+      });
+
+      return {
+        valid: false,
+        error: 'Your submission appears to be spam. If this is a legitimate enquiry, please contact us through alternative channels. We do not accept unsolicited offers for SEO, website design, loans, or similar services.'
+      };
+    }
+
+    return {
+      valid: true,
+      error: '',
+      translatedMessage,
+      sourceLanguage
+    };
   }
 
-  return { valid: true, error: '' };
+  return { valid: true, error: '', translatedMessage: '', sourceLanguage };
 }

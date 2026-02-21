@@ -2,21 +2,6 @@ import { NextResponse } from 'next/server';
 import { sendContactFormEmail } from '../../../lib/email';
 import { validateContactSubmission } from '../../../lib/spam-detection';
 
-async function translateToEnglish(text) {
-  if (!text || !text.trim()) return '';
-
-  const endpoint = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=${encodeURIComponent(text)}`;
-  const response = await fetch(endpoint, { cache: 'no-store' });
-  if (!response.ok) {
-    throw new Error(`Translation request failed with status ${response.status}`);
-  }
-
-  const payload = await response.json();
-  if (!Array.isArray(payload) || !Array.isArray(payload[0])) return text;
-
-  return payload[0].map(part => part?.[0] || '').join('') || text;
-}
-
 export async function POST(request) {
   try {
     const formData = await request.json();
@@ -48,7 +33,7 @@ export async function POST(request) {
     }
 
     // Validate email and check for spam
-    const validation = validateContactSubmission({ name, email, message, enquiryType });
+    const validation = await validateContactSubmission({ name, email, message, enquiryType, language });
     if (!validation.valid) {
       return NextResponse.json(
         { error: validation.error },
@@ -58,17 +43,8 @@ export async function POST(request) {
 
     // Send email
     try {
-      let translatedMessage = message || '';
-      const sourceLanguage = (language || 'en').toLowerCase();
-
-      if (message && sourceLanguage !== 'en') {
-        try {
-          translatedMessage = await translateToEnglish(message);
-        } catch (translationError) {
-          console.error('Message translation failed, falling back to original text:', translationError);
-          translatedMessage = message;
-        }
-      }
+      const translatedMessage = validation.translatedMessage || message || '';
+      const sourceLanguage = validation.sourceLanguage || (language || 'en').toLowerCase();
 
       const result = await sendContactFormEmail({
         name,
