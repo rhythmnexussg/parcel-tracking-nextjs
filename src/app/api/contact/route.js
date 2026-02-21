@@ -67,7 +67,7 @@ export async function POST(request) {
     }
 
     return NextResponse.json(
-      { success: true, message: 'Form submitted successfully' },
+      { success: true, message: 'Form submitted successfully', warning: validation.warning || '' },
       { status: 200 }
     );
 

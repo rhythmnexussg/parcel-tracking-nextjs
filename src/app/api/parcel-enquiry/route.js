@@ -15,6 +15,7 @@ export async function POST(request) {
     const deliveredButMissing = formData.get('deliveredButMissing');
     const caseReferenceId = formData.get('caseReferenceId');
     const imageEvidence = formData.get('imageEvidence');
+    const language = formData.get('language') || 'en';
     const agreed = formData.get('agreed') === 'true';
 
     // Validate required fields
@@ -26,7 +27,7 @@ export async function POST(request) {
     }
 
     // Validate email
-    const emailValidation = validateEmail(email);
+    const emailValidation = validateEmail(email, language);
     if (!emailValidation.valid) {
       return NextResponse.json(
         { error: emailValidation.reason },
@@ -105,7 +106,7 @@ export async function POST(request) {
     }
 
     return NextResponse.json(
-      { success: true, message: 'Parcel enquiry submitted successfully' },
+      { success: true, message: 'Parcel enquiry submitted successfully', warning: emailValidation.warning || '' },
       { status: 200 }
     );
 
