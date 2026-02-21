@@ -32,8 +32,16 @@ function getCountryFromHeaders(headerStore) {
 function getUnsupportedSystemGuidance(systemLabel) {
   const normalized = (systemLabel || "").toLowerCase();
 
+  if (normalized.includes("windows 10 22h2") || normalized.includes("build 19045")) {
+    return "Windows 10 22H2 (build 19045) is no longer supported after 1 Jan 2027. Please upgrade to Windows 11 25H2 or above (OS build 26200+).";
+  }
+
+  if (normalized.includes("windows 11") && normalized.includes("build")) {
+    return "Please upgrade to Windows 11 25H2 or above (OS build 26200+) to continue accessing this website.";
+  }
+
   if (normalized.includes("windows")) {
-    return "Please upgrade to Windows 10 or above.";
+    return "Please upgrade to Windows 11 25H2 or above (OS build 26200+).";
   }
 
   if (normalized.includes("android")) {

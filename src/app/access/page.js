@@ -59,6 +59,8 @@ export default function AccessPage() {
   const searchParams = useSearchParams();
   const { language, setLanguage } = useLanguage();
   const nextPath = searchParams.get('next') || '/';
+  const osReminder = searchParams.get('osReminder') || '';
+  const showWindowsDeprecationReminder = osReminder === 'win10-19045-eol';
 
   const [selectedLang, setSelectedLang] = useState('');
   const [question, setQuestion] = useState('');
@@ -210,6 +212,23 @@ export default function AccessPage() {
         <p style={{ marginTop: 0, marginBottom: '16px', color: '#374151' }}>
           {text.subtitle}
         </p>
+
+        {showWindowsDeprecationReminder && (
+          <div
+            style={{
+              marginBottom: '16px',
+              padding: '12px',
+              border: '1px solid #ffe69c',
+              borderRadius: '8px',
+              background: '#fff3cd',
+              color: '#664d03',
+              fontSize: '0.9rem',
+              lineHeight: 1.5,
+            }}
+          >
+            Security notice: Windows 10 22H2 (OS build 19045) support ends on 1 Jan 2027. Starting 1 Jan 2027, this website will no longer be accessible on that version. Please upgrade to Windows 11 25H2 or above (OS build 26200+).
+          </div>
+        )}
 
         <div
           style={{
