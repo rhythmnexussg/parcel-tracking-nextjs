@@ -200,12 +200,12 @@ function getCapsLockWarningMessage(language) {
   return CAPS_LOCK_WARNING_MESSAGES[normalized] || CAPS_LOCK_WARNING_MESSAGES.en;
 }
 
-function getSchoolEmailWarningMessage(language) {
+export function getSchoolEmailWarningMessage(language) {
   const normalized = normalizeLanguageCode(language || 'en');
   return SCHOOL_EMAIL_WARNING_MESSAGES[normalized] || SCHOOL_EMAIL_WARNING_MESSAGES.en;
 }
 
-function isSchoolEmailDomain(domain) {
+export function isSchoolEmailDomain(domain) {
   const value = (domain || '').toLowerCase();
   return /(^|\.)edu(\.[a-z]{2})?$/.test(value) || /(^|\.)ac\.[a-z]{2}$/.test(value);
 }

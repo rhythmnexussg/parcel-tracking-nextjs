@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Navigation } from '../../components/Navigation';
 import { useLanguage } from '../../LanguageContext';
 import Link from 'next/link';
+import { getSchoolEmailWarningMessage, isSchoolEmailDomain } from '../../lib/spam-detection';
 
 export default function Contact() {
   const { t, language } = useLanguage();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,6 +20,8 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+
+  const schoolEmailWarning = getSchoolEmailWarningMessage(language);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -52,15 +57,8 @@ export default function Contact() {
       const data = await response.json();
 
       if (response.ok) {
-        setSubmitStatus({ type: 'success', message: t('contactSuccessMessage') });
-        setFormData({
-          name: '',
-          email: '',
-          enquiryType: '',
-          orderNumber: '',
-          message: '',
-          agreed: false
-        });
+        router.push('/contact/successful');
+        return;
       } else {
         setSubmitStatus({ type: 'error', message: data.error || t('contactErrorMessage') });
       }
@@ -164,6 +162,19 @@ export default function Contact() {
             <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.25rem' }}>
               {t('contactEmailNote')}
             </div>
+            {isSchoolEmailDomain(formData.email.split('@')[1] || '') && (
+              <div style={{
+                marginTop: '0.5rem',
+                padding: '0.75rem',
+                backgroundColor: '#fff3cd',
+                border: '1px solid #ffe69c',
+                borderRadius: '4px',
+                color: '#664d03',
+                fontSize: '0.9rem'
+              }}>
+                {schoolEmailWarning}
+              </div>
+            )}
           </div>
 
           {/* Enquiry Type */}
@@ -359,10 +370,10 @@ export default function Contact() {
           {submitStatus && (
             <div style={{
               padding: '1rem',
-              backgroundColor: submitStatus.type === 'success' ? '#d4edda' : '#f8d7da',
-              border: `1px solid ${submitStatus.type === 'success' ? '#c3e6cb' : '#f5c6cb'}`,
+              backgroundColor: '#f8d7da',
+              border: '1px solid #f5c6cb',
               borderRadius: '4px',
-              color: submitStatus.type === 'success' ? '#155724' : '#721c24'
+              color: '#721c24'
             }}>
               {submitStatus.message}
             </div>

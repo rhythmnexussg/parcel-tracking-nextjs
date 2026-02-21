@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Navigation } from '../../../components/Navigation';
 import { useLanguage } from '../../../LanguageContext';
 import Link from 'next/link';
+import { getSchoolEmailWarningMessage, isSchoolEmailDomain } from '../../../lib/spam-detection';
 
 export default function ParcelEnquiry() {
   const { t, language } = useLanguage();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     orderNumber: '',
@@ -22,6 +25,8 @@ export default function ParcelEnquiry() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [showNoDeliveryMessage, setShowNoDeliveryMessage] = useState(false);
+
+  const schoolEmailWarning = getSchoolEmailWarningMessage(language);
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -75,6 +80,8 @@ export default function ParcelEnquiry() {
         formDataToSend.append('imageEvidence', formData.imageEvidence);
       }
 
+      formDataToSend.append('language', language);
+
       const response = await fetch('/api/parcel-enquiry', {
         method: 'POST',
         body: formDataToSend,
@@ -83,22 +90,8 @@ export default function ParcelEnquiry() {
       const data = await response.json();
 
       if (response.ok) {
-        setSubmitStatus({ type: 'success', message: t('parcelSuccessMessage') });
-        setFormData({
-          name: '',
-          orderNumber: '',
-          email: '',
-          shippingMethod: '',
-          trackingNumber: '',
-          undeliveredLongTime: '',
-          deliveredButMissing: '',
-          caseReferenceId: '',
-          imageEvidence: null,
-          agreed: false
-        });
-        // Reset file input
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput) fileInput.value = '';
+        router.push('/contact/successful');
+        return;
       } else {
         setSubmitStatus({ type: 'error', message: data.error || t('parcelErrorMessage') });
       }
@@ -282,6 +275,19 @@ export default function ParcelEnquiry() {
             <div style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.25rem' }}>
               {t('parcelEmailNote')}
             </div>
+            {isSchoolEmailDomain(formData.email.split('@')[1] || '') && (
+              <div style={{
+                marginTop: '0.5rem',
+                padding: '0.75rem',
+                backgroundColor: '#fff3cd',
+                border: '1px solid #ffe69c',
+                borderRadius: '4px',
+                color: '#664d03',
+                fontSize: '0.9rem'
+              }}>
+                {schoolEmailWarning}
+              </div>
+            )}
           </div>
 
           {/* Shipping Method */}
@@ -500,10 +506,10 @@ export default function ParcelEnquiry() {
           {submitStatus && (
             <div style={{
               padding: '1rem',
-              backgroundColor: submitStatus.type === 'success' ? '#d4edda' : '#f8d7da',
-              border: `1px solid ${submitStatus.type === 'success' ? '#c3e6cb' : '#f5c6cb'}`,
+              backgroundColor: '#f8d7da',
+              border: '1px solid #f5c6cb',
               borderRadius: '4px',
-              color: submitStatus.type === 'success' ? '#155724' : '#721c24'
+              color: '#721c24'
             }}>
               {submitStatus.message}
             </div>
