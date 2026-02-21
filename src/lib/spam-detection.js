@@ -206,8 +206,7 @@ export function validateEmail(email) {
       };
     }
     
-    // Allow it but flag for review
-    console.log(`Email from non-standard domain accepted: ${domain}`);
+    // Allow non-standard but valid custom domains
   }
 
   return { valid: true, reason: '' };
@@ -239,6 +238,29 @@ export function detectSpam(message, name = '', email = '') {
       reason: `Detected spam keywords: ${foundKeywords.slice(0, 3).join(', ')}`,
       confidence,
       keywords: foundKeywords
+    };
+  }
+
+  const seoScamPatterns = [
+    /\bseo\b/gi,
+    /\b(google|search engine)\b[^.!?\n]{0,80}\b(first page|top\s*\d+|top three|ranking)\b/gi,
+    /\b(backlink|link building|high[-\s]?authority links?|external links?)\b/gi,
+    /\b(website audit|free audit|keyword analysis|ranking gaps?)\b/gi,
+    /\bsubmit\b[^.!?\n]{0,80}\b(director(?:y|ies))\b/gi,
+    /\b(reply with|send us)\b[^.!?\n]{0,80}\b(website|url|target keywords?)\b/gi,
+    /\blimited time\b/gi
+  ];
+
+  const matchedSeoPatterns = seoScamPatterns.reduce((count, pattern) => {
+    const matches = combinedText.match(pattern);
+    return matches ? count + 1 : count;
+  }, 0);
+
+  if (matchedSeoPatterns >= 2) {
+    return {
+      isSpam: true,
+      reason: 'Detected suspicious SEO outreach pattern',
+      confidence: matchedSeoPatterns >= 4 ? 'high' : 'medium'
     };
   }
 
@@ -337,14 +359,10 @@ export async function validateContactSubmission(data) {
 
     const isSpam =
       (spamCheckOriginal.isSpam && spamCheckOriginal.confidence !== 'low') ||
-      (spamCheckTranslated.isSpam && spamCheckTranslated.confidence !== 'low');
+      (spamCheckTranslated.isSpam && spamCheckTranslated.confidence !== 'low') ||
+      (translatedMessage !== message && spamCheckTranslated.isSpam);
 
     if (isSpam) {
-      console.log('Spam detected:', {
-        original: spamCheckOriginal,
-        translated: spamCheckTranslated
-      });
-
       return {
         valid: false,
         error: 'Your submission appears to be spam. If this is a legitimate enquiry, please contact us through alternative channels. We do not accept unsolicited offers for SEO, website design, loans, or similar services.'
