@@ -11,6 +11,10 @@ const WINDOWS_SERVER_2016_SUPPORT_END_UTC = Date.UTC(2027, 0, 12, 0, 0, 0);
 const WINDOWS_SERVER_2019_SUPPORT_END_UTC = Date.UTC(2029, 0, 9, 0, 0, 0);
 const WINDOWS_10_22H2_REMINDER_START_UTC = Date.UTC(2026, 11, 1, 0, 0, 0);
 const WINDOWS_10_22H2_SUPPORT_END_UTC = Date.UTC(2027, 0, 1, 0, 0, 0);
+const WINDOWS_10_21H2_LTSC_SUPPORT_END_UTC = Date.UTC(2032, 1, 1, 0, 0, 0);
+const WINDOWS_10_21H2_LTSC_BUILD = 19044;
+const WINDOWS_10_22H2_BUILD = 19045;
+const WINDOWS_11_LTSC_2024_BUILD = 26100;
 const WINDOWS_11_MIN_SUPPORTED_BUILD = 26200;
 
 const ADMIN_OVERRIDE_USERNAME =
@@ -302,28 +306,35 @@ function extractPlatformVersionParts(platformVersionHeader) {
 function getWindowsSignals(userAgent, platformVersionParts) {
   const ua = (userAgent || '').toLowerCase();
   const isWindowsNt10 = /windows nt 10\.0/.test(ua);
+  const isWindowsServer = /windows server/.test(ua);
   const explicitBuildMatch = ua.match(/(?:os\s+build|build)\s*(\d{4,5})/i);
   const explicitBuild = explicitBuildMatch ? Number(explicitBuildMatch[1]) : null;
 
   const platformMajor = platformVersionParts?.major;
   const platformBuild = platformVersionParts?.build;
 
-  const isLikelyWindows10 =
-    isWindowsNt10 && (
-      platformMajor === 14 ||
-      (explicitBuild != null && explicitBuild < WINDOWS_11_MIN_SUPPORTED_BUILD) ||
-      /windows\s*10/.test(ua)
-    );
+  const detectedBuild = explicitBuild != null ? explicitBuild : platformBuild;
 
-  const isLikelyWindows11 = isWindowsNt10 && (
-    platformMajor >= 15 ||
-    (explicitBuild != null && explicitBuild >= WINDOWS_11_MIN_SUPPORTED_BUILD)
-  );
+  let windowsFamily = null;
+  if (isWindowsNt10) {
+    if (platformMajor === 14) {
+      windowsFamily = 'win10';
+    } else if (platformMajor != null && platformMajor >= 15) {
+      windowsFamily = 'win11';
+    } else if (detectedBuild != null) {
+      windowsFamily = detectedBuild >= 22000 ? 'win11' : 'win10';
+    } else if (/windows\s*11/.test(ua)) {
+      windowsFamily = 'win11';
+    } else {
+      windowsFamily = 'win10';
+    }
+  }
 
   return {
     isWindowsNt10,
-    isLikelyWindows10,
-    isLikelyWindows11,
+    isWindowsServer,
+    windowsFamily,
+    detectedBuild,
     explicitBuild,
     platformBuild,
   };
@@ -335,17 +346,8 @@ function shouldShowWindows10Reminder(userAgent, nowMs, platformVersionParts) {
   }
 
   const windowsSignals = getWindowsSignals(userAgent, platformVersionParts);
-  if (!windowsSignals.isLikelyWindows10) return false;
-
-  if (windowsSignals.explicitBuild != null) {
-    return windowsSignals.explicitBuild === 19045;
-  }
-
-  if (windowsSignals.platformBuild != null) {
-    return windowsSignals.platformBuild === 19045;
-  }
-
-  return true;
+  if (windowsSignals.isWindowsServer || windowsSignals.windowsFamily !== 'win10') return false;
+  return windowsSignals.detectedBuild === WINDOWS_10_22H2_BUILD;
 }
 
 function extractFirefoxMajorVersion(userAgent) {
@@ -471,21 +473,40 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platfo
   }
 
   const windowsSignals = getWindowsSignals(userAgent, resolvedPlatformVersionParts);
-  if (nowMs >= WINDOWS_10_22H2_SUPPORT_END_UTC && windowsSignals.isLikelyWindows10) {
-    const detectedBuild = windowsSignals.explicitBuild;
-    if (detectedBuild != null) {
-      return `Windows 10 22H2 (build ${detectedBuild})`;
-    }
-    return 'Windows 10 22H2 (build 19045)';
-  }
+  if (windowsSignals.isWindowsNt10 && !windowsSignals.isWindowsServer) {
+    const detectedBuild = windowsSignals.detectedBuild;
 
-  if (
-    nowMs >= WINDOWS_10_22H2_SUPPORT_END_UTC &&
-    windowsSignals.isLikelyWindows11 &&
-    windowsSignals.platformBuild != null &&
-    windowsSignals.platformBuild < WINDOWS_11_MIN_SUPPORTED_BUILD
-  ) {
-    return `Windows 11 (build ${windowsSignals.platformBuild})`;
+    if (windowsSignals.windowsFamily === 'win10') {
+      if (detectedBuild == null) {
+        return 'Windows 10 (unknown build)';
+      }
+
+      if (detectedBuild === WINDOWS_10_22H2_BUILD) {
+        if (nowMs >= WINDOWS_10_22H2_SUPPORT_END_UTC) {
+          return `Windows 10 22H2 (build ${detectedBuild})`;
+        }
+      } else if (detectedBuild === WINDOWS_10_21H2_LTSC_BUILD) {
+        if (nowMs >= WINDOWS_10_21H2_LTSC_SUPPORT_END_UTC) {
+          return `Windows 10 21H2 LTSC (build ${detectedBuild})`;
+        }
+      } else {
+        return `Windows 10 (build ${detectedBuild})`;
+      }
+    }
+
+    if (windowsSignals.windowsFamily === 'win11') {
+      if (detectedBuild == null) {
+        return 'Windows 11 (unknown build)';
+      }
+
+      const isSupportedWin11Build =
+        detectedBuild === WINDOWS_11_LTSC_2024_BUILD ||
+        detectedBuild >= WINDOWS_11_MIN_SUPPORTED_BUILD;
+
+      if (!isSupportedWin11Build) {
+        return `Windows 11 (build ${detectedBuild})`;
+      }
+    }
   }
 
   if (/windows server 2016/.test(ua) && nowMs >= WINDOWS_SERVER_2016_SUPPORT_END_UTC) {

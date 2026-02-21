@@ -36,12 +36,16 @@ function getUnsupportedSystemGuidance(systemLabel) {
     return "Windows 10 22H2 (build 19045) is no longer supported after 1 Jan 2027. Please upgrade to Windows 11 25H2 or above (OS build 26200+).";
   }
 
+  if (normalized.includes("windows 10 21h2 ltsc") || normalized.includes("build 19044")) {
+    return "Windows 10 21H2 Enterprise LTSC / IoT Enterprise LTSC (build 19044) is supported only until 1 Feb 2032. Please plan to upgrade before support ends.";
+  }
+
   if (normalized.includes("windows 11") && normalized.includes("build")) {
-    return "Please upgrade to Windows 11 25H2 or above (OS build 26200+) to continue accessing this website.";
+    return "Please use Windows 11 25H2 or above (OS build 26200+) or Windows 11 Enterprise LTSC / IoT Enterprise LTSC 2024 (build 26100) to continue accessing this website.";
   }
 
   if (normalized.includes("windows")) {
-    return "Please upgrade to Windows 11 25H2 or above (OS build 26200+).";
+    return "Please use Windows 11 25H2 or above (OS build 26200+) or Windows 11 Enterprise LTSC / IoT Enterprise LTSC 2024 (build 26100).";
   }
 
   if (normalized.includes("android")) {
