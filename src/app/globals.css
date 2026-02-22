@@ -55,7 +55,8 @@ a {
 
 @media (min-width: 1024px) {
   .bpFabWrapper {
-    right: 24px !important;
+    left: 24px !important;
+    right: auto !important;
     bottom: max(24px, env(safe-area-inset-bottom, 0px)) !important;
     z-index: 9999 !important;
     opacity: 1 !important;
@@ -68,7 +69,7 @@ a {
   }
 
   .bpFabLabel {
-    font-size: 15px !important;
+    display: none !important;
   }
 
   .bpWebchat {
@@ -81,7 +82,8 @@ a {
 
 @media (max-width: 767px) {
   .bpFabWrapper {
-    right: 12px !important;
+    left: 12px !important;
+    right: auto !important;
     bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important;
     z-index: 9999 !important;
     opacity: 1 !important;
@@ -97,11 +99,7 @@ a {
   }
 
   .bpFabLabel {
-    font-size: 13px !important;
-    max-width: 56vw !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: none !important;
   }
 
   .bpWebchat {
