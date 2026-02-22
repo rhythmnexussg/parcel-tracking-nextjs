@@ -1,338 +1,219 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Script from 'next/script';
+import { useEffect, useMemo, useState } from 'react';
+import styles from './ChatbotWidget.module.css';
 import { useLanguage } from '../LanguageContext';
 
 const CHATBOT_NAME = 'Rhythm Bot';
-const BOTPRESS_BOOTSTRAP = {
-  botId: 'e33f9565-900e-474f-b40a-da6c35d6b7ea',
-  clientId: 'd92ef0b3-3ae9-4997-a4ac-1189142551bb',
-  configuration: {
-    version: 'v2',
-    botName: CHATBOT_NAME,
-    botAvatar: 'https://files.bpcontent.cloud/2026/02/22/04/20260222041448-ZF5K2EEA.jpeg',
-    botDescription: 'Provide support for our website, such as questions about FAQ, Blogs, order status and etc.',
-    fabImage: 'https://files.bpcontent.cloud/2026/02/22/04/20260222041448-ZF5K2EEA.jpeg',
-    website: {},
-    email: {},
-    phone: {},
-    termsOfService: {},
-    privacyPolicy: {},
-    color: '#525252',
-    variant: 'solid',
-    headerVariant: 'glass',
-    themeMode: 'light',
-    fontFamily: 'inter',
-    radius: 2.5,
-    feedbackEnabled: false,
-    footer: '[⚡ by Botpress](https://botpress.com/?from=webchat)',
-    storageLocation: 'sessionStorage',
-    soundEnabled: false,
-    showFab: true,
-    proactiveMessageEnabled: false,
-    proactiveBubbleMessage: 'Hi! 👋 Need help?',
-    proactiveBubbleTriggerType: 'afterDelay',
-    proactiveBubbleDelayTime: 10,
-    conversationHistory: false
-  }
+
+const CHATBOT_WELCOME_TRANSLATIONS = {
+  en: 'Hi, I am Rhythm Bot, your 24/7 AI virtual assistant. How can I assist you?',
+  de: 'Hallo, ich bin Rhythm Bot, Ihr 24/7 KI-virtueller Assistent. Wie kann ich Ihnen helfen?',
+  fr: 'Bonjour, je suis Rhythm Bot, votre assistant virtuel IA 24h/24 et 7j/7. Comment puis-je vous aider ?',
+  es: 'Hola, soy Rhythm Bot, tu asistente virtual de IA 24/7. ¿Cómo puedo ayudarte?',
+  ja: 'こんにちは。私は Rhythm Bot、24時間年中無休のAIバーチャルアシスタントです。どのようにお手伝いできますか？',
+  zh: '您好，我是 Rhythm Bot，您的 24/7 AI 虚拟助手。请问我可以如何帮助您？',
+  'zh-hant': '您好，我是 Rhythm Bot，您的 24/7 AI 虛擬助理。請問我可以如何協助您？',
+  pt: 'Olá, sou o Rhythm Bot, seu assistente virtual de IA 24/7. Como posso ajudar você?',
+  hi: 'नमस्ते, मैं Rhythm Bot हूँ, आपका 24/7 AI वर्चुअल असिस्टेंट। मैं आपकी कैसे सहायता कर सकता हूँ?',
+  th: 'สวัสดี ฉันคือ Rhythm Bot ผู้ช่วยเสมือน AI ของคุณตลอด 24/7 ฉันช่วยอะไรคุณได้บ้าง?',
+  ms: 'Hai, saya Rhythm Bot, pembantu maya AI anda 24/7. Bagaimana saya boleh membantu anda?',
+  nl: 'Hoi, ik ben Rhythm Bot, je 24/7 AI-virtuele assistent. Hoe kan ik je helpen?',
+  id: 'Hai, saya Rhythm Bot, asisten virtual AI Anda 24/7. Bagaimana saya dapat membantu Anda?',
+  cs: 'Dobrý den, jsem Rhythm Bot, váš 24/7 AI virtuální asistent. Jak vám mohu pomoci?',
+  it: 'Ciao, sono Rhythm Bot, il tuo assistente virtuale AI 24/7. Come posso aiutarti?',
+  he: 'היי, אני Rhythm Bot, העוזר הווירטואלי מבוסס AI שלך 24/7. איך אפשר לעזור לך?',
+  ga: 'Dia dhuit, is mise Rhythm Bot, do chúntóir fíorúil AI 24/7. Conas is féidir liom cabhrú leat?',
+  pl: 'Cześć, jestem Rhythm Bot, Twoim wirtualnym asystentem AI 24/7. Jak mogę Ci pomóc?',
+  ko: '안녕하세요, 저는 24/7 AI 가상 비서 Rhythm Bot입니다. 무엇을 도와드릴까요?',
+  mi: 'Kia ora, ko Rhythm Bot ahau, tō kaiāwhina mariko AI 24/7. Me pēhea ahau e āwhina ai i a koe?',
+  no: 'Hei, jeg er Rhythm Bot, din 24/7 AI-virtuelle assistent. Hvordan kan jeg hjelpe deg?',
+  ru: 'Здравствуйте, я Rhythm Bot, ваш виртуальный ИИ-помощник 24/7. Чем я могу помочь?',
+  sv: 'Hej, jag är Rhythm Bot, din AI-virtuella assistent 24/7. Hur kan jag hjälpa dig?',
+  fi: 'Hei, olen Rhythm Bot, 24/7 AI-virtuaaliavustajasi. Kuinka voin auttaa sinua?',
+  tl: 'Hi, ako si Rhythm Bot, ang iyong 24/7 AI virtual assistant. Paano kita matutulungan?',
+  vi: 'Xin chào, tôi là Rhythm Bot, trợ lý ảo AI 24/7 của bạn. Tôi có thể hỗ trợ bạn như thế nào?',
+  cy: 'Helo, fi yw Rhythm Bot, eich cynorthwyydd rhithwir AI 24/7. Sut alla i eich helpu?',
+  ta: 'வணக்கம், நான் Rhythm Bot, உங்கள் 24/7 AI மெய்நிகர் உதவியாளர். நான் உங்களுக்கு எப்படி உதவலாம்?'
 };
 
-const LANGUAGE_COPY = {
-  en: {
-    composerPlaceholder: 'Type your message...',
-    proactiveBubbleMessage: 'Hi! 👋 Need help?',
-    botDescription: 'Provide support for our website, such as questions about FAQ, Blogs, order status and etc.'
-  },
-  de: {
-    composerPlaceholder: 'Geben Sie Ihre Nachricht ein...',
-    proactiveBubbleMessage: 'Hallo! 👋 Brauchen Sie Hilfe?',
-    botDescription: 'Bietet Unterstützung für unsere Website, z. B. bei Fragen zu FAQ, Blogs, Bestellstatus usw.'
-  },
-  fr: {
-    composerPlaceholder: 'Saisissez votre message...',
-    proactiveBubbleMessage: 'Bonjour ! 👋 Besoin d’aide ?',
-    botDescription: 'Fournit une assistance pour notre site web, notamment pour les questions sur la FAQ, les blogs, le statut des commandes, etc.'
-  },
-  es: {
-    composerPlaceholder: 'Escribe tu mensaje...',
-    proactiveBubbleMessage: '¡Hola! 👋 ¿Necesitas ayuda?',
-    botDescription: 'Brinda soporte para nuestro sitio web, como preguntas sobre FAQ, blogs, estado del pedido, etc.'
-  },
-  ja: {
-    composerPlaceholder: 'メッセージを入力してください...',
-    proactiveBubbleMessage: 'こんにちは！👋 お困りですか？',
-    botDescription: '当サイトのサポートを提供します。FAQ、ブログ、注文状況などに関するご質問に対応します。'
-  },
-  zh: {
-    composerPlaceholder: '请输入您的消息...',
-    proactiveBubbleMessage: '您好！👋 需要帮助吗？',
-    botDescription: '为我们的网站提供支持，例如解答常见问题、博客、订单状态等相关问题。'
-  },
-  'zh-hant': {
-    composerPlaceholder: '請輸入您的訊息...',
-    proactiveBubbleMessage: '您好！👋 需要協助嗎？',
-    botDescription: '為我們的網站提供支援，例如解答常見問題、部落格、訂單狀態等相關問題。'
-  },
-  pt: {
-    composerPlaceholder: 'Digite sua mensagem...',
-    proactiveBubbleMessage: 'Olá! 👋 Precisa de ajuda?',
-    botDescription: 'Fornece suporte para o nosso site, como dúvidas sobre FAQ, blogs, estado do pedido, etc.'
-  },
-  hi: {
-    composerPlaceholder: 'अपना संदेश लिखें...',
-    proactiveBubbleMessage: 'नमस्ते! 👋 मदद चाहिए?',
-    botDescription: 'हमारी वेबसाइट के लिए सहायता प्रदान करता है, जैसे FAQ, ब्लॉग, ऑर्डर स्थिति आदि से जुड़े प्रश्न।'
-  },
-  th: {
-    composerPlaceholder: 'พิมพ์ข้อความของคุณ...',
-    proactiveBubbleMessage: 'สวัสดี! 👋 ต้องการความช่วยเหลือไหม?',
-    botDescription: 'ให้การสนับสนุนเว็บไซต์ของเรา เช่น คำถามเกี่ยวกับ FAQ บล็อก สถานะคำสั่งซื้อ เป็นต้น'
-  },
-  ms: {
-    composerPlaceholder: 'Taip mesej anda...',
-    proactiveBubbleMessage: 'Hai! 👋 Perlukan bantuan?',
-    botDescription: 'Memberi sokongan untuk laman web kami, seperti soalan tentang FAQ, blog, status pesanan dan sebagainya.'
-  },
-  nl: {
-    composerPlaceholder: 'Typ je bericht...',
-    proactiveBubbleMessage: 'Hoi! 👋 Hulp nodig?',
-    botDescription: 'Biedt ondersteuning voor onze website, zoals vragen over FAQ, blogs, bestelstatus enzovoort.'
-  },
-  id: {
-    composerPlaceholder: 'Ketik pesan Anda...',
-    proactiveBubbleMessage: 'Hai! 👋 Butuh bantuan?',
-    botDescription: 'Memberikan dukungan untuk situs web kami, seperti pertanyaan tentang FAQ, blog, status pesanan, dan lain-lain.'
-  },
-  cs: {
-    composerPlaceholder: 'Napište svou zprávu...',
-    proactiveBubbleMessage: 'Ahoj! 👋 Potřebujete pomoc?',
-    botDescription: 'Poskytuje podporu pro náš web, například dotazy ohledně FAQ, blogů, stavu objednávky atd.'
-  },
-  it: {
-    composerPlaceholder: 'Scrivi il tuo messaggio...',
-    proactiveBubbleMessage: 'Ciao! 👋 Hai bisogno di aiuto?',
-    botDescription: 'Fornisce supporto per il nostro sito web, ad esempio per domande su FAQ, blog, stato dell’ordine, ecc.'
-  },
-  he: {
-    composerPlaceholder: 'הקלד את ההודעה שלך...',
-    proactiveBubbleMessage: 'היי! 👋 צריך עזרה?',
-    botDescription: 'מספק תמיכה לאתר שלנו, כגון שאלות על שאלות נפוצות, בלוגים, מצב הזמנה ועוד.'
-  },
-  ga: {
-    composerPlaceholder: 'Clóscríobh do theachtaireacht...',
-    proactiveBubbleMessage: 'Dia duit! 👋 Cabhair uait?',
-    botDescription: 'Soláthraíonn sé tacaíocht dár suíomh gréasáin, amhail ceisteanna faoi CCanna, blaganna, stádas ordaithe agus araile.'
-  },
-  pl: {
-    composerPlaceholder: 'Wpisz swoją wiadomość...',
-    proactiveBubbleMessage: 'Cześć! 👋 Potrzebujesz pomocy?',
-    botDescription: 'Zapewnia wsparcie dla naszej strony internetowej, np. w pytaniach dotyczących FAQ, blogów, statusu zamówienia itp.'
-  },
-  ko: {
-    composerPlaceholder: '메시지를 입력하세요...',
-    proactiveBubbleMessage: '안녕하세요! 👋 도움이 필요하신가요?',
-    botDescription: 'FAQ, 블로그, 주문 상태 등 웹사이트 관련 문의를 지원합니다.'
-  },
-  mi: {
-    composerPlaceholder: 'Tāurua tō karere...',
-    proactiveBubbleMessage: 'Kia ora! 👋 Me āwhina koe?',
-    botDescription: 'Ka tautoko i tō mātou paetukutuku, pērā i ngā pātai mō ngā FAQ, ngā rangitaki, te tūnga ota, me ērā atu mea.'
-  },
-  no: {
-    composerPlaceholder: 'Skriv meldingen din...',
-    proactiveBubbleMessage: 'Hei! 👋 Trenger du hjelp?',
-    botDescription: 'Gir støtte for nettstedet vårt, for eksempel spørsmål om FAQ, blogger, ordrestatus osv.'
-  },
-  ru: {
-    composerPlaceholder: 'Введите ваше сообщение...',
-    proactiveBubbleMessage: 'Здравствуйте! 👋 Нужна помощь?',
-    botDescription: 'Оказывает поддержку по нашему сайту, включая вопросы по FAQ, блогам, статусу заказа и т. д.'
-  },
-  sv: {
-    composerPlaceholder: 'Skriv ditt meddelande...',
-    proactiveBubbleMessage: 'Hej! 👋 Behöver du hjälp?',
-    botDescription: 'Ger support för vår webbplats, till exempel frågor om FAQ, bloggar, orderstatus och så vidare.'
-  },
-  fi: {
-    composerPlaceholder: 'Kirjoita viestisi...',
-    proactiveBubbleMessage: 'Hei! 👋 Tarvitsetko apua?',
-    botDescription: 'Tarjoaa tukea verkkosivustollemme, kuten kysymyksiä FAQ:sta, blogeista, tilauksen tilasta jne.'
-  },
-  tl: {
-    composerPlaceholder: 'I-type ang iyong mensahe...',
-    proactiveBubbleMessage: 'Hi! 👋 Kailangan mo ng tulong?',
-    botDescription: 'Nagbibigay ng suporta para sa aming website, tulad ng mga tanong tungkol sa FAQ, blogs, status ng order, atbp.'
-  },
-  vi: {
-    composerPlaceholder: 'Nhập tin nhắn của bạn...',
-    proactiveBubbleMessage: 'Xin chào! 👋 Bạn cần trợ giúp không?',
-    botDescription: 'Cung cấp hỗ trợ cho trang web của chúng tôi, chẳng hạn như các câu hỏi về FAQ, blog, trạng thái đơn hàng, v.v.'
-  },
-  cy: {
-    composerPlaceholder: 'Teipiwch eich neges...',
-    proactiveBubbleMessage: 'Helo! 👋 Oes angen help arnoch?',
-    botDescription: 'Mae’n darparu cymorth i’n gwefan, megis cwestiynau am Cwestiynau Cyffredin, blogiau, statws archeb, ac ati.'
-  },
-  ta: {
-    composerPlaceholder: 'உங்கள் செய்தியை உள்ளிடவும்...',
-    proactiveBubbleMessage: 'வணக்கம்! 👋 உதவி வேண்டுமா?',
-    botDescription: 'எங்கள் வலைத்தளத்திற்கான ஆதரவை வழங்குகிறது; உதாரணமாக FAQ, வலைப்பதிவுகள், ஆர்டர் நிலை போன்ற கேள்விகள்.'
-  }
+const CHATBOT_UI_TRANSLATIONS = {
+  en: { placeholder: 'Type your message...', send: 'Send', thinking: 'Thinking…', subtitle: '24/7 AI virtual assistant' },
+  de: { placeholder: 'Geben Sie Ihre Nachricht ein...', send: 'Senden', thinking: 'Denkt nach…', subtitle: '24/7 KI-virtueller Assistent' },
+  fr: { placeholder: 'Saisissez votre message...', send: 'Envoyer', thinking: 'Réflexion…', subtitle: 'Assistant virtuel IA 24h/24 et 7j/7' },
+  es: { placeholder: 'Escribe tu mensaje...', send: 'Enviar', thinking: 'Pensando…', subtitle: 'Asistente virtual de IA 24/7' },
+  ja: { placeholder: 'メッセージを入力してください...', send: '送信', thinking: '考え中…', subtitle: '24時間年中無休のAIバーチャルアシスタント' },
+  zh: { placeholder: '请输入您的消息...', send: '发送', thinking: '思考中…', subtitle: '24/7 AI 虚拟助手' },
+  'zh-hant': { placeholder: '請輸入您的訊息...', send: '傳送', thinking: '思考中…', subtitle: '24/7 AI 虛擬助理' },
+  pt: { placeholder: 'Digite sua mensagem...', send: 'Enviar', thinking: 'Pensando…', subtitle: 'Assistente virtual de IA 24/7' },
+  hi: { placeholder: 'अपना संदेश लिखें...', send: 'भेजें', thinking: 'सोच रहा है…', subtitle: '24/7 AI वर्चुअल असिस्टेंट' },
+  th: { placeholder: 'พิมพ์ข้อความของคุณ...', send: 'ส่ง', thinking: 'กำลังคิด…', subtitle: 'ผู้ช่วยเสมือน AI ตลอด 24/7' },
+  ms: { placeholder: 'Taip mesej anda...', send: 'Hantar', thinking: 'Sedang berfikir…', subtitle: 'Pembantu maya AI 24/7' },
+  nl: { placeholder: 'Typ je bericht...', send: 'Verzenden', thinking: 'Denkt na…', subtitle: '24/7 AI-virtuele assistent' },
+  id: { placeholder: 'Ketik pesan Anda...', send: 'Kirim', thinking: 'Sedang berpikir…', subtitle: 'Asisten virtual AI 24/7' },
+  cs: { placeholder: 'Napište svou zprávu...', send: 'Odeslat', thinking: 'Přemýšlím…', subtitle: '24/7 AI virtuální asistent' },
+  it: { placeholder: 'Scrivi il tuo messaggio...', send: 'Invia', thinking: 'Sto pensando…', subtitle: 'Assistente virtuale AI 24/7' },
+  he: { placeholder: 'הקלד את ההודעה שלך...', send: 'שלח', thinking: 'חושב…', subtitle: 'עוזר וירטואלי AI זמין 24/7' },
+  ga: { placeholder: 'Clóscríobh do theachtaireacht...', send: 'Seol', thinking: 'Ag smaoineamh…', subtitle: 'Cúntóir fíorúil AI 24/7' },
+  pl: { placeholder: 'Wpisz swoją wiadomość...', send: 'Wyślij', thinking: 'Myślę…', subtitle: 'Wirtualny asystent AI 24/7' },
+  ko: { placeholder: '메시지를 입력하세요...', send: '보내기', thinking: '생각 중…', subtitle: '24/7 AI 가상 비서' },
+  mi: { placeholder: 'Tāurua tō karere...', send: 'Tuku', thinking: 'Kei te whakaaro…', subtitle: 'Kaiāwhina mariko AI 24/7' },
+  no: { placeholder: 'Skriv meldingen din...', send: 'Send', thinking: 'Tenker…', subtitle: '24/7 AI-virtuell assistent' },
+  ru: { placeholder: 'Введите ваше сообщение...', send: 'Отправить', thinking: 'Думаю…', subtitle: 'Виртуальный ИИ-помощник 24/7' },
+  sv: { placeholder: 'Skriv ditt meddelande...', send: 'Skicka', thinking: 'Tänker…', subtitle: 'AI-virtuell assistent 24/7' },
+  fi: { placeholder: 'Kirjoita viestisi...', send: 'Lähetä', thinking: 'Mietin…', subtitle: '24/7 AI-virtuaaliavustaja' },
+  tl: { placeholder: 'I-type ang iyong mensahe...', send: 'Ipadala', thinking: 'Nag-iisip…', subtitle: '24/7 AI virtual assistant' },
+  vi: { placeholder: 'Nhập tin nhắn của bạn...', send: 'Gửi', thinking: 'Đang suy nghĩ…', subtitle: 'Trợ lý ảo AI 24/7' },
+  cy: { placeholder: 'Teipiwch eich neges...', send: 'Anfon', thinking: 'Yn meddwl…', subtitle: 'Cynorthwyydd rhithwir AI 24/7' },
+  ta: { placeholder: 'உங்கள் செய்தியை உள்ளிடவும்...', send: 'அனுப்பு', thinking: 'சிந்திக்கிறது…', subtitle: '24/7 AI மெய்நிகர் உதவியாளர்' }
 };
 
-const LANGUAGE_TO_BOTPRESS_LOCALE = {
-  en: 'en',
-  de: 'de-DE',
-  fr: 'fr-FR',
-  es: 'es-ES',
-  ja: 'ja',
-  zh: 'zh-CN',
-  'zh-hant': 'zh-TW',
-  pt: 'pt-PT',
-  hi: 'hi',
-  th: 'th',
-  ms: 'ms',
-  nl: 'nl-NL',
-  id: 'id',
-  cs: 'cs',
-  it: 'it-IT',
-  he: 'he',
-  ga: 'ga',
-  pl: 'pl-PL',
-  ko: 'ko',
-  mi: 'mi',
-  no: 'nb-NO',
-  ru: 'ru-RU',
-  sv: 'sv-SE',
-  fi: 'fi-FI',
-  tl: 'tl',
-  vi: 'vi',
-  cy: 'cy',
-  ta: 'ta'
-};
+const normalizeChatText = (value) => {
+  if (typeof value !== 'string') return '';
 
-const getBotpressLocale = (languageCode) => LANGUAGE_TO_BOTPRESS_LOCALE[languageCode] || 'en';
-const getLanguageCopy = (languageCode) => LANGUAGE_COPY[languageCode] || LANGUAGE_COPY.en;
+  return value
+    .replace(/\\n/g, '\n')
+    .replace(/\\"/g, '"')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/__(.*?)__/g, '$1')
+    .replace(/`{1,3}([^`]+)`{1,3}/g, '$1');
+};
 
 export function ChatbotWidget() {
   const enabled = process.env.NEXT_PUBLIC_CHATBOT_ENABLED !== 'false';
-  const [injectLoaded, setInjectLoaded] = useState(false);
+  const title = process.env.NEXT_PUBLIC_CHATBOT_TITLE || CHATBOT_NAME;
   const { language } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState('');
+  const [error, setError] = useState('');
+  const [messages, setMessages] = useState([
+    {
+      role: 'assistant',
+      content: CHATBOT_WELCOME_TRANSLATIONS[language] || CHATBOT_WELCOME_TRANSLATIONS.en
+    }
+  ]);
+
+  const history = useMemo(
+    () => messages.map((item) => ({ role: item.role, content: item.content })),
+    [messages]
+  );
+  const uiText = CHATBOT_UI_TRANSLATIONS[language] || CHATBOT_UI_TRANSLATIONS.en;
 
   useEffect(() => {
-    if (!injectLoaded) {
-      return;
-    }
-
-    const nextLocale = getBotpressLocale(language);
-    const nextCopy = getLanguageCopy(language);
-    const applyLanguageToBotpress = () => {
-      if (typeof window === 'undefined' || !window.botpress) {
-        return;
+    const localizedWelcome = CHATBOT_WELCOME_TRANSLATIONS[language] || CHATBOT_WELCOME_TRANSLATIONS.en;
+    setMessages((prev) => {
+      if (!prev.length) {
+        return [{ role: 'assistant', content: localizedWelcome }];
       }
 
-      if (!window.__rhythmBotpressInitialized && typeof window.botpress.init === 'function') {
-        window.botpress.init({
-          ...BOTPRESS_BOOTSTRAP,
-          configuration: {
-            ...BOTPRESS_BOOTSTRAP.configuration,
-            botName: CHATBOT_NAME,
-            locale: nextLocale,
-            language: nextLocale,
-            showFab: true,
-            botDescription: nextCopy.botDescription,
-            composerPlaceholder: nextCopy.composerPlaceholder,
-            proactiveBubbleMessage: nextCopy.proactiveBubbleMessage
-          }
-        });
-        window.__rhythmBotpressInitialized = true;
+      if (prev.length === 1 && prev[0].role === 'assistant') {
+        return [{ role: 'assistant', content: localizedWelcome }];
       }
 
-      if (typeof window.botpress.config === 'function') {
-        window.botpress.config({
-          configuration: {
-            botName: CHATBOT_NAME,
-            locale: nextLocale,
-            language: nextLocale,
-            showFab: true,
-            botDescription: nextCopy.botDescription,
-            composerPlaceholder: nextCopy.composerPlaceholder,
-            proactiveBubbleMessage: nextCopy.proactiveBubbleMessage
-          }
-        });
-      }
-
-      if (typeof window.botpress.updateUser === 'function') {
-        window.botpress.updateUser({
-          data: {
-            preferredLanguage: language,
-            preferredLocale: nextLocale
-          }
-        }).catch(() => {});
-      }
-
-      if (typeof window.botpress.sendEvent === 'function') {
-        window.botpress.sendEvent({
-          type: 'language_changed',
-          language,
-          locale: nextLocale
-        }).catch(() => {});
-      }
-    };
-
-    let removeInitializedListener;
-    if (typeof window !== 'undefined' && window.botpress && typeof window.botpress.on === 'function') {
-      removeInitializedListener = window.botpress.on('webchat:initialized', applyLanguageToBotpress);
-    }
-
-    applyLanguageToBotpress();
-
-    const syncChatbotName = () => {
-      const targets = document.querySelectorAll('.bpFabWrapper *, .bpWebchat *');
-
-      targets.forEach((node) => {
-        if (!(node instanceof HTMLElement)) {
-          return;
-        }
-
-        if (node.children.length === 0) {
-          const text = (node.textContent || '').trim();
-          if (/^24\/7\s*chatbot$/i.test(text)) {
-            node.textContent = CHATBOT_NAME;
-          }
-        }
-
-        const aria = node.getAttribute('aria-label');
-        if (aria && /24\/7\s*chatbot/i.test(aria)) {
-          node.setAttribute('aria-label', aria.replace(/24\/7\s*chatbot/gi, CHATBOT_NAME));
-        }
-      });
-    };
-
-    syncChatbotName();
-    const observer = new MutationObserver(syncChatbotName);
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => {
-      observer.disconnect();
-      if (typeof removeInitializedListener === 'function') {
-        removeInitializedListener();
-      }
-    };
-  }, [injectLoaded, language]);
+      return prev;
+    });
+  }, [language]);
 
   if (!enabled) {
     return null;
   }
 
+  const submitMessage = async (event) => {
+    event.preventDefault();
+    const nextMessage = input.trim();
+    if (!nextMessage || isLoading) return;
+
+    const userMessage = { role: 'user', content: nextMessage };
+    const nextHistory = [...history, userMessage];
+
+    setError('');
+    setInput('');
+    setIsLoading(true);
+    setMessages((prev) => [...prev, userMessage]);
+
+    try {
+      const response = await fetch('/api/chatbot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: nextMessage, history: nextHistory.slice(-12) })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data?.error || 'Unable to reach assistant.');
+      }
+
+      setMessages((prev) => [...prev, { role: 'assistant', content: normalizeChatText(data.reply) }]);
+    } catch (submitError) {
+      setError(submitError.message || 'Unable to reach assistant.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
-      <Script
-        src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"
-        strategy="afterInteractive"
-        onLoad={() => setInjectLoaded(true)}
-      />
+      {isOpen ? (
+        <div className={styles.panel} role="dialog" aria-label={title}>
+          <div className={styles.header}>
+            <div className={styles.headerTitleWrap}>
+              <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.headerLogo} />
+              <div className={styles.headerTitle}>{title}</div>
+            </div>
+            <div className={styles.headerSubtitle}>{uiText.subtitle}</div>
+          </div>
+          <div className={styles.messages}>
+            {messages.map((message, index) => (
+              <div
+                key={`${message.role}-${index}`}
+                className={`${styles.messageRow} ${message.role === 'user' ? styles.messageRowUser : ''}`}
+              >
+                {message.role === 'assistant' ? <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.avatar} /> : null}
+                <div className={`${styles.bubble} ${message.role === 'user' ? styles.user : styles.assistant}`}>
+                  {normalizeChatText(message.content)}
+                </div>
+              </div>
+            ))}
+            {isLoading ? (
+              <div className={styles.messageRow}>
+                <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.avatar} />
+                <div className={`${styles.bubble} ${styles.assistant}`}>{uiText.thinking}</div>
+              </div>
+            ) : null}
+          </div>
+          {error ? <div className={styles.error}>{error}</div> : null}
+          <form className={styles.form} onSubmit={submitMessage}>
+            <input
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              className={styles.input}
+              placeholder={uiText.placeholder}
+              disabled={isLoading}
+              maxLength={2000}
+            />
+            <button type="submit" className={styles.send} disabled={isLoading || !input.trim()}>
+              {uiText.send}
+            </button>
+          </form>
+        </div>
+      ) : null}
+
+      <button
+        type="button"
+        className={styles.launcher}
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-label={isOpen ? 'Close chatbot' : 'Open chatbot'}
+      >
+        {isOpen ? (
+          '×'
+        ) : (
+          <span className={styles.launcherInner}>
+            <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.launcherLogo} />
+            <span>Rhythm Bot</span>
+          </span>
+        )}
+      </button>
     </>
   );
 }

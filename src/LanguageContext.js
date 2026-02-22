@@ -57,6 +57,13 @@ const getCountryFlag = (code) => {
 
 export const LanguageContext = createContext();
 
+const normalizeTranslatedText = (value) => {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/\\n/g, '\n')
+    .replace(/\\"/g, '"');
+};
+
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState('en');
   const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -197,11 +204,11 @@ export const LanguageProvider = ({ children }) => {
 
   // Strict translator: returns only current-language value, no English fallback
   const tStrict = (key) => {
-    return hasTranslation(key) ? translations[language][key] : undefined;
+    return hasTranslation(key) ? normalizeTranslatedText(translations[language][key]) : undefined;
   };
 
   const t = (key) => {
-    return translations[language]?.[key] || translations['en']?.[key] || key;
+    return normalizeTranslatedText(translations[language]?.[key] || translations['en']?.[key] || key);
   };
 
   return (

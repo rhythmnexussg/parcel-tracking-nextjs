@@ -140,6 +140,8 @@ export const translations = {
     "faqA7": "One reshipment is allowed. Cancellation isn't possible for invalid addresses, unclaimed parcels, or unpaid customs fees. Contact your postal service for redelivery, or message us for assistance.",
     "faqQ8": "My item is lost / stolen in transit.",
     "faqA8": "We allow one reshipment. If it's lost again, a full refund is issued after the courier's delivery window:\n\n• Singapore Local Services: 7 days\n• SingPost ePAC & SpeedPost Priority International: 30 days\n• SpeedPost Intl Express: 14 days",
+    "faqQ9": "What if I didn't receive my confirmation email?",
+    "faqA9": "1. Check your spam/junk folder — automated messages are sometimes filtered.\n2. Verify the email address you used at checkout; a typo can prevent delivery.\n3. If the address is correct and the email is still missing, contact us with your order number and the email address (or phone number) you used. We can resend the confirmation or provide the order details manually.\n\nYou can also go to https://rhythmnexus.org/track-your-item and use Search by Email or Phone to find your order from the confirmation email.",
     "blogTitle": "Shipping & Postal Knowledge Base",
     "blogSubtitle": "Official explanations of postal services, customs, VAT, and duties relevant to Rhythm Nexus shipments.",
     "readMore": "Read More",

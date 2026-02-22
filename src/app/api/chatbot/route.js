@@ -3,8 +3,8 @@ import { rateLimit, secureApiResponse } from '../security';
 
 const MAX_MESSAGE_LENGTH = 2000;
 const UPSTREAM_TIMEOUT_MS = 20000;
-const DEFAULT_FLOWISE_API_URL =
-  'https://cloud.flowiseai.com/api/v1/prediction/1b1566ab-9b86-4291-860d-d5e0b2c1778f';
+const DEFAULT_N8N_WEBHOOK_URL =
+  'https://n8ngc.codeblazar.org/webhook/6de02273-a19c-4249-8eb9-0944e48eecff';
 
 function extractReply(data) {
   if (!data) return '';
@@ -49,7 +49,7 @@ export async function POST(request) {
   const limited = rateLimit(request, { keyPrefix: 'chatbot', maxRequests: 20, windowMs: 60 * 1000 });
   if (limited) return limited;
 
-  const flowiseUrl = process.env.FLOWISE_API_URL || DEFAULT_FLOWISE_API_URL;
+  const webhookUrl = process.env.CHATBOT_WEBHOOK_URL || DEFAULT_N8N_WEBHOOK_URL;
 
   try {
     const body = await request.json();
@@ -74,18 +74,20 @@ export async function POST(request) {
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
-    const flowisePayload = {
-      question: message
+    const webhookPayload = {
+      message,
+      question: message,
+      history: Array.isArray(body?.history) ? body.history : []
     };
 
     let upstreamResponse;
     try {
-      upstreamResponse = await fetch(flowiseUrl, {
+      upstreamResponse = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(flowisePayload),
+        body: JSON.stringify(webhookPayload),
         cache: 'no-store',
         signal: controller.signal
       });
@@ -95,7 +97,7 @@ export async function POST(request) {
 
     if (!upstreamResponse.ok) {
       const errorText = await upstreamResponse.text();
-      console.error('Flowise request failed:', upstreamResponse.status, errorText);
+      console.error('Chatbot webhook request failed:', upstreamResponse.status, errorText);
 
       const upstreamMessage = extractUpstreamErrorMessage(errorText);
       const lowerErrorText = String(upstreamMessage || errorText || '').toLowerCase();
@@ -118,26 +120,26 @@ export async function POST(request) {
       if (isAuthIssue) {
         return secureApiResponse(
           NextResponse.json(
-            { error: 'Chatbot authentication failed. Please verify FLOWISE_API_KEY.' },
+            { error: 'Chatbot authentication failed. Please verify webhook credentials.' },
             { status: 502 }
           )
         );
       }
 
-      const isMissingChatflow = upstreamResponse.status === 404;
-      if (isMissingChatflow) {
+      const isMissingWebhook = upstreamResponse.status === 404;
+      if (isMissingWebhook) {
         return secureApiResponse(
           NextResponse.json(
-            { error: 'Chatflow endpoint was not found. Please verify FLOWISE_API_URL.' },
+            { error: 'Chatbot webhook endpoint was not found. Please verify CHATBOT_WEBHOOK_URL.' },
             { status: 502 }
           )
         );
       }
 
-      if (lowerErrorText.includes('please provide your request')) {
+      if (lowerErrorText.includes('please provide your request') || lowerErrorText.includes('invalid payload')) {
         return secureApiResponse(
           NextResponse.json(
-            { error: 'Chatbot request format was rejected by Flowise. Please check the chatflow input variable.' },
+            { error: 'Chatbot request format was rejected by webhook. Please check webhook payload mapping.' },
             { status: 502 }
           )
         );

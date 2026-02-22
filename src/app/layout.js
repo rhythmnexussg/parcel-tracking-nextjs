@@ -42,20 +42,25 @@ export const metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: "/logo.jpg",
+    shortcut: "/logo.jpg",
+    apple: "/logo.jpg",
+  },
   openGraph: {
     type: "website",
     url: "https://rhythmnexus.com/",
     title: "Rhythm Nexus - e-Commerce Store",
     description:
       "Shop at Rhythm Nexus and track your orders with ease. International shipping via SingPost, SpeedPost, and DHL Express.",
-    images: ["/logo512.png"],
+    images: ["/logo.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title: "Rhythm Nexus - e-Commerce Store",
     description:
       "Shop at Rhythm Nexus and track your orders with ease. International shipping via SingPost, SpeedPost, and DHL Express.",
-    images: ["/logo512.png"],
+    images: ["/logo.jpg"],
   },
 };
 
@@ -64,7 +69,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+        <link rel="shortcut icon" type="image/jpeg" href="/logo.jpg" />
+        <link rel="apple-touch-icon" href="/logo.jpg" />
         
         {/* Structured Data - Organization */}
         <script
@@ -75,7 +82,7 @@ export default function RootLayout({ children }) {
               "@type": "Organization",
               "name": "Rhythm Nexus",
               "url": "https://rhythmnexus.com",
-              "logo": "https://rhythmnexus.com/logo512.png",
+              "logo": "https://rhythmnexus.com/logo.jpg",
               "description": "International parcel tracking and shipping service",
               "sameAs": [
                 "https://www.etsy.com/shop/RhythmNexus",
