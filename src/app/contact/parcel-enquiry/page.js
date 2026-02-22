@@ -544,8 +544,8 @@ export default function ParcelEnquiry() {
             {isSubmitting ? t('parcelSubmitting') : t('parcelSubmit')}
           </button>
         </form>
-        <p className="text-muted" style={{ textAlign: 'center', marginTop: '2rem' }}>
-          © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
+        <p style={{ textAlign: 'center', marginTop: '2rem', color: '#6c757d', fontSize: '0.95rem' }}>
+          © {new Date().getFullYear()} Rhythm Nexus. All rights reserved.
         </p>
         </div>
       </div>
