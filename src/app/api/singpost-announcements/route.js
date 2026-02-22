@@ -303,10 +303,10 @@ export async function GET(request) {
     }
 
     let content = processedHtml;
-    // Inject Google Translate to auto-translate announcements if a target language is provided and not English
+    // Inject deterministic translation handling based on selected language
     try {
       const targetLang = (lang || '').toLowerCase();
-      if (targetLang && targetLang !== 'en') {
+      if (targetLang) {
         const langCodeMap = {
           'en': 'en', 'de': 'de', 'fr': 'fr', 'es': 'es', 'it': 'it', 'pt': 'pt', 'nl': 'nl', 'sv': 'sv',
           'fi': 'fi', 'no': 'no', 'pl': 'pl', 'cs': 'cs', 'da': 'da', 'el': 'el', 'hu': 'hu', 'ro': 'ro',
@@ -316,26 +316,46 @@ export async function GET(request) {
           'cy': 'cy', 'ta': 'ta', 'mi': 'mi', 'hi': 'hi', 'ga': 'ga', 'tl': 'tl'
         };
         const gtLang = langCodeMap[targetLang] || 'en';
-        const injection = `
+
+        const baseInjection = `
 <script>(function(){
-  try { document.cookie = 'googtrans=/auto/${gtLang}; path=/'; } catch(e) {}
+  try {
+    var googtransValue = '/en/${gtLang}';
+    document.cookie = 'googtrans=' + googtransValue + '; path=/';
+    document.cookie = 'googtrans=' + googtransValue + '; path=/; domain=' + location.hostname;
+    try { localStorage.setItem('googtrans', googtransValue); } catch(e) {}
+  } catch(e) {}
 })();</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
-  function googleTranslateElementInit() {
-    try { new google.translate.TranslateElement({pageLanguage: 'auto', autoDisplay: true}, 'google_translate_element'); } catch(e) {}
-  }
   try {
     var s = document.createElement('style');
     s.innerHTML = '.skiptranslate{display:none!important} body{top:0!important}';
     document.head.appendChild(s);
   } catch(e){}
 </script>
+`;
+
+        const translateInjection = `
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+  function googleTranslateElementInit() {
+    try {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: '${gtLang}',
+        autoDisplay: false,
+        multilanguagePage: false
+      }, 'google_translate_element');
+    } catch(e) {}
+  }
+</script>
 <div id="google_translate_element" style="display:none"></div>
 `;
-        if (!/google_translate_elementInit/.test(content)) {
+
+        if (!/googleTranslateElementInit/.test(content)) {
           content = content.replace(/<head>/i, '<head>\n<meta name="google" content="translate">');
-          content = content.replace(/<body[^>]*>/i, (m) => `${m}\n${injection}`);
+          const fullInjection = gtLang === 'en' ? baseInjection : `${baseInjection}${translateInjection}`;
+          content = content.replace(/<body[^>]*>/i, (m) => `${m}\n${fullInjection}`);
         }
       }
     } catch {}
