@@ -45,12 +45,29 @@ const ORDERED_CAPTCHA_LANGUAGES = [
     .sort((left, right) => left.label.localeCompare(right.label, 'en', { sensitivity: 'base' })),
 ];
 
+const normalizeCaptchaUiValue = (value) => {
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/\\r\\n/g, '\n')
+    .replace(/\\n/g, '\n')
+    .replace(/\\"/g, '"');
+};
+
+const normalizeCaptchaUiText = (value) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value).map(([key, entryValue]) => [key, normalizeCaptchaUiValue(entryValue)])
+  );
+};
+
 const CAPTCHA_UI_TEXT = {};
 for (const lang of Object.keys(translations)) {
   CAPTCHA_UI_TEXT[lang] = {
     ...(CAPTCHA_UI_TEXT[lang] || {}),
-    ...(typeof translations[lang] === 'object' ? translations[lang] : {}),
-    systemRequirements: translations[lang]?.systemRequirements || translations.en.systemRequirements,
+    ...normalizeCaptchaUiText(translations[lang]),
+    systemRequirements: normalizeCaptchaUiValue(
+      translations[lang]?.systemRequirements || translations.en.systemRequirements
+    ),
   };
 }
 
@@ -188,6 +205,7 @@ export default function AccessPage() {
 
   return (
     <main
+      className="access-page"
       style={{
         minHeight: '100vh',
         display: 'flex',
@@ -198,8 +216,9 @@ export default function AccessPage() {
       }}
     >
       <div
+        className="access-card"
         style={{
-          maxWidth: '460px',
+          maxWidth: '520px',
           width: '100%',
           background: '#ffffff',
           border: '1px solid #e5e7eb',
@@ -208,8 +227,8 @@ export default function AccessPage() {
           boxShadow: '0 8px 24px rgba(0,0,0,0.06)',
         }}
       >
-        <h1 style={{ margin: '0 0 8px', fontSize: '1.4rem', color: '#111827' }}>{text.title}</h1>
-        <p style={{ marginTop: 0, marginBottom: '16px', color: '#374151' }}>
+        <h1 className="access-title" style={{ margin: '0 0 8px', fontSize: '1.4rem', color: '#111827' }}>{text.title}</h1>
+        <p className="access-subtitle" style={{ marginTop: 0, marginBottom: '16px', color: '#374151' }}>
           {text.subtitle}
         </p>
 
@@ -231,6 +250,7 @@ export default function AccessPage() {
         )}
 
         <div
+          className="access-system-box"
           style={{
             marginBottom: '16px',
             padding: '12px',
@@ -243,8 +263,8 @@ export default function AccessPage() {
             whiteSpace: 'pre-line',
           }}
         >
-          <p style={{ margin: '0 0 6px', color: '#1f2937' }}>{text.systemRequirementsTitle || 'Minimum supported system versions'}</p>
-          <span>{text.systemRequirements}</span>
+          <p className="access-system-title" style={{ margin: '0 0 6px', color: '#1f2937' }}>{text.systemRequirementsTitle || 'Minimum supported system versions'}</p>
+          <span className="access-system-content">{text.systemRequirements}</span>
         </div>
 
         <form onSubmit={onSubmit}>
@@ -282,7 +302,7 @@ export default function AccessPage() {
             ))}
           </select>
 
-          <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: '#1f2937' }}>
+          <label className="access-question" style={{ display: 'block', marginBottom: '8px', fontWeight: 600, color: '#1f2937' }}>
             {question || text.loadingChallenge}
           </label>
           <label style={{ display: 'block', marginBottom: '8px', color: '#374151' }}>
@@ -337,6 +357,7 @@ export default function AccessPage() {
 
           <div className="access-action-buttons" style={{ display: 'flex', gap: '8px' }}>
             <button
+              className="access-primary-button"
               type="submit"
               disabled={!selectedLang || !token || loading || !answer}
               style={{
@@ -354,6 +375,7 @@ export default function AccessPage() {
             </button>
 
             <button
+              className="access-secondary-button"
               type="button"
               onClick={() => loadChallenge(selectedLang)}
               disabled={!selectedLang || loading}

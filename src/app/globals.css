@@ -52,3 +52,42 @@ a {
     color-scheme: dark;
   }
 }
+
+.access-title,
+.access-subtitle,
+.access-system-title,
+.access-system-content,
+.access-question {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.access-action-buttons {
+  align-items: stretch;
+}
+
+.access-primary-button,
+.access-secondary-button {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .access-page {
+    padding: 14px !important;
+  }
+
+  .access-card {
+    padding: 16px !important;
+  }
+
+  .access-action-buttons {
+    flex-direction: column;
+  }
+
+  .access-primary-button,
+  .access-secondary-button {
+    width: 100%;
+  }
+}

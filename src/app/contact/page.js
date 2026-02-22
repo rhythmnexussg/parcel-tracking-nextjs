@@ -410,6 +410,9 @@ export default function Contact() {
           </>
           )}
         </form>
+        <p className="text-muted" style={{ textAlign: 'center', marginTop: '2rem' }}>
+          © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
+        </p>
         </div>
       </div>
     </>
