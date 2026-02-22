@@ -3,6 +3,7 @@ import "./globals.css";
 import { LanguageProvider } from "../LanguageContext";
 import Script from "next/script";
 import { AccessGuard } from "../components/AccessGuard";
+import { ChatbotWidget } from "../components/ChatbotWidget";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -97,6 +98,7 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${notoSansTamil.variable}`} suppressHydrationWarning>
         <LanguageProvider>
           <AccessGuard>{children}</AccessGuard>
+          <ChatbotWidget />
         </LanguageProvider>
         
         {GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== "G-XXXXXXXXXX" ? (

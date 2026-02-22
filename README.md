@@ -49,6 +49,25 @@ Choose ONE authentication method:
 
 See `.env.local.example` for all available options.
 
+### 1.1 Optional: AI Chatbot (Flowise)
+
+To enable the website chatbot, add these variables to your `.env.local` (or Vercel env vars):
+
+- `NEXT_PUBLIC_CHATBOT_ENABLED=true`
+- `NEXT_PUBLIC_CHATBOT_TITLE=Rhythm Nexus AI Assistant`
+- `FLOWISE_API_URL=https://<your-flowise-host>/api/v1/prediction/<chatflow-id>`
+- `FLOWISE_API_KEY=<your-flowise-api-key>` (optional, if your Flowise deployment requires auth)
+
+Sample chatflow file:
+
+- `flowise/parcel-tracking-chatflow.sample.json`
+
+Notes:
+
+- The sample chatflow is a starter template and may need node substitutions depending on your Flowise version.
+- After deploying the chatflow in Flowise, copy its Prediction API URL into `FLOWISE_API_URL`.
+- The website sends chatbot requests through `/api/chatbot` (server-side proxy), so your Flowise key stays private.
+
 ### 2. Install Dependencies
 
 ```bash
