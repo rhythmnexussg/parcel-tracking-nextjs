@@ -29,6 +29,7 @@ const BOTPRESS_BOOTSTRAP = {
     footer: '[⚡ by Botpress](https://botpress.com/?from=webchat)',
     storageLocation: 'sessionStorage',
     soundEnabled: false,
+    showFab: true,
     proactiveMessageEnabled: false,
     proactiveBubbleMessage: 'Hi! 👋 Need help?',
     proactiveBubbleTriggerType: 'afterDelay',
@@ -239,6 +240,7 @@ export function ChatbotWidget() {
             botName: CHATBOT_NAME,
             locale: nextLocale,
             language: nextLocale,
+            showFab: true,
             botDescription: nextCopy.botDescription,
             composerPlaceholder: nextCopy.composerPlaceholder,
             proactiveBubbleMessage: nextCopy.proactiveBubbleMessage
@@ -253,6 +255,7 @@ export function ChatbotWidget() {
             botName: CHATBOT_NAME,
             locale: nextLocale,
             language: nextLocale,
+            showFab: true,
             botDescription: nextCopy.botDescription,
             composerPlaceholder: nextCopy.composerPlaceholder,
             proactiveBubbleMessage: nextCopy.proactiveBubbleMessage

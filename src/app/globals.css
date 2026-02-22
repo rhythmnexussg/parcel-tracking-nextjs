@@ -56,7 +56,10 @@ a {
 @media (min-width: 1024px) {
   .bpFabWrapper {
     right: 24px !important;
-    bottom: 24px !important;
+    bottom: max(24px, env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 9999 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .bpFab {
@@ -79,7 +82,18 @@ a {
 @media (max-width: 767px) {
   .bpFabWrapper {
     right: 12px !important;
-    bottom: 12px !important;
+    bottom: max(12px, env(safe-area-inset-bottom, 0px)) !important;
+    z-index: 9999 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    pointer-events: auto !important;
+  }
+
+  .bpFab {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 
   .bpFabLabel {
