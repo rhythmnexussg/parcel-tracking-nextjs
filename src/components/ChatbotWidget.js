@@ -79,6 +79,53 @@ const normalizeChatText = (value) => {
     .replace(/`{1,3}([^`]+)`{1,3}/g, '$1');
 };
 
+const renderChatContent = (value) => {
+  const normalized = normalizeChatText(value);
+  const linkPattern = /https:\/\/[^\s]+/g;
+  const output = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = linkPattern.exec(normalized)) !== null) {
+    const matchStart = match.index;
+    const matchEnd = matchStart + match[0].length;
+
+    if (matchStart > lastIndex) {
+      output.push(normalized.slice(lastIndex, matchStart));
+    }
+
+    let url = match[0];
+    let trailing = '';
+    while (/[.,!?;:)]$/.test(url)) {
+      trailing = url.slice(-1) + trailing;
+      url = url.slice(0, -1);
+    }
+
+    output.push(
+      <a
+        key={`link-${matchStart}`}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {url}
+      </a>
+    );
+
+    if (trailing) {
+      output.push(trailing);
+    }
+
+    lastIndex = matchEnd;
+  }
+
+  if (lastIndex < normalized.length) {
+    output.push(normalized.slice(lastIndex));
+  }
+
+  return output.length ? output : normalized;
+};
+
 export function ChatbotWidget() {
   const enabled = process.env.NEXT_PUBLIC_CHATBOT_ENABLED !== 'false';
   const title = process.env.NEXT_PUBLIC_CHATBOT_TITLE || CHATBOT_NAME;
@@ -171,7 +218,7 @@ export function ChatbotWidget() {
               >
                 {message.role === 'assistant' ? <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.avatar} /> : null}
                 <div className={`${styles.bubble} ${message.role === 'user' ? styles.user : styles.assistant}`}>
-                  {normalizeChatText(message.content)}
+                  {renderChatContent(message.content)}
                 </div>
               </div>
             ))}

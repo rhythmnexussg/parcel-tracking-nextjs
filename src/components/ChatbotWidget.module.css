@@ -133,6 +133,12 @@
   word-break: break-word;
 }
 
+.bubble a {
+  color: inherit;
+  text-decoration: underline;
+  font-weight: 700;
+}
+
 .user {
   align-self: flex-end;
   background: linear-gradient(135deg, #0ea5e9, #2563eb);
