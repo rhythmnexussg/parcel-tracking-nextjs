@@ -218,6 +218,7 @@ const getLanguageCopy = (languageCode) => LANGUAGE_COPY[languageCode] || LANGUAG
 export function ChatbotWidget() {
   const enabled = process.env.NEXT_PUBLIC_CHATBOT_ENABLED !== 'false';
   const [injectLoaded, setInjectLoaded] = useState(false);
+  const [botpressReady, setBotpressReady] = useState(false);
   const { language } = useLanguage();
 
   useEffect(() => {
@@ -240,7 +241,7 @@ export function ChatbotWidget() {
             botName: CHATBOT_NAME,
             locale: nextLocale,
             language: nextLocale,
-            showFab: true,
+            showFab: false,
             botDescription: nextCopy.botDescription,
             composerPlaceholder: nextCopy.composerPlaceholder,
             proactiveBubbleMessage: nextCopy.proactiveBubbleMessage
@@ -255,7 +256,7 @@ export function ChatbotWidget() {
             botName: CHATBOT_NAME,
             locale: nextLocale,
             language: nextLocale,
-            showFab: true,
+            showFab: false,
             botDescription: nextCopy.botDescription,
             composerPlaceholder: nextCopy.composerPlaceholder,
             proactiveBubbleMessage: nextCopy.proactiveBubbleMessage
@@ -282,8 +283,10 @@ export function ChatbotWidget() {
     };
 
     let removeInitializedListener;
+    let removeReadyListener;
     if (typeof window !== 'undefined' && window.botpress && typeof window.botpress.on === 'function') {
       removeInitializedListener = window.botpress.on('webchat:initialized', applyLanguageToBotpress);
+      removeReadyListener = window.botpress.on('webchat:initialized', () => setBotpressReady(true));
     }
 
     applyLanguageToBotpress();
@@ -319,12 +322,30 @@ export function ChatbotWidget() {
       if (typeof removeInitializedListener === 'function') {
         removeInitializedListener();
       }
+      if (typeof removeReadyListener === 'function') {
+        removeReadyListener();
+      }
     };
   }, [injectLoaded, language]);
 
   if (!enabled) {
     return null;
   }
+
+  const openChat = () => {
+    if (typeof window === 'undefined' || !window.botpress) {
+      return;
+    }
+
+    if (typeof window.botpress.open === 'function') {
+      window.botpress.open();
+      return;
+    }
+
+    if (typeof window.botpress.toggle === 'function') {
+      window.botpress.toggle();
+    }
+  };
 
   return (
     <>
@@ -333,6 +354,29 @@ export function ChatbotWidget() {
         strategy="afterInteractive"
         onLoad={() => setInjectLoaded(true)}
       />
+      <button
+        type="button"
+        onClick={openChat}
+        aria-label="Open Rhythm Bot"
+        style={{
+          position: 'fixed',
+          right: '12px',
+          bottom: 'max(12px, env(safe-area-inset-bottom, 0px))',
+          zIndex: 10000,
+          border: 'none',
+          borderRadius: '999px',
+          padding: '12px 16px',
+          background: '#525252',
+          color: '#fff',
+          fontSize: '14px',
+          fontWeight: 700,
+          boxShadow: '0 10px 24px rgba(0, 0, 0, 0.25)',
+          cursor: 'pointer',
+          opacity: botpressReady ? 1 : 0.85
+        }}
+      >
+        💬 Rhythm Bot
+      </button>
     </>
   );
 }
