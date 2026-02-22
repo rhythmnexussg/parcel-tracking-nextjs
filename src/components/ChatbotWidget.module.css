@@ -209,17 +209,34 @@
   .panel {
     right: 10px;
     left: 10px;
-    bottom: 74px;
+    bottom: calc(74px + env(safe-area-inset-bottom, 0px));
     width: auto;
-    height: min(70vh, 560px);
+    height: min(72vh, 600px);
     border-radius: 16px;
   }
 
   .launcher {
     right: 10px;
-    bottom: 10px;
-    min-height: 46px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    min-height: 50px;
     padding: 0 14px;
-    font-size: 13px;
+    font-size: 14px;
+  }
+
+  .bubble {
+    max-width: 92%;
+    font-size: 14px;
+  }
+
+  .input {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .send {
+    min-width: 76px;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 14px;
   }
 }
