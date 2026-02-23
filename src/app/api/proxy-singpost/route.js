@@ -5,6 +5,12 @@ import { normalizeLangParam, rateLimit, secureApiResponse } from '../security';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+const SINGPOST_HTML_CACHE = globalThis.__rnxSingpostHtmlCache || new Map();
+if (!globalThis.__rnxSingpostHtmlCache) {
+  globalThis.__rnxSingpostHtmlCache = SINGPOST_HTML_CACHE;
+}
+const SINGPOST_HTML_CACHE_TTL_MS = 60 * 1000;
+
 export async function GET(request) {
   const limited = rateLimit(request, { keyPrefix: 'proxy-singpost', maxRequests: 25, windowMs: 60 * 1000 });
   if (limited) return limited;
@@ -23,18 +29,29 @@ export async function GET(request) {
     const baseUrl = 'https://www.singpost.com';
     const target = `${baseUrl}/track-items?trackingid=${encodeURIComponent(trackingid)}`;
 
-    const resp = await fetch(target, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-      },
-      cache: 'no-store',
-    });
-    if (!resp.ok) {
-      throw new Error(`Upstream failed: ${resp.status}`);
+    const cacheKey = trackingid.toUpperCase();
+    const now = Date.now();
+    const cached = SINGPOST_HTML_CACHE.get(cacheKey);
+    const hasFreshCache = cached && (now - cached.storedAt) < SINGPOST_HTML_CACHE_TTL_MS;
+
+    let html;
+    if (hasFreshCache) {
+      html = cached.html;
+    } else {
+      const resp = await fetch(target, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.5',
+        },
+        cache: 'no-store',
+      });
+      if (!resp.ok) {
+        throw new Error(`Upstream failed: ${resp.status}`);
+      }
+      html = await resp.text();
+      SINGPOST_HTML_CACHE.set(cacheKey, { html, storedAt: now });
     }
-    const html = await resp.text();
     const content = sanitizeAndRewrite(html, baseUrl, {
       translateLang: lang,
       forceFormTargetBlank: true,
