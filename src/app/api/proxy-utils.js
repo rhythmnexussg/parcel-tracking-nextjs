@@ -296,9 +296,9 @@ ap-header, header, footer, .cookie-banner, .ap-cookie-banner { display: none !im
       };
       const gtLang = langCodeMap[targetLang] || targetLang;
       const translateInjection = `
-<script>(function(){
+<script id="proxy-google-translate-bootstrap">(function(){
   try {
-    var googtransValue = '/auto/${gtLang}';
+    var googtransValue = '/en/${gtLang}';
     document.cookie = 'googtrans=' + googtransValue + '; path=/';
     document.cookie = 'googtrans=' + googtransValue + '; path=/; domain=' + location.hostname;
     try { localStorage.setItem('googtrans', googtransValue); } catch(e) {}
@@ -309,10 +309,10 @@ ap-header, header, footer, .cookie-banner, .ap-cookie-banner { display: none !im
   function googleTranslateElementInit() {
     try {
       new google.translate.TranslateElement({
-        pageLanguage: 'auto',
+        pageLanguage: 'en',
         includedLanguages: '${gtLang}',
         autoDisplay: false,
-        multilanguagePage: true
+        multilanguagePage: false
       }, 'google_translate_element');
     } catch(e) {}
 
@@ -342,7 +342,7 @@ ap-header, header, footer, .cookie-banner, .ap-cookie-banner { display: none !im
 </script>
 <div id="google_translate_element" style="display:none"></div>
 `;
-      if (!/googleTranslateElementInit|google_translate_element/.test(out)) {
+      if (!/proxy-google-translate-bootstrap/.test(out)) {
         out = out.replace(/<head>/i, `<head>\n<meta name="google" content="translate">`);
         out = out.replace(/<body[^>]*>/i, (m) => `${m}\n${translateInjection}`);
       }
