@@ -292,17 +292,46 @@ ap-header, header, footer, .cookie-banner, .ap-cookie-banner { display: none !im
         'sk': 'sk', 'sl': 'sl', 'bg': 'bg', 'hr': 'hr', 'lt': 'lt', 'lv': 'lv', 'et': 'et', 'tr': 'tr',
         'ru': 'ru', 'uk': 'uk', 'ar': 'ar', 'he': 'he', 'id': 'id', 'ms': 'ms', 'th': 'th', 'vi': 'vi',
         'ja': 'ja', 'ko': 'ko', 'zh': 'zh-CN', 'zh-cn': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-hant': 'zh-TW', 'zh-tw': 'zh-TW',
-        'cy': 'cy'
+        'cy': 'cy', 'ta': 'ta', 'mi': 'mi', 'hi': 'hi', 'ga': 'ga', 'tl': 'tl'
       };
       const gtLang = langCodeMap[targetLang] || targetLang;
       const translateInjection = `
 <script>(function(){
-  try { document.cookie = 'googtrans=/auto/${gtLang}; path=/'; } catch(e) {}
+  try {
+    var googtransValue = '/auto/${gtLang}';
+    document.cookie = 'googtrans=' + googtransValue + '; path=/';
+    document.cookie = 'googtrans=' + googtransValue + '; path=/; domain=' + location.hostname;
+    try { localStorage.setItem('googtrans', googtransValue); } catch(e) {}
+  } catch(e) {}
 })();</script>
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
   function googleTranslateElementInit() {
-    try { new google.translate.TranslateElement({pageLanguage: 'auto', autoDisplay: true}, 'google_translate_element'); } catch(e) {}
+    try {
+      new google.translate.TranslateElement({
+        pageLanguage: 'auto',
+        includedLanguages: '${gtLang}',
+        autoDisplay: false,
+        multilanguagePage: true
+      }, 'google_translate_element');
+    } catch(e) {}
+
+    try {
+      var attempts = 0;
+      var timer = setInterval(function () {
+        attempts += 1;
+        var combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          combo.value = '${gtLang}';
+          combo.dispatchEvent(new Event('change'));
+          clearInterval(timer);
+          return;
+        }
+        if (attempts > 30) {
+          clearInterval(timer);
+        }
+      }, 200);
+    } catch(e) {}
   }
   // Hide default Google toolbar spacing
   try {
@@ -313,7 +342,7 @@ ap-header, header, footer, .cookie-banner, .ap-cookie-banner { display: none !im
 </script>
 <div id="google_translate_element" style="display:none"></div>
 `;
-      if (!/google_translate_elementInit/.test(out)) {
+      if (!/googleTranslateElementInit|google_translate_element/.test(out)) {
         out = out.replace(/<head>/i, `<head>\n<meta name="google" content="translate">`);
         out = out.replace(/<body[^>]*>/i, (m) => `${m}\n${translateInjection}`);
       }
