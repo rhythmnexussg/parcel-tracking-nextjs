@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 import { normalizeLangParam, rateLimit, secureApiResponse } from '../security';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request) {
   const limited = rateLimit(request, { keyPrefix: 'singpost-announcements', maxRequests: 120, windowMs: 60 * 1000 });
   if (limited) return limited;
@@ -382,7 +385,7 @@ export async function GET(request) {
         status: 200,
         headers: {
           'Content-Type': 'text/html; charset=utf-8',
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600', // Cache for 5 minutes
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
         },
       }),
       { isHtml: true, allowFrameFromSelf: true }
