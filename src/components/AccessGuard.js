@@ -29,6 +29,15 @@ export function AccessGuard({ children }) {
     let isActive = true;
 
     const checkAccess = async () => {
+      const fallbackCountryFromUrl = (() => {
+        try {
+          const params = new URLSearchParams(window.location.search || "");
+          return (params.get("country") || params.get("adminCountry") || "").trim().toUpperCase();
+        } catch (_) {
+          return "";
+        }
+      })();
+
       const isLocalhost = (() => {
         try {
           const host = (window.location.hostname || "").toLowerCase();
@@ -37,6 +46,12 @@ export function AccessGuard({ children }) {
           return false;
         }
       })();
+
+      if (isLocalhost && fallbackCountryFromUrl && !isAllowedAccessCountry(fallbackCountryFromUrl)) {
+        router.replace(`/blocked?country=${encodeURIComponent(fallbackCountryFromUrl)}`);
+        if (isActive) setAccessChecked(true);
+        return;
+      }
 
       if (isLocalhost || pathname === "/access" || pathname === "/blocked" || !isCaptchaRequiredPath(pathname)) {
         if (isActive) setAccessChecked(true);
@@ -52,15 +67,6 @@ export function AccessGuard({ children }) {
       }
 
       if (isActive) setAccessChecked(false);
-
-      const fallbackCountryFromUrl = (() => {
-        try {
-          const params = new URLSearchParams(window.location.search || "");
-          return (params.get("country") || params.get("adminCountry") || "").trim().toUpperCase();
-        } catch (_) {
-          return "";
-        }
-      })();
 
       try {
         const geoData = await detectLanguageFromIPWithRestrictions();

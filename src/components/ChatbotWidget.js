@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import styles from './ChatbotWidget.module.css';
 import { useLanguage } from '../LanguageContext';
 
@@ -128,6 +129,12 @@ const renderChatContent = (value) => {
 
 export function ChatbotWidget() {
   const enabled = process.env.NEXT_PUBLIC_CHATBOT_ENABLED !== 'false';
+  const pathname = usePathname();
+  const [isClientMounted, setIsClientMounted] = useState(false);
+  const runtimePathname =
+    pathname || (typeof window !== 'undefined' ? window.location.pathname : '');
+  const normalizedPathname = runtimePathname && runtimePathname !== '/' ? runtimePathname.replace(/\/+$/, '') : runtimePathname;
+  const isAccessStatusPage = normalizedPathname === '/access' || normalizedPathname === '/blocked';
   const title = process.env.NEXT_PUBLIC_CHATBOT_TITLE || CHATBOT_NAME;
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -148,6 +155,10 @@ export function ChatbotWidget() {
   const uiText = CHATBOT_UI_TRANSLATIONS[language] || CHATBOT_UI_TRANSLATIONS.en;
 
   useEffect(() => {
+    setIsClientMounted(true);
+  }, []);
+
+  useEffect(() => {
     const localizedWelcome = CHATBOT_WELCOME_TRANSLATIONS[language] || CHATBOT_WELCOME_TRANSLATIONS.en;
     setMessages((prev) => {
       if (!prev.length) {
@@ -162,7 +173,7 @@ export function ChatbotWidget() {
     });
   }, [language]);
 
-  if (!enabled) {
+  if (!isClientMounted || !enabled || isAccessStatusPage) {
     return null;
   }
 
