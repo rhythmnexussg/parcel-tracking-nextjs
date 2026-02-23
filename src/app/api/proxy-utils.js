@@ -298,49 +298,115 @@ ap-header, header, footer, .cookie-banner, .ap-cookie-banner { display: none !im
       const translateInjection = `
 <script id="proxy-google-translate-bootstrap">(function(){
   try {
-    var googtransValue = '/en/${gtLang}';
-    document.cookie = 'googtrans=' + googtransValue + '; path=/';
-    document.cookie = 'googtrans=' + googtransValue + '; path=/; domain=' + location.hostname;
-    try { localStorage.setItem('googtrans', googtransValue); } catch(e) {}
+    var googleTransFromEn = '/en/${gtLang}';
+    document.cookie = 'googtrans=' + googleTransFromEn + '; path=/';
+    document.cookie = 'googtrans=' + googleTransFromEn + '; path=/; domain=' + location.hostname;
+    document.cookie = 'googtrans=/auto/${gtLang}; path=/';
+    document.cookie = 'googtrans=/auto/${gtLang}; path=/; domain=' + location.hostname;
+    try { localStorage.setItem('googtrans', googleTransFromEn); } catch(e) {}
   } catch(e) {}
 })();</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
-  function googleTranslateElementInit() {
-    try {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: '${gtLang}',
-        autoDisplay: false,
-        multilanguagePage: false
-      }, 'google_translate_element');
-    } catch(e) {}
+  (function () {
+    var inited = false;
+    var targetLang = '${gtLang}';
+    var reloadGuardKey = 'rnx_gt_reload_' + targetLang;
 
-    try {
-      var attempts = 0;
-      var timer = setInterval(function () {
-        attempts += 1;
-        var combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-          combo.value = '${gtLang}';
-          combo.dispatchEvent(new Event('change'));
-          clearInterval(timer);
+    function triggerFallbackReload() {
+      try {
+        if (sessionStorage.getItem(reloadGuardKey) === '1') {
           return;
         }
-        if (attempts > 30) {
-          clearInterval(timer);
+        sessionStorage.setItem(reloadGuardKey, '1');
+
+        var googleTransFromEn = '/en/' + targetLang;
+        document.cookie = 'googtrans=' + googleTransFromEn + '; path=/';
+        document.cookie = 'googtrans=' + googleTransFromEn + '; path=/; domain=' + location.hostname;
+        document.cookie = 'googtrans=/auto/' + targetLang + '; path=/';
+        document.cookie = 'googtrans=/auto/' + targetLang + '; path=/; domain=' + location.hostname;
+        try { localStorage.setItem('googtrans', googleTransFromEn); } catch(e) {}
+
+        location.reload();
+      } catch(e) {}
+    }
+
+    function applyLanguageSelection() {
+      try {
+        var attempts = 0;
+        var timer = setInterval(function () {
+          attempts += 1;
+          var combo = document.querySelector('.goog-te-combo');
+          if (combo) {
+            combo.value = targetLang;
+            combo.dispatchEvent(new Event('change'));
+            try { sessionStorage.removeItem(reloadGuardKey); } catch(e) {}
+            clearInterval(timer);
+            return;
+          }
+          if (attempts > 40) {
+            clearInterval(timer);
+            triggerFallbackReload();
+          }
+        }, 200);
+      } catch(e) {}
+    }
+
+    function initTranslate() {
+      if (inited) return;
+      inited = true;
+
+      try {
+        if (!document.getElementById('google_translate_element')) {
+          var container = document.createElement('div');
+          container.id = 'google_translate_element';
+          container.style.position = 'fixed';
+          container.style.left = '-9999px';
+          container.style.top = '-9999px';
+          container.style.width = '1px';
+          container.style.height = '1px';
+          container.style.overflow = 'hidden';
+          document.body.appendChild(container);
+        }
+      } catch(e) {}
+
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          autoDisplay: false,
+          multilanguagePage: false
+        }, 'google_translate_element');
+      } catch(e) {}
+
+      applyLanguageSelection();
+    }
+
+    window.googleTranslateElementInit = initTranslate;
+
+    try {
+      var tries = 0;
+      var bootstrapTimer = setInterval(function () {
+        tries += 1;
+        if (window.google && google.translate && google.translate.TranslateElement) {
+          clearInterval(bootstrapTimer);
+          initTranslate();
+          return;
+        }
+        if (tries > 40) {
+          clearInterval(bootstrapTimer);
+          triggerFallbackReload();
         }
       }, 200);
     } catch(e) {}
-  }
-  // Hide default Google toolbar spacing
-  try {
+  })();
+
+    try {
     var s = document.createElement('style');
     s.innerHTML = '.skiptranslate{display:none!important} body{top:0!important}';
     document.head.appendChild(s);
   } catch(e){}
 </script>
-<div id="google_translate_element" style="display:none"></div>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<div id="google_translate_element" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden"></div>
 `;
       if (!/proxy-google-translate-bootstrap/.test(out)) {
         out = out.replace(/<head>/i, `<head>\n<meta name="google" content="translate">`);
