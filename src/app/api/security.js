@@ -72,7 +72,7 @@ export function rateLimit(request, options = {}) {
 }
 
 export function normalizeLangParam(value) {
-  const raw = (value || '').trim();
+  const raw = (value || '').trim().replace(/_/g, '-');
   if (!raw) return null;
   return /^[a-z]{2,3}(?:-[a-z]{2,4})?$/i.test(raw) ? raw.toLowerCase() : null;
 }

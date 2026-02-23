@@ -21,7 +21,8 @@ export async function GET(request) {
     // Get allowed countries from query parameters, or use all shipped countries
     const { searchParams } = new URL(request.url);
     const allowedCountriesParam = searchParams.get('countries');
-    const lang = normalizeLangParam(searchParams.get('lang'));
+    const rawLang = (searchParams.get('lang') || '').trim().toLowerCase().replace(/_/g, '-');
+    const lang = normalizeLangParam(rawLang);
     const allowedCountries = allowedCountriesParam
       ? allowedCountriesParam
           .split(',')
@@ -306,7 +307,6 @@ export async function GET(request) {
     }
 
     let content = processedHtml;
-    // Inject deterministic translation handling based on selected language
     try {
       const targetLang = (lang || '').toLowerCase();
       if (targetLang) {
@@ -314,18 +314,20 @@ export async function GET(request) {
           'en': 'en', 'de': 'de', 'fr': 'fr', 'es': 'es', 'it': 'it', 'pt': 'pt', 'nl': 'nl', 'sv': 'sv',
           'fi': 'fi', 'no': 'no', 'pl': 'pl', 'cs': 'cs', 'da': 'da', 'el': 'el', 'hu': 'hu', 'ro': 'ro',
           'sk': 'sk', 'sl': 'sl', 'bg': 'bg', 'hr': 'hr', 'lt': 'lt', 'lv': 'lv', 'et': 'et', 'tr': 'tr',
-          'ru': 'ru', 'uk': 'uk', 'ar': 'ar', 'he': 'he', 'id': 'id', 'ms': 'ms', 'th': 'th', 'vi': 'vi',
-          'ja': 'ja', 'ko': 'ko', 'zh': 'zh-CN', 'zh-cn': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-hant': 'zh-TW', 'zh-tw': 'zh-TW',
+          'ru': 'ru', 'uk': 'uk', 'ar': 'ar', 'he': 'iw', 'iw': 'iw', 'id': 'id', 'ms': 'ms', 'th': 'th', 'vi': 'vi',
+          'ja': 'ja', 'ko': 'ko', 'zh': 'zh-CN', 'zh-cn': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-hant': 'zh-TW', 'zh-tw': 'zh-TW', 'zh-hk': 'zh-TW',
           'cy': 'cy', 'ta': 'ta', 'mi': 'mi', 'hi': 'hi', 'ga': 'ga', 'tl': 'tl'
         };
         const gtLang = langCodeMap[targetLang] || 'en';
 
         const baseInjection = `
-<script>(function(){
+<script id="rnx-singpost-translate-bootstrap">(function(){
   try {
     var googtransValue = '/en/${gtLang}';
     document.cookie = 'googtrans=' + googtransValue + '; path=/';
     document.cookie = 'googtrans=' + googtransValue + '; path=/; domain=' + location.hostname;
+    document.cookie = 'googtrans=/auto/${gtLang}; path=/';
+    document.cookie = 'googtrans=/auto/${gtLang}; path=/; domain=' + location.hostname;
     try { localStorage.setItem('googtrans', googtransValue); } catch(e) {}
   } catch(e) {}
 })();</script>
@@ -339,40 +341,104 @@ export async function GET(request) {
 `;
 
         const translateInjection = `
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
-  function googleTranslateElementInit() {
-    try {
-      new google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: '${gtLang}',
-        autoDisplay: false,
-        multilanguagePage: false
-      }, 'google_translate_element');
-    } catch(e) {}
+  (function () {
+    var inited = false;
+    var targetLang = '${gtLang}';
+    var reloadGuardKey = 'rnx_singpost_gt_reload_' + targetLang;
+
+    function triggerFallbackReload() {
+      try {
+        if (sessionStorage.getItem(reloadGuardKey) === '1') return;
+        sessionStorage.setItem(reloadGuardKey, '1');
+
+        var googleTransFromEn = '/en/' + targetLang;
+        document.cookie = 'googtrans=' + googleTransFromEn + '; path=/';
+        document.cookie = 'googtrans=' + googleTransFromEn + '; path=/; domain=' + location.hostname;
+        document.cookie = 'googtrans=/auto/' + targetLang + '; path=/';
+        document.cookie = 'googtrans=/auto/' + targetLang + '; path=/; domain=' + location.hostname;
+        try { localStorage.setItem('googtrans', googleTransFromEn); } catch(e) {}
+
+        location.reload();
+      } catch(e) {}
+    }
+
+    function applyLanguageSelection() {
+      try {
+        var attempts = 0;
+        var timer = setInterval(function () {
+          attempts += 1;
+          var combo = document.querySelector('.goog-te-combo');
+          if (combo) {
+            combo.value = targetLang;
+            combo.dispatchEvent(new Event('change'));
+            try { sessionStorage.removeItem(reloadGuardKey); } catch(e) {}
+            clearInterval(timer);
+            return;
+          }
+          if (attempts > 30) {
+            clearInterval(timer);
+            triggerFallbackReload();
+          }
+        }, 100);
+      } catch(e) {}
+    }
+
+    function initTranslate() {
+      if (inited) return;
+      inited = true;
+
+      try {
+        if (!document.getElementById('google_translate_element')) {
+          var container = document.createElement('div');
+          container.id = 'google_translate_element';
+          container.style.position = 'fixed';
+          container.style.left = '-9999px';
+          container.style.top = '-9999px';
+          container.style.width = '1px';
+          container.style.height = '1px';
+          container.style.overflow = 'hidden';
+          document.body.appendChild(container);
+        }
+      } catch(e) {}
+
+      try {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: targetLang,
+          autoDisplay: false,
+          multilanguagePage: false
+        }, 'google_translate_element');
+      } catch(e) {}
+
+      applyLanguageSelection();
+      setTimeout(applyLanguageSelection, 300);
+    }
+
+    window.googleTranslateElementInit = initTranslate;
 
     try {
-      var attempts = 0;
-      var timer = setInterval(function () {
-        attempts += 1;
-        var combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-          combo.value = '${gtLang}';
-          combo.dispatchEvent(new Event('change'));
-          clearInterval(timer);
+      var tries = 0;
+      var bootstrapTimer = setInterval(function () {
+        tries += 1;
+        if (window.google && google.translate && google.translate.TranslateElement) {
+          clearInterval(bootstrapTimer);
+          initTranslate();
           return;
         }
-        if (attempts > 30) {
-          clearInterval(timer);
+        if (tries > 30) {
+          clearInterval(bootstrapTimer);
+          triggerFallbackReload();
         }
-      }, 200);
+      }, 100);
     } catch(e) {}
-  }
+  })();
 </script>
-<div id="google_translate_element" style="display:none"></div>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<div id="google_translate_element" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden"></div>
 `;
 
-        if (!/googleTranslateElementInit/.test(content)) {
+        if (!/rnx-singpost-translate-bootstrap/.test(content)) {
           content = content.replace(/<head>/i, '<head>\n<meta name="google" content="translate">');
           const fullInjection = gtLang === 'en' ? baseInjection : `${baseInjection}${translateInjection}`;
           content = content.replace(/<body[^>]*>/i, (m) => `${m}\n${fullInjection}`);

@@ -49,6 +49,11 @@ function BlogIndex() {
       path: "swiss-vat",
       title: t('blogPost8Title'),
       description: t('blogPost8Desc')
+    },
+    {
+      path: "phone-number-required",
+      title: "Phone Number Required for Shipping",
+      description: "Important destination-country requirements and reasons why recipient phone numbers are mandatory for certain Etsy shipments."
     }
   ];
 

@@ -18,7 +18,8 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const trackingid = (searchParams.get('trackingid') || '').trim();
-    const lang = normalizeLangParam(searchParams.get('lang'));
+    const rawLang = (searchParams.get('lang') || '').trim().toLowerCase().replace(/_/g, '-');
+    const lang = normalizeLangParam(rawLang);
     if (!trackingid) {
       return secureApiResponse(NextResponse.json({ error: 'Missing trackingid' }, { status: 400 }));
     }

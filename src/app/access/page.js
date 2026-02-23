@@ -92,6 +92,11 @@ export default function AccessPage() {
   const uiLang = selectedLang || language || 'en';
   const text = CAPTCHA_UI_TEXT[uiLang] || CAPTCHA_UI_TEXT.en;
 
+  const proceedToWebsite = useCallback((redirectPath) => {
+    router.replace(redirectPath || '/');
+    router.refresh();
+  }, [router]);
+
   const loadChallenge = useCallback(async (langCode = selectedLang) => {
     if (!langCode) {
       setError(text.chooseLanguageFirst);
@@ -192,9 +197,7 @@ export default function AccessPage() {
       }
 
       sessionStorage.setItem(ACCESS_TAB_SESSION_KEY, '1');
-
-      router.replace(data.redirectTo || '/');
-      router.refresh();
+      proceedToWebsite(data.redirectTo || '/');
     } catch (_) {
       setError(text.verifyFailed);
       await loadChallenge(selectedLang);

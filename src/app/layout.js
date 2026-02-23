@@ -4,6 +4,7 @@ import { LanguageProvider } from "../LanguageContext";
 import Script from "next/script";
 import { AccessGuard } from "../components/AccessGuard";
 import { ChatbotWidget } from "../components/ChatbotWidget";
+import { PhoneRequirementPopup } from "../components/PhoneRequirementPopup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -104,7 +105,10 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${notoSansTamil.variable}`} suppressHydrationWarning>
         <LanguageProvider>
-          <AccessGuard>{children}</AccessGuard>
+          <AccessGuard>
+            {children}
+            <PhoneRequirementPopup />
+          </AccessGuard>
           <ChatbotWidget />
         </LanguageProvider>
         

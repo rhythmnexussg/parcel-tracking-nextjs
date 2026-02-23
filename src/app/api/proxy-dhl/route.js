@@ -9,7 +9,8 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const trackingNumber = (searchParams.get('trackingNumber') || '').trim();
-    const lang = normalizeLangParam(searchParams.get('lang'));
+    const rawLang = (searchParams.get('lang') || '').trim().toLowerCase().replace(/_/g, '-');
+    const lang = normalizeLangParam(rawLang);
     if (!trackingNumber) {
       return secureApiResponse(NextResponse.json({ error: 'Missing trackingNumber' }, { status: 400 }));
     }

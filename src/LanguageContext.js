@@ -5,6 +5,17 @@ import { translations } from './translations';
 import { detectLanguageFromIPWithRestrictions, detectLanguageFromBrowser } from './ipGeolocation';
 import LanguageModal from './LanguageModal';
 
+const PHONE_POPUP_LANGUAGE_TRIGGER_KEY = 'rnx_language_selection_event';
+
+const emitLanguageSelectionEvent = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.dispatchEvent(new CustomEvent('rnx:language-selected'));
+  } catch (_) {
+    // ignore
+  }
+};
+
 // Helper function to get language name
 const getLanguageName = (code) => {
   const names = {
@@ -182,6 +193,14 @@ export const LanguageProvider = ({ children }) => {
       return c;
     };
     setLanguage(normalizeLang(langCode));
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem(PHONE_POPUP_LANGUAGE_TRIGGER_KEY, String(Date.now()));
+      } catch (_) {
+        // ignore storage errors
+      }
+    }
+    emitLanguageSelectionEvent();
     // No localStorage - language only persists during current session
     setShowLanguageModal(false);
   };
@@ -195,6 +214,14 @@ export const LanguageProvider = ({ children }) => {
       return c;
     };
     setLanguage(normalizeLang(langCode));
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem(PHONE_POPUP_LANGUAGE_TRIGGER_KEY, String(Date.now()));
+      } catch (_) {
+        // ignore storage errors
+      }
+    }
+    emitLanguageSelectionEvent();
   };
 
   const hasTranslation = (key) => {

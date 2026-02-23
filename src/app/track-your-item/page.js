@@ -1353,9 +1353,7 @@ function App() {
                     );
                   }
                   if (canEmbedDestination) {
-                    const proxyUrl = (destinationCountry === 'CA' || destinationCountry === 'DE' || destinationCountry === 'GB')
-                      ? `/api/proxy-destination?url=${trackingUrl}`
-                      : `/api/proxy-destination?url=${trackingUrl}&lang=${currentLanguage}`;
+                    const proxyUrl = `/api/proxy-destination?url=${trackingUrl}&lang=${currentLanguage}`;
                     return (
                       <iframe
                         key={`dest-${trackingNumber}-${destinationCountry}-${currentLanguage}`}

@@ -9,7 +9,8 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const urlParam = searchParams.get('url');
-    const lang = normalizeLangParam(searchParams.get('lang'));
+    const rawLang = (searchParams.get('lang') || '').trim().toLowerCase().replace(/_/g, '-');
+    const lang = normalizeLangParam(rawLang);
     if (!urlParam) {
       return secureApiResponse(NextResponse.json({ error: 'Missing url' }, { status: 400 }));
     }

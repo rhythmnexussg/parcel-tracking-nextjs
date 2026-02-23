@@ -75,6 +75,12 @@ export default function sitemap() {
       priority: 0.7,
     },
     {
+      url: `${baseUrl}/blog/phone-number-required`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/FAQ`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
