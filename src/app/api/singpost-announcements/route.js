@@ -347,6 +347,23 @@ export async function GET(request) {
         multilanguagePage: false
       }, 'google_translate_element');
     } catch(e) {}
+
+    try {
+      var attempts = 0;
+      var timer = setInterval(function () {
+        attempts += 1;
+        var combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          combo.value = '${gtLang}';
+          combo.dispatchEvent(new Event('change'));
+          clearInterval(timer);
+          return;
+        }
+        if (attempts > 30) {
+          clearInterval(timer);
+        }
+      }, 200);
+    } catch(e) {}
   }
 </script>
 <div id="google_translate_element" style="display:none"></div>
