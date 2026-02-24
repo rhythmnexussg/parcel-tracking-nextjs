@@ -13,29 +13,30 @@ const countryFlags = {
   TW: '🇹🇼', TH: '🇹🇭', GB: '🇬🇧', US: '🇺🇸', VN: '🇻🇳',
 };
 
-// Timezone mappings for each destination country
-// Countries with multiple timezones use array format: [{ name, timezone }]
-const countryTimezones = {
+// TimezoneHeader.js
+
+// Wrap the countryTimezones in a function to allow dynamic translation
+const getCountryTimezones = (t) => ({
   SG: 'Asia/Singapore',
   AU: [
-    { name: 'AEST (Sydney/Melbourne)', timezone: 'Australia/Sydney' },
-    { name: 'ACST (Adelaide)', timezone: 'Australia/Adelaide' },
-    { name: 'AWST (Perth)', timezone: 'Australia/Perth' },
+    { name: t('tzAEST') || 'AEST (Sydney/Melbourne)', timezone: 'Australia/Sydney' },
+    { name: t('tzACST') || 'ACST (Adelaide)', timezone: 'Australia/Adelaide' },
+    { name: t('tzAWST') || 'AWST (Perth)', timezone: 'Australia/Perth' },
   ],
   AT: 'Europe/Vienna',
   BE: 'Europe/Brussels',
   BN: 'Asia/Brunei',
   CA: [
-    { name: 'NST (Newfoundland)', timezone: 'America/St_Johns' },
-    { name: 'AST (Atlantic)', timezone: 'America/Halifax' },
-    { name: 'EST (Eastern)', timezone: 'America/Toronto' },
-    { name: 'CST (Central)', timezone: 'America/Winnipeg' },
-    { name: 'MST (Mountain)', timezone: 'America/Edmonton' },
-    { name: 'PST (Pacific)', timezone: 'America/Vancouver' },
+    { name: t('tzNST') || 'NST (Newfoundland)', timezone: 'America/St_Johns' },
+    { name: t('tzAST') || 'AST (Atlantic)', timezone: 'America/Halifax' },
+    { name: t('tzEST') || 'EST (Eastern)', timezone: 'America/Toronto' },
+    { name: t('tzCST') || 'CST (Central)', timezone: 'America/Winnipeg' },
+    { name: t('tzMST') || 'MST (Mountain)', timezone: 'America/Edmonton' },
+    { name: t('tzPST') || 'PST (Pacific)', timezone: 'America/Vancouver' },
   ],
   CN: [
-    { name: 'Beijing', timezone: 'Asia/Shanghai' },
-    { name: 'Xinjiang', timezone: 'Asia/Urumqi' },
+    { name: t('tzXinjiang') || 'Xinjiang', timezone: 'Asia/Urumqi' },
+    { name: t('tzBeijing') || 'Beijing', timezone: 'Asia/Shanghai' },
   ],
   CZ: 'Europe/Prague',
   FI: 'Europe/Helsinki',
@@ -44,9 +45,9 @@ const countryTimezones = {
   HK: 'Asia/Hong_Kong',
   IN: 'Asia/Kolkata',
   ID: [
-    { name: 'WIB (Jakarta)', timezone: 'Asia/Jakarta' },
-    { name: 'WITA (Makassar)', timezone: 'Asia/Makassar' },
-    { name: 'WIT (Jayapura)', timezone: 'Asia/Jayapura' },
+    { name: t('tzWIB') || 'WIB (Jakarta)', timezone: 'Asia/Jakarta' },
+    { name: t('tzWITA') || 'WITA (Makassar)', timezone: 'Asia/Makassar' },
+    { name: t('tzWIT') || 'WIT (Jayapura)', timezone: 'Asia/Jayapura' },
   ],
   IE: 'Europe/Dublin',
   IL: 'Asia/Jerusalem',
@@ -68,34 +69,35 @@ const countryTimezones = {
   TH: 'Asia/Bangkok',
   GB: 'Europe/London',
   RU: [
-    { name: 'Kaliningrad Oblast (UTC+2)', timezone: 'Europe/Kaliningrad' },
-    { name: 'Moscow/Western Russia (UTC+3)', timezone: 'Europe/Moscow' },
-    { name: 'Samara Oblast (UTC+4)', timezone: 'Europe/Samara' },
-    { name: 'Ural Region (UTC+5)', timezone: 'Asia/Yekaterinburg' },
-    { name: 'Omsk Oblast (UTC+6)', timezone: 'Asia/Omsk' },
-    { name: 'Krasnoyarsk Krai (UTC+7)', timezone: 'Asia/Krasnoyarsk' },
-    { name: 'Irkutsk Oblast (UTC+8)', timezone: 'Asia/Irkutsk' },
-    { name: 'Sakha Republic (UTC+9)', timezone: 'Asia/Yakutsk' },
-    { name: 'Primorsky Krai (UTC+10)', timezone: 'Asia/Vladivostok' },
-    { name: 'Magadan Oblast (UTC+11)', timezone: 'Asia/Magadan' },
-    { name: 'Kamchatka Krai (UTC+12)', timezone: 'Asia/Kamchatka' },
+    { name: t('tzKaliningrad') || 'Kaliningrad Oblast (UTC+2)', timezone: 'Europe/Kaliningrad' },
+    { name: t('tzMoscow') || 'Moscow/Western Russia (UTC+3)', timezone: 'Europe/Moscow' },
+    { name: t('tzSamara') || 'Samara Oblast (UTC+4)', timezone: 'Europe/Samara' },
+    { name: t('tzUral') || 'Ural Region (UTC+5)', timezone: 'Asia/Yekaterinburg' },
+    { name: t('tzOmsk') || 'Omsk Oblast (UTC+6)', timezone: 'Asia/Omsk' },
+    { name: t('tzKrasnoyarsk') || 'Krasnoyarsk Krai (UTC+7)', timezone: 'Asia/Krasnoyarsk' },
+    { name: t('tzIrkutsk') || 'Irkutsk Oblast (UTC+8)', timezone: 'Asia/Irkutsk' },
+    { name: t('tzSakha') || 'Sakha Republic (UTC+9)', timezone: 'Asia/Yakutsk' },
+    { name: t('tzPrimorsky') || 'Primorsky Krai (UTC+10)', timezone: 'Asia/Vladivostok' },
+    { name: t('tzMagadan') || 'Magadan Oblast (UTC+11)', timezone: 'Asia/Magadan' },
+    { name: t('tzKamchatka') || 'Kamchatka Krai (UTC+12)', timezone: 'Asia/Kamchatka' },
   ],
   US: [
-    { name: 'EST (Eastern)', timezone: 'America/New_York' },
-    { name: 'CST (Central)', timezone: 'America/Chicago' },
-    { name: 'MST (Mountain)', timezone: 'America/Denver' },
-    { name: 'PST (Pacific)', timezone: 'America/Los_Angeles' },
-    { name: 'AKST (Alaska)', timezone: 'America/Anchorage' },
-    { name: 'HST (Hawaii)', timezone: 'Pacific/Honolulu' },
+    { name: t('tzEST') || 'EST (Eastern)', timezone: 'America/New_York' },
+    { name: t('tzCST') || 'CST (Central)', timezone: 'America/Chicago' },
+    { name: t('tzMST') || 'MST (Mountain)', timezone: 'America/Denver' },
+    { name: t('tzPST') || 'PST (Pacific)', timezone: 'America/Los_Angeles' },
+    { name: t('tzAKST') || 'AKST (Alaska)', timezone: 'America/Anchorage' },
+    { name: t('tzHST') || 'HST (Hawaii)', timezone: 'Pacific/Honolulu' },
   ],
   VN: 'Asia/Ho_Chi_Minh',
-};
+});
 
 const TimezoneHeader = ({ userCountry, t }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isMobile, setIsMobile] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { language: currentLanguage } = useLanguage();
+  const countryTimezones = getCountryTimezones(t);
   
   // Prevent hydration mismatch by only rendering time on client
   useEffect(() => {
