@@ -409,15 +409,27 @@ export function getLanguageOptions(countryCode) {
     return null;
   }
   const options = multiLanguageCountries[countryCode] || null;
-  const englishFirstCountries = new Set(['US', 'CA', 'SG']);
+  const nativeFirstLanguageByCountry = {
+    SG: 'en',
+    GB: 'en',
+    US: 'en',
+    AU: 'en',
+    NZ: 'en',
+    MY: 'ms',
+    BN: 'ms',
+    ID: 'id',
+  };
+
+  const preferredLanguageCode =
+    nativeFirstLanguageByCountry[countryCode] ||
+    countryToLanguageMap[countryCode] ||
+    'en';
+
   const normalizedOptions = Array.isArray(options)
     ? (() => {
-        if (englishFirstCountries.has(countryCode)) {
-          return options;
-        }
-        const englishOptions = options.filter((option) => option?.code === 'en');
-        const nonEnglishOptions = options.filter((option) => option?.code !== 'en');
-        return [...nonEnglishOptions, ...englishOptions];
+        const preferredOptions = options.filter((option) => option?.code === preferredLanguageCode);
+        const remainingOptions = options.filter((option) => option?.code !== preferredLanguageCode);
+        return [...preferredOptions, ...remainingOptions];
       })()
     : options;
   console.log(`getLanguageOptions(${countryCode}):`, options);

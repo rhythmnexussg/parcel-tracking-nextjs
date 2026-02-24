@@ -1541,6 +1541,10 @@ a:hover { text-decoration: underline; color: #006bb5; }
   padding: 40px;
   max-width: 500px;
   width: 90%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -1580,6 +1584,8 @@ a:hover { text-decoration: underline; color: #006bb5; }
   flex-direction: column;
   gap: 12px;
   margin-bottom: 25px;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .language-option-button {
@@ -1643,6 +1649,7 @@ a:hover { text-decoration: underline; color: #006bb5; }
   .language-modal-content {
     padding: 30px 20px;
     max-width: 90%;
+    max-height: 88vh;
   }
 
   .language-modal-header h2 {

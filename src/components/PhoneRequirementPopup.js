@@ -292,7 +292,7 @@ const FULL_PHONE_REQUIREMENT_REASONS = {
     'For countries where a phone number is mandatory, this helps ensure parcels can be processed and delivered without delays.',
     'United States: Due to tariff rules requiring Delivery Duty Paid (DDP) handling for postal shipments, carriers may require a recipient phone number to keep the recipient reachable for customs clearance and delivery.',
     'European Union: Under IOSS VAT requirements, a valid recipient phone number supports VAT processing, customs clearance, and delivery coordination.',
-    'United Kingdom, Switzerland, and Norway: VAT/customs collection procedures may require buyer contact details if clarification is needed during processing.',
+    'UK, Switzerland, and Norway: VAT/customs collection procedures may require buyer contact details if clarification is needed during processing.',
     'China, India, Indonesia, Philippines, South Korea, Taiwan, and Vietnam: These are strict customs jurisdictions where authorities may request a recipient phone number to verify declarations or resolve shipment issues.',
     'Providing a valid number helps prevent delays, failed delivery attempts, and parcel returns. Customs or local courier/postal services may contact the recipient to clarify declaration details, import information, duties/taxes, required documents, delivery address, or delivery timing.'
   ],
@@ -396,7 +396,7 @@ const FULL_PHONE_REQUIREMENT_REASONS = {
     'Bagi negara yang mewajibkan nombor telefon, ini membantu pemprosesan dan penghantaran tanpa kelewatan.',
     'Amerika Syarikat: disebabkan peraturan DDP untuk penghantaran pos, pembawa mungkin memerlukan nombor penerima untuk kastam dan penghantaran.',
     'Kesatuan Eropah: di bawah peraturan IOSS VAT, nombor penerima yang sah menyokong pemprosesan VAT, kastam dan koordinasi penghantaran.',
-    'United Kingdom, Switzerland dan Norway: prosedur VAT/kastam mungkin memerlukan hubungan pembeli untuk penjelasan.',
+    'UK, Switzerland dan Norway: prosedur VAT/kastam mungkin memerlukan hubungan pembeli untuk penjelasan.',
     'China, India, Indonesia, Filipina, Korea Selatan, Taiwan dan Vietnam: pihak kastam mungkin meminta nombor penerima untuk semakan deklarasi.',
     'Nombor yang sah membantu mengurangkan kelewatan, kegagalan penghantaran dan pemulangan. Kastam/kurier tempatan boleh menghubungi penerima untuk pengesahan maklumat.'
   ],
@@ -484,7 +484,7 @@ const FULL_PHONE_REQUIREMENT_REASONS = {
     'Sa mga bansang mandatory ang phone number, nakakatulong ito para maiwasan ang delay sa processing at delivery.',
     'United States: dahil sa DDP rules para sa postal shipments, maaaring hingin ng carrier ang phone number ng recipient para sa customs at delivery contact.',
     'European Union: sa ilalim ng IOSS VAT rules, kailangan ang valid na numero para sa VAT processing, customs clearance, at delivery coordination.',
-    'United Kingdom, Switzerland, at Norway: maaaring kailanganin ang contact ng buyer para sa paglilinaw sa VAT/customs procedures.',
+    'UK, Switzerland, at Norway: maaaring kailanganin ang contact ng buyer para sa paglilinaw sa VAT/customs procedures.',
     'China, India, Indonesia, Philippines, South Korea, Taiwan, at Vietnam: maaaring hingin ng customs authority ang numero para sa verification ng declarations.',
     'Ang valid na numero ay nakakatulong maiwasan ang delay, failed delivery, at returns. Maaaring makipag-ugnayan ang customs o local courier para sa karagdagang detalye.'
   ],
@@ -508,7 +508,7 @@ const FULL_PHONE_REQUIREMENT_REASONS = {
     'Mō ngā whenua e herea ana te nama waea, ka āwhina tēnei kia tere ake te tukatuka me te tuku me te iti o ngā whakaroanga.',
     'United States: nā ngā ture DDP mō ngā tuku mēra, ka tono pea ngā kaikawe i te nama waea o te kaiwhiwhi mō te tikanga kāwana me te tuku.',
     'European Union: i raro i ngā ture IOSS VAT, me whai nama waea tika te kaiwhiwhi mō te tukatuka VAT, te kāwana, me te whakarite tuku.',
-    'United Kingdom, Switzerland, me Norway: i ngā tukanga VAT/kāwana, tērā pea ka hiahiatia te whakapā atu ki te kaihoko mō te whakamārama.',
+    'UK, Switzerland, me Norway: i ngā tukanga VAT/kāwana, tērā pea ka hiahiatia te whakapā atu ki te kaihoko mō te whakamārama.',
     'Haina, Inia, Inōnehia, Piripīni, Korea ki te Tonga, Taiwan, me Vietnam: ka tono pea ngā mana kāwana i te nama waea hei manatoko i ngā tauākī.',
     'Ka āwhina te nama tika ki te whakaiti i ngā whakaroanga, ngā tuku rahua, me ngā whakahokinga. Ka whakapā mai pea te kāwana, te kaikawe ā-rohe rānei mō ngā taipitopito anō.'
   ]
@@ -542,20 +542,61 @@ function getReasonIndexesForCountry(countryCode) {
 
 function getCountryName(countryCode, languageCode) {
   if (!countryCode) return 'your country';
-  if (countryCode === 'GB') return 'United Kingdom';
-  if (countryCode === 'US') return 'United States';
-  if (countryCode === 'KR') return 'South Korea';
+  const normalizedLanguage = normalizeLanguageCode(languageCode || 'en');
+
   try {
     if (typeof Intl !== 'undefined' && typeof Intl.DisplayNames === 'function') {
-      const locale = normalizeLanguageCode(languageCode || 'en');
-      const localeTag = locale === 'zh-hant' ? 'zh-Hant' : locale;
+      const localeTag = normalizedLanguage === 'zh-hant' ? 'zh-Hant' : normalizedLanguage;
       const regionNames = new Intl.DisplayNames([localeTag], { type: 'region' });
-      return regionNames.of(countryCode) || countryCode;
+      const localizedName = regionNames.of(countryCode);
+      if (localizedName) {
+        if (countryCode === 'GB' && normalizedLanguage === 'en') {
+          return 'United Kingdom';
+        }
+        if (countryCode === 'KR' && normalizedLanguage === 'en' && /republic\s+of\s+korea/i.test(localizedName)) {
+          return 'South Korea';
+        }
+        return localizedName;
+      }
     }
   } catch (_) {
     // fallback to code
   }
-  return countryCode;
+
+  const fallbackCountryNames = {
+    US: 'United States',
+    GB: 'United Kingdom',
+    KR: 'South Korea',
+    CH: 'Switzerland',
+    NO: 'Norway',
+    CN: 'China',
+    IN: 'India',
+    ID: 'Indonesia',
+    PH: 'Philippines',
+    TW: 'Taiwan',
+    VN: 'Vietnam',
+  };
+
+  return fallbackCountryNames[countryCode] || countryCode;
+}
+
+function replaceGroupedReasonWithDetectedCountry(reasonText, countryCode, languageCode) {
+  if (typeof reasonText !== 'string' || !reasonText.length) return reasonText;
+
+  const hasFullWidthColon = reasonText.includes('：');
+  const delimiter = hasFullWidthColon ? '：' : (reasonText.includes(':') ? ':' : null);
+  if (!delimiter) return reasonText;
+
+  const delimiterIndex = reasonText.indexOf(delimiter);
+  if (delimiterIndex <= 0) return reasonText;
+
+  const suffix = reasonText.slice(delimiterIndex + 1).trim();
+  const countryName = getCountryName(countryCode, languageCode);
+  if (!countryName || !suffix) return reasonText;
+
+  return hasFullWidthColon
+    ? `${countryName}：${suffix}`
+    : `${countryName}: ${suffix}`;
 }
 
 function extractCountryOverrideFromCurrentLocation() {
@@ -611,9 +652,23 @@ export function PhoneRequirementPopup() {
   const localizedReasons = useMemo(() => {
     const normalizedLang = normalizeLanguageCode(language);
     const reasonPool = FULL_PHONE_REQUIREMENT_REASONS[normalizedLang] || FULL_PHONE_REQUIREMENT_REASONS.en;
-    const indexes = getReasonIndexesForCountry(countryCode);
+    const normalizedCountry = normalizeCountryCode(countryCode || '') || '';
+    const indexes = getReasonIndexesForCountry(normalizedCountry);
+
     return indexes
-      .map((index) => reasonPool[index])
+      .map((index) => {
+        const reason = reasonPool[index];
+        if (typeof reason !== 'string' || !reason.length) return reason;
+
+        const isUkSwissNorwayReason = index === 3 && ['GB', 'CH', 'NO'].includes(normalizedCountry);
+        const isStrictCustomsReason = index === 4 && STRICT_CUSTOMS_PHONE_REQUIRED_COUNTRIES.has(normalizedCountry);
+
+        if (isUkSwissNorwayReason || isStrictCustomsReason) {
+          return replaceGroupedReasonWithDetectedCountry(reason, normalizedCountry, normalizedLang);
+        }
+
+        return reason;
+      })
       .filter((value) => typeof value === 'string' && value.length > 0);
   }, [language, countryCode]);
 
