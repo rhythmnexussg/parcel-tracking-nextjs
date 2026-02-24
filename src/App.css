@@ -383,7 +383,7 @@ html, body {
   flex: 1;
   width: 100%;
   max-width: 850px;
-  margin: 280px auto 40px;
+  margin: clamp(170px, 24vh, 280px) auto 40px;
   padding: 20px;
 }
 
@@ -517,6 +517,102 @@ a:hover { text-decoration: underline; color: #006bb5; }
   background: linear-gradient(135deg, #e6fffa 0%, #c3fae8 100%);
   color: #00b894; 
   border-color: #55efc4; 
+}
+
+/* =========================================
+   5A. Compact Desktop / Split View
+   ========================================= */
+@media (max-width: 1100px) and (min-width: 769px) {
+  .navbar {
+    height: auto;
+    min-height: 0;
+    padding: 10px 16px;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+
+  .navbar-brand {
+    width: 100%;
+    text-align: center;
+  }
+
+  .navbar-brand img {
+    height: 82px;
+    max-width: 92%;
+  }
+
+  .navbar-center {
+    width: 100%;
+    min-height: 56px;
+    padding-left: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .navbar-center::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navbar-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-link {
+    font-size: 0.98rem;
+    padding: 8px 12px;
+  }
+
+  .nav-link.highlight {
+    padding: 10px 18px;
+    font-size: 0.98rem;
+  }
+
+  .language-selector {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .weather-alert {
+    position: relative;
+    top: 0;
+    margin-top: 0;
+  }
+
+  .container {
+    margin-top: 20px;
+    padding: 0 16px;
+    width: 100%;
+  }
+
+  .modern-form-container {
+    padding: 24px;
+    border-radius: 16px;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 769px) {
+  .navbar {
+    min-height: 96px;
+    padding: 8px 20px;
+  }
+
+  .navbar-brand img {
+    height: 78px;
+  }
+
+  .navbar-center {
+    min-height: 64px;
+  }
+
+  .container {
+    margin-top: 190px;
+  }
 }
 
 /* =========================================
