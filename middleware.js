@@ -9,13 +9,6 @@ const ADMIN_SESSION_TOKEN_VERSION = 'v2';
 const ADMIN_AUTH_PATH = '/admin-auth';
 const WINDOWS_SERVER_2016_SUPPORT_END_UTC = Date.UTC(2027, 0, 12, 0, 0, 0);
 const WINDOWS_SERVER_2019_SUPPORT_END_UTC = Date.UTC(2029, 0, 9, 0, 0, 0);
-const WINDOWS_10_22H2_REMINDER_START_UTC = Date.UTC(2026, 11, 1, 0, 0, 0);
-const WINDOWS_10_22H2_SUPPORT_END_UTC = Date.UTC(2027, 0, 1, 0, 0, 0);
-const WINDOWS_10_21H2_LTSC_SUPPORT_END_UTC = Date.UTC(2032, 1, 1, 0, 0, 0);
-const WINDOWS_10_21H2_LTSC_BUILD = 19044;
-const WINDOWS_10_22H2_BUILD = 19045;
-const WINDOWS_11_LTSC_2024_BUILD = 26100;
-const WINDOWS_11_MIN_SUPPORTED_BUILD = 26200;
 
 const ADMIN_OVERRIDE_USERNAME =
   process.env.ADMIN_OVERRIDE_USERNAME ||
@@ -340,16 +333,6 @@ function getWindowsSignals(userAgent, platformVersionParts) {
   };
 }
 
-function shouldShowWindows10Reminder(userAgent, nowMs, platformVersionParts) {
-  if (nowMs < WINDOWS_10_22H2_REMINDER_START_UTC || nowMs >= WINDOWS_10_22H2_SUPPORT_END_UTC) {
-    return false;
-  }
-
-  const windowsSignals = getWindowsSignals(userAgent, platformVersionParts);
-  if (windowsSignals.isWindowsServer || windowsSignals.windowsFamily !== 'win10') return false;
-  return windowsSignals.detectedBuild === WINDOWS_10_22H2_BUILD;
-}
-
 function extractFirefoxMajorVersion(userAgent) {
   const match = userAgent.match(/Firefox\/(\d+)/i);
   if (!match) return null;
@@ -410,12 +393,19 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platfo
     if (/\bthorium\b/.test(ua)) {
       return 'Thorium on Windows 8.1 or below';
     }
+    if (/\bpale\s?moon\b|\bpalemoon\b/.test(ua)) {
+      return 'Pale Moon on Windows 8.1 or below';
+    }
     if (/\bmypal\b/.test(ua)) {
       return 'Mypal on Windows 8.1 or below';
+    }
+    if (/\bserpent\b|\bbasilisk\b|\bwaterfox\b|\bseamonkey\b|\bkmelon\b/.test(ua)) {
+      return 'Legacy browser on Windows 8.1 or below';
     }
     if (/\bfirefox\b/.test(ua) && firefoxMajor != null && firefoxMajor >= 115) {
       return `Firefox ESR ${firefoxMajor} on Windows 8.1 or below`;
     }
+    return 'Windows 8.1 or below';
   }
 
   const androidVersion = extractAndroidVersion(userAgent || '');
@@ -472,41 +462,8 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platfo
     return 'Windows 8.1 / Server 2012 R2';
   }
 
-  const windowsSignals = getWindowsSignals(userAgent, resolvedPlatformVersionParts);
-  if (windowsSignals.isWindowsNt10 && !windowsSignals.isWindowsServer) {
-    const detectedBuild = windowsSignals.detectedBuild;
-
-    if (windowsSignals.windowsFamily === 'win10') {
-      if (detectedBuild == null) {
-        return 'Windows 10 (unknown build)';
-      }
-
-      if (detectedBuild === WINDOWS_10_22H2_BUILD) {
-        if (nowMs >= WINDOWS_10_22H2_SUPPORT_END_UTC) {
-          return `Windows 10 22H2 (build ${detectedBuild})`;
-        }
-      } else if (detectedBuild === WINDOWS_10_21H2_LTSC_BUILD) {
-        if (nowMs >= WINDOWS_10_21H2_LTSC_SUPPORT_END_UTC) {
-          return `Windows 10 21H2 LTSC (build ${detectedBuild})`;
-        }
-      } else {
-        return `Windows 10 (build ${detectedBuild})`;
-      }
-    }
-
-    if (windowsSignals.windowsFamily === 'win11') {
-      if (detectedBuild == null) {
-        return 'Windows 11 (unknown build)';
-      }
-
-      const isSupportedWin11Build =
-        detectedBuild === WINDOWS_11_LTSC_2024_BUILD ||
-        detectedBuild >= WINDOWS_11_MIN_SUPPORTED_BUILD;
-
-      if (!isSupportedWin11Build) {
-        return `Windows 11 (build ${detectedBuild})`;
-      }
-    }
+  if (/windows server\s*2003|windows server\s*2008\s*r2|windows server\s*2008|windows server\s*2012\s*r2|windows server\s*2012|small business server/i.test(userAgent || '')) {
+    return 'Windows Server (legacy)';
   }
 
   if (/windows server 2016/.test(ua) && nowMs >= WINDOWS_SERVER_2016_SUPPORT_END_UTC) {
@@ -684,7 +641,6 @@ export async function middleware(request) {
   const platformVersionParts = extractPlatformVersionParts(platformVersionHeader);
   const platformVersionMajor = extractPlatformVersionMajor(platformVersionHeader);
   const nowMs = Date.now();
-  const shouldShowWin10Reminder = shouldShowWindows10Reminder(userAgent, nowMs, platformVersionParts);
   const requestedCountry = (nextUrl.searchParams.get('country') || nextUrl.searchParams.get('adminCountry') || '').trim().toUpperCase();
   const hasQueryCountryOverride = /^[A-Z]{2}$/.test(requestedCountry);
   const isProtectedPath = isCaptchaRequiredPath(path) && !isCaptchaExemptPath(path);
@@ -699,12 +655,6 @@ export async function middleware(request) {
       blockedUrl.searchParams.set('system', unsupportedSystem);
       return applySecurityHeaders(NextResponse.redirect(blockedUrl));
     }
-  }
-
-  if (path === '/access' && shouldShowWin10Reminder && nextUrl.searchParams.get('osReminder') !== 'win10-19045-eol') {
-    const accessUrl = nextUrl.clone();
-    accessUrl.searchParams.set('osReminder', 'win10-19045-eol');
-    return applySecurityHeaders(NextResponse.redirect(accessUrl));
   }
 
   if (path === ADMIN_AUTH_PATH) {
@@ -782,9 +732,6 @@ export async function middleware(request) {
     const accessUrl = nextUrl.clone();
     accessUrl.pathname = '/access';
     accessUrl.searchParams.set('next', `${path}${nextUrl.search || ''}`);
-    if (shouldShowWin10Reminder) {
-      accessUrl.searchParams.set('osReminder', 'win10-19045-eol');
-    }
     return applySecurityHeaders(NextResponse.redirect(accessUrl));
   }
 

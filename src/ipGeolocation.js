@@ -485,17 +485,8 @@ export async function detectLanguageFromIP() {
     const vpnDetection = isPotentialVPN(data, browserTimezone, browserLanguages);
     
     console.log(`VPN detected: ${vpnDetection.isVPN}`);
-    if (vpnDetection.isVPN) {
-      console.log(`Potential actual country: ${vpnDetection.actualCountry}`);
-    }
-
-    // Special handling: If VPN detected and actual country is China, use China
-    // For other countries, use detected IP country (VPN exit node)
+    // Keep country decision based on IP/provider country only.
     let finalCountryCode = detectedCountryCode;
-    if (vpnDetection.isVPN && vpnDetection.actualCountry === 'CN') {
-      finalCountryCode = 'CN';
-      console.log('VPN detected from China - using China as country');
-    }
 
     const isMultiLing = isMultiLanguageCountry(finalCountryCode);
     const langOptions = getLanguageOptions(finalCountryCode);
@@ -664,14 +655,13 @@ export function isAccessAllowedFromChina(destinationCountry) {
  * @param {Object} ipData - IP geolocation data
  * @param {string} browserTimezone - Browser timezone
  * @param {Array} browserLanguages - Browser languages
- * @returns {Object} VPN detection result with likelihood and actual country
+ * @returns {Object} VPN detection result with likelihood
  */
 export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages = []) {
   // Basic VPN detection indicators
   if (!ipData) return { isVPN: false, likelihood: 0, actualCountry: null };
   
   let vpnScore = 0;
-  let actualCountry = null;
   const indicators = [];
   
   // 1. Check organization/ISP for VPN keywords (20 points)
@@ -688,24 +678,6 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
     vpnScore += 30;
     indicators.push(`Timezone mismatch: Browser=${browserTimezone}, IP=${ipData.timezone}`);
     
-    // Try to guess actual country from browser timezone
-    const timezoneToCountry = {
-      'Asia/Shanghai': 'CN',
-      'Asia/Chongqing': 'CN',
-      'Asia/Urumqi': 'CN',
-      'Asia/Harbin': 'CN',
-      'Asia/Hong_Kong': 'HK',
-      'Asia/Taipei': 'TW',
-      'Asia/Macau': 'MO',
-      'Asia/Macao': 'MO',
-      'Asia/Singapore': 'SG',
-      'Asia/Tokyo': 'JP',
-      'Asia/Seoul': 'KR',
-      'Europe/London': 'GB',
-      'America/New_York': 'US',
-      'America/Los_Angeles': 'US',
-    };
-    actualCountry = timezoneToCountry[browserTimezone];
   }
   
   // 3. Check browser language vs detected country (25 points)
@@ -718,21 +690,18 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
         !['CN', 'HK', 'TW', 'SG', 'MO'].includes(detectedCountry)) {
       vpnScore += 25;
       indicators.push('Chinese language but non-Chinese region detected');
-      actualCountry = actualCountry || 'CN'; // Likely from China
     }
     
     // Japanese language but not in Japan
     if (primaryLang === 'ja' && detectedCountry !== 'JP') {
       vpnScore += 25;
       indicators.push('Japanese language but non-Japan region');
-      actualCountry = actualCountry || 'JP';
     }
     
     // Korean language but not in Korea
     if (primaryLang === 'ko' && detectedCountry !== 'KR') {
       vpnScore += 25;
       indicators.push('Korean language but non-Korea region');
-      actualCountry = actualCountry || 'KR';
     }
 
     // Generic locale-region mismatch support for all countries, not just specific examples
@@ -740,7 +709,6 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
     if (localeCountryCode && detectedCountry && localeCountryCode !== detectedCountry) {
       vpnScore += 25;
       indicators.push(`Browser locale region mismatch: locale=${localeCountryCode}, IP=${detectedCountry}`);
-      actualCountry = actualCountry || localeCountryCode;
     }
   }
   
@@ -765,13 +733,12 @@ export function isPotentialVPN(ipData, browserTimezone = null, browserLanguages 
   console.log('VPN Score:', vpnScore);
   console.log('Is VPN:', isVPN);
   console.log('Indicators:', indicators);
-  console.log('Actual Country (estimated):', actualCountry);
   console.log('============================');
   
   return { 
     isVPN, 
     likelihood: vpnScore,
-    actualCountry: actualCountry || ipData.country_code || ipData.countryCode,
+    actualCountry: null,
     indicators 
   };
 }
@@ -962,7 +929,6 @@ export async function detectLanguageFromIPWithRestrictions() {
     const signalCountries = [
       detectedCountryCode,
       secondaryCountryCode,
-      normalizeCountryCode(vpnDetection.actualCountry || null),
       timezoneCountryCode,
       localeCountryCode,
     ].filter(Boolean);
