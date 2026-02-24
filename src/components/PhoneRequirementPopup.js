@@ -550,6 +550,9 @@ function getCountryName(countryCode, languageCode) {
       const regionNames = new Intl.DisplayNames([localeTag], { type: 'region' });
       const localizedName = regionNames.of(countryCode);
       if (localizedName) {
+        if (countryCode === 'GB' && normalizedLanguage === 'cy') {
+          return 'Deyrnas Unedig';
+        }
         if (countryCode === 'GB' && normalizedLanguage === 'en') {
           return 'United Kingdom';
         }

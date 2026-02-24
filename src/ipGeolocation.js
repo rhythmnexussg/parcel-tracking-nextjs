@@ -352,7 +352,7 @@ const multiLanguageCountries = {
     { code: 'th', name: 'ภาษาไทย (Thai)', flag: '🇹🇭' }
   ],
   'GB': [
-    { code: 'en', name: 'English', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿' },
+    { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'cy', name: 'Cymraeg (Welsh)', flag: '🏴󠁧󠁢󠁷󠁬󠁳󠁿' }
   ],
   'US': [

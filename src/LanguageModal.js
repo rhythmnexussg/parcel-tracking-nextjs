@@ -3,6 +3,8 @@
 import React from "react";
 import "./App.css";
 
+const WALES_FLAG = '🏴' + String.fromCodePoint(0xE0067, 0xE0062, 0xE0077, 0xE006C, 0xE0073, 0xE007F);
+
 const allLanguages = [
   { code: 'en', name: 'English', flag: '🇬🇧' },
   { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' },
@@ -29,7 +31,7 @@ const allLanguages = [
   { code: 'vi', name: 'Tiếng Việt (Vietnamese)', flag: '🇻🇳' },
   { code: 'fi', name: 'Suomi (Finnish)', flag: '🇫🇮' },
   { code: 'ru', name: 'Русский (Russian)', flag: '🇷🇺' },
-  { code: 'cy', name: 'Cymraeg (Welsh)', flag: '🏴' },
+  { code: 'cy', name: 'Cymraeg (Welsh)', flag: WALES_FLAG },
   { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' },
   { code: 'mi', name: 'Māori (Te Reo Māori)', flag: '🇳🇿' },
 ];
