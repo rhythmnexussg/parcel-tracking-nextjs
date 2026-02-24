@@ -6,6 +6,7 @@ import { AccessGuard } from "../components/AccessGuard";
 import { ChatbotWidget } from "../components/ChatbotWidget";
 import { PhoneRequirementPopup } from "../components/PhoneRequirementPopup";
 import { USSection122Popup } from "../components/USSection122Popup";
+import { AdSenseLoader } from "../components/AdSenseLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,18 +95,12 @@ export default function RootLayout({ children }) {
           }}
         />
         
-
-        {/* Google AdSense */}
+        {/* Google AdSense account */}
         <meta name="google-adsense-account" content="ca-pub-4194808111663749" />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4194808111663749"
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
-        />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${nunito.variable} ${notoSansTamil.variable}`} suppressHydrationWarning>
         <LanguageProvider>
+          <AdSenseLoader />
           <AccessGuard>
             {children}
             <PhoneRequirementPopup />

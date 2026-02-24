@@ -81,40 +81,47 @@ html, body {
   min-height: 120px;
   overflow: visible;
   padding-top: 10px;
-  padding-left: 28px;
+  padding-left: 12px;
 }
 
 .navbar-cny-message {
-  width: 100%;
+  width: min(100%, 720px);
   text-align: center;
-  margin-bottom: 8px;
-  padding: 6px 12px;
+  margin: 0 auto 6px;
+  padding: 5px 10px;
   border-radius: 12px;
   background: linear-gradient(90deg, #e17055, #fdcb6e);
   color: #ffffff;
-  font-size: 0.95rem;
+  font-size: clamp(0.8rem, 0.72rem + 0.25vw, 0.92rem);
   font-weight: 800;
-  line-height: 1.3;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .navbar-holiday-message {
-  width: 100%;
+  width: min(100%, 720px);
   text-align: center;
-  margin-bottom: 8px;
-  padding: 6px 12px;
+  margin: 0 auto 6px;
+  padding: 5px 10px;
   border-radius: 12px;
   background: linear-gradient(90deg, #6c5ce7, #a29bfe);
   color: #ffffff;
-  font-size: 0.95rem;
+  font-size: clamp(0.8rem, 0.72rem + 0.25vw, 0.92rem);
   font-weight: 800;
-  line-height: 1.3;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .navbar-links {
   flex: 0 0 auto;
   display: flex;
-  gap: 30px; 
+  gap: 10px 14px;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  max-width: 54vw;
 }
 
 .language-selector {
@@ -146,9 +153,13 @@ html, body {
   text-decoration: none;
   color: #4a5568;
   font-weight: 700; /* Bolder to match logo weight */
-  font-size: 1.2rem; 
+  font-size: clamp(0.95rem, 0.9rem + 0.25vw, 1.05rem);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .nav-link::after {
@@ -177,7 +188,7 @@ html, body {
   /* UPDATED: Softer gradient */
   background: linear-gradient(135deg, #0984e3 0%, #6c5ce7 100%);
   color: white;
-  padding: 14px 28px; 
+  padding: 10px 18px;
   border-radius: 50px;
   box-shadow: 0 4px 15px rgba(9, 132, 227, 0.25);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -560,17 +571,25 @@ a:hover { text-decoration: underline; color: #006bb5; }
     width: 100%;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px 10px;
+    max-width: 100%;
   }
 
   .nav-link {
-    font-size: 0.98rem;
-    padding: 8px 12px;
+    font-size: 0.94rem;
+    padding: 7px 10px;
   }
 
   .nav-link.highlight {
-    padding: 10px 18px;
-    font-size: 0.98rem;
+    padding: 8px 14px;
+    font-size: 0.92rem;
+  }
+
+  .navbar-cny-message,
+  .navbar-holiday-message {
+    max-width: 100%;
+    font-size: 0.82rem;
+    padding: 4px 8px;
   }
 
   .language-selector {
@@ -648,6 +667,7 @@ a:hover { text-decoration: underline; color: #006bb5; }
     -ms-overflow-style: none;
     min-height: 60px;
     padding-left: 0;
+    row-gap: 6px;
   }
 
   .navbar-center::-webkit-scrollbar {
@@ -658,18 +678,28 @@ a:hover { text-decoration: underline; color: #006bb5; }
     order: 3;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px;
+    gap: 8px 10px;
     width: 100%;
+    max-width: 100%;
   }
 
   .nav-link {
-    font-size: 0.95rem;
-    padding: 8px 12px;
+    font-size: 0.88rem;
+    padding: 6px 10px;
   }
 
   .nav-link.highlight {
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+
+  .navbar-cny-message,
+  .navbar-holiday-message {
+    max-width: 100%;
+    margin-bottom: 4px;
+    padding: 4px 8px;
+    font-size: 0.78rem;
+    line-height: 1.2;
   }
 
   .language-selector {
@@ -774,17 +804,23 @@ a:hover { text-decoration: underline; color: #006bb5; }
   }
 
   .navbar-links {
-    gap: 8px;
+    gap: 6px 8px;
   }
 
   .nav-link {
-    font-size: 0.85rem;
-    padding: 6px 10px;
+    font-size: 0.8rem;
+    padding: 5px 8px;
   }
 
   .nav-link.highlight {
-    padding: 8px 16px;
-    font-size: 0.9rem;
+    padding: 7px 12px;
+    font-size: 0.82rem;
+  }
+
+  .navbar-cny-message,
+  .navbar-holiday-message {
+    padding: 3px 6px;
+    font-size: 0.74rem;
   }
 
   .popup-content {

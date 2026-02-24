@@ -10,9 +10,11 @@ import { LanguageSelector } from "../LanguageSelector";
 import TimezoneHeader from "./TimezoneHeader";
 import HolidayNotification from "./HolidayNotification";
 import { detectLanguageFromIPWithRestrictions } from "../ipGeolocation";
+import { policyText } from "../lib/policyI18n";
 
 export const Navigation = () => {
   const { t, language } = useLanguage();
+  const policy = policyText(language);
   const [userCountry, setUserCountry] = useState(null);
   const [showCnyMessage, setShowCnyMessage] = useState(false);
   const searchParams = useSearchParams();
@@ -87,6 +89,8 @@ export const Navigation = () => {
         <Link href={withOverride('/blog')} className="nav-link">{t('blog')}</Link>
         <Link href={withOverride('/about')} className="nav-link">{t('aboutUs')}</Link>
         <Link href={withOverride('/FAQ')} className="nav-link">{t('faq')}</Link>
+        <Link href={withOverride('/terms-of-service')} className="nav-link">{policy.navTerms}</Link>
+        <Link href={withOverride('/privacy-policy')} className="nav-link">{policy.navPrivacy}</Link>
         <Link href="/contact" className="nav-link">{t('contact')}</Link>
         <Link href={withOverride('/track-your-item')} className="nav-link highlight">{t('trackPackage')}</Link>
         <LanguageSelector />
