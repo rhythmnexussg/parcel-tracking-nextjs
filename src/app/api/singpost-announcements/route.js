@@ -78,10 +78,21 @@ export async function GET(request) {
         const dateText = $tile.find('.sgp-tile__date').text().trim();
         const titleText = $tile.find('h3').text().trim();
         const fullText = dateText + ' ' + titleText;
+        const normalizedFullText = fullText.toLowerCase();
         
         // Remove the two specific general announcements by date
         if (datesToRemove.includes(dateText)) {
           console.log(`Removing general announcement: ${dateText} - ${titleText}`);
+          $tile.remove();
+          return;
+        }
+
+        const isUsTariffNotice =
+          /\b(united states|usa|u\.s\.a\.?|u\.s\.?|us)\b/.test(normalizedFullText) &&
+          /(tariff|de\s*minimis|section\s*122|import\s*fee|import\s*fees|import\s*duty|duties|customs)\b/.test(normalizedFullText);
+
+        if (isUsTariffNotice) {
+          console.log(`Removing US tariff update announcement: ${titleText}`);
           $tile.remove();
           return;
         }
