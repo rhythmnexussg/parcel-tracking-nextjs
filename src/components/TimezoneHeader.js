@@ -33,7 +33,10 @@ const countryTimezones = {
     { name: 'MST (Mountain)', timezone: 'America/Edmonton' },
     { name: 'PST (Pacific)', timezone: 'America/Vancouver' },
   ],
-  CN: 'Asia/Shanghai',
+  CN: [
+    { name: 'Beijing', timezone: 'Asia/Shanghai' },
+    { name: 'Xinjiang', timezone: 'Asia/Urumqi' },
+  ],
   CZ: 'Europe/Prague',
   FI: 'Europe/Helsinki',
   FR: 'Europe/Paris',
