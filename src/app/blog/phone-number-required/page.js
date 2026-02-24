@@ -85,15 +85,31 @@ const BLOG_PHONE_REQUIREMENT_I18N = {
   cy: { title: 'Mae rhif ffôn yn ofynnol ar gyfer cludo (Pwysig)', intro: 'Ar gyfer rhai cyrchfannau, mae rhif derbynnydd dilys yn orfodol ar gyfer cludiant Etsy. Mae hyn yn helpu gyda thollau, TAW/treth, a chyfathrebu danfon terfynol.', requiredTitle: 'Gwledydd gorfodol', requiredCountries: ['Yr Unol Daleithiau', 'gwledydd yr Undeb Ewropeaidd (isod)', 'Y Deyrnas Unedig', 'Norwy', 'Y Swistir', 'Tsieina', 'India', 'Indonesia', 'Ynysoedd y Philipinau', 'De Corea', 'Taiwan', 'Fietnam'], euTitle: 'Gwledydd yr Undeb Ewropeaidd', euCountries: 'Awstria, Gwlad Belg, Tsiecia, y Ffindir, Ffrainc, yr Almaen, Iwerddon, yr Eidal, yr Iseldiroedd, Gwlad Pwyl, Portiwgal, Sbaen, Sweden.', recommendedTitle: 'Argymhellir (ond nid yw’n orfodol)', recommendedCountries: 'Awstralia, Seland Newydd, Canada.', whyTitle: 'Pam mae rhif ffôn yn ofynnol', whyUS: 'Yr Unol Daleithiau: O dan reolau tariff presennol ar gludiant post, gall manylion cyswllt y derbynnydd fod yn ofynnol ar gyfer DDP/tollau a danfon.', whyEU: 'Undeb Ewropeaidd: Gall gweithdrefnau TAW IOSS ofyn am gyswllt derbynnydd ar gyfer prosesu TAW a chydlynu danfon.', whyUK: 'Y Deyrnas Unedig, y Swistir, Norwy: Gall gweithdrefnau TAW/tollau ofyn am gyswllt y prynwr ar gyfer eglurhad.', whyStrict: 'Tsieina, India, Indonesia, Ynysoedd y Philipinau, De Corea, Taiwan, Fietnam: awdurdodaethau tollau llym a all ofyn am rif derbynnydd i wirio datganiadau.', closing: 'Mae rhif dilys yn helpu i atal oedi, methiannau danfon a dychweliadau. Gall tollau neu gludwr lleol gysylltu â’r derbynnydd i egluro manylion.', importantLabel: 'Pwysig:', important: 'Heb rif derbynnydd, gall y llwyth gael ei oedi, ei ddychwelyd i’r anfonwr, neu gall yr archeb gael ei chanslo.' },
 };
 
-function getBlogContentByLanguage(languageCode) {
+const BLOG_LANGUAGE_ALIASES = {
+  'zh-tw': 'zh-hant',
+  'zh-hk': 'zh-hant',
+  'zh-hans': 'zh',
+  'fil': 'tl',
+  'iw': 'he',
+  'nb': 'no',
+  'nn': 'no',
+};
+
+function normalizeBlogLanguageCode(languageCode) {
   const normalized = String(languageCode || 'en').toLowerCase();
-  if (normalized === 'zh-tw' || normalized === 'zh-hk' || normalized === 'zh-hant') {
-    return BLOG_PHONE_REQUIREMENT_I18N['zh-hant'];
+  const aliased = BLOG_LANGUAGE_ALIASES[normalized] || normalized;
+  if (aliased.startsWith('zh')) {
+    return aliased === 'zh-hant' ? 'zh-hant' : 'zh';
   }
-  if (normalized.startsWith('zh')) {
-    return BLOG_PHONE_REQUIREMENT_I18N.zh;
+  if (BLOG_PHONE_REQUIREMENT_I18N[aliased]) {
+    return aliased;
   }
-  return BLOG_PHONE_REQUIREMENT_I18N[normalized] || BLOG_PHONE_REQUIREMENT_I18N.en;
+  const baseLanguage = aliased.split('-')[0];
+  return BLOG_PHONE_REQUIREMENT_I18N[baseLanguage] ? baseLanguage : 'en';
+}
+
+function getBlogContentByLanguage(languageCode) {
+  return BLOG_PHONE_REQUIREMENT_I18N[normalizeBlogLanguageCode(languageCode)] || BLOG_PHONE_REQUIREMENT_I18N.en;
 }
 
 export default function PhoneNumberRequiredBlog() {

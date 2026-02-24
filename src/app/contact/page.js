@@ -411,7 +411,7 @@ export default function Contact() {
           )}
         </form>
         <p style={{ textAlign: 'center', marginTop: '2rem', color: '#6c757d', fontSize: '0.95rem' }}>
-          © {new Date().getFullYear()} Rhythm Nexus. All rights reserved.
+          © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
         </p>
         </div>
       </div>

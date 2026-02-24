@@ -169,17 +169,39 @@ const BLOG_CARD_I18N = {
     usa122Title: 'அமெரிக்கா Section 122 அனுப்புதல் புதுப்பிப்பு',
     usa122Desc: 'அமெரிக்காவுக்கு செல்லும் அனுப்புதல்களுக்கு முக்கிய அறிவிப்பு: தற்போதைய கையாளுதல் மற்றும் சுங்கக் கட்டண தொடர்பான விகித மாற்றங்கள் அமலில் உள்ளன.',
   },
+  mi: {
+    phoneTitle: 'Me tuku nama waea mō te tuku',
+    phoneDesc: 'Ngā whakaritenga nui ā-whenua mō te ūnga me ngā take e herea ai te nama waea o te kaiwhiwhi mō ētahi tukunga Etsy.',
+    usa122Title: 'Whakahōunga tuku USA Section 122',
+    usa122Desc: 'Pānui nui mō ngā tukunga ki USA: kua mana ināianei ngā whakatikatika utu mō te whakahaere me ngā utu tāke e pā ana.',
+  },
 };
 
-function getLocalizedBlogCards(languageCode) {
+const BLOG_CARD_LANGUAGE_ALIASES = {
+  'zh-tw': 'zh-hant',
+  'zh-hk': 'zh-hant',
+  'zh-hans': 'zh',
+  'fil': 'tl',
+  'iw': 'he',
+  'nb': 'no',
+  'nn': 'no',
+};
+
+function normalizeBlogCardLanguageCode(languageCode) {
   const normalized = String(languageCode || 'en').toLowerCase();
-  if (normalized === 'zh-tw' || normalized === 'zh-hk' || normalized === 'zh-hant') {
-    return BLOG_CARD_I18N['zh-hant'];
+  const aliased = BLOG_CARD_LANGUAGE_ALIASES[normalized] || normalized;
+  if (aliased.startsWith('zh')) {
+    return aliased === 'zh-hant' ? 'zh-hant' : 'zh';
   }
-  if (normalized.startsWith('zh')) {
-    return BLOG_CARD_I18N.zh;
+  if (BLOG_CARD_I18N[aliased]) {
+    return aliased;
   }
-  return BLOG_CARD_I18N[normalized] || BLOG_CARD_I18N.en;
+  const baseLanguage = aliased.split('-')[0];
+  return BLOG_CARD_I18N[baseLanguage] ? baseLanguage : 'en';
+}
+
+function getLocalizedBlogCards(languageCode) {
+  return BLOG_CARD_I18N[normalizeBlogCardLanguageCode(languageCode)] || BLOG_CARD_I18N.en;
 }
 
 function BlogIndex() {
