@@ -5,6 +5,7 @@ import Script from "next/script";
 import { AccessGuard } from "../components/AccessGuard";
 import { ChatbotWidget } from "../components/ChatbotWidget";
 import { PhoneRequirementPopup } from "../components/PhoneRequirementPopup";
+import { USSection122Popup } from "../components/USSection122Popup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -108,6 +109,7 @@ export default function RootLayout({ children }) {
           <AccessGuard>
             {children}
             <PhoneRequirementPopup />
+            <USSection122Popup />
           </AccessGuard>
           <ChatbotWidget />
         </LanguageProvider>

@@ -6,6 +6,7 @@ import { detectLanguageFromIPWithRestrictions, detectLanguageFromBrowser } from 
 import LanguageModal from './LanguageModal';
 
 const PHONE_POPUP_LANGUAGE_TRIGGER_KEY = 'rnx_language_selection_event';
+const LANGUAGE_SELECTED_SESSION_KEY = 'rnx_language_selected';
 
 const emitLanguageSelectionEvent = () => {
   if (typeof window === 'undefined') return;
@@ -196,6 +197,7 @@ export const LanguageProvider = ({ children }) => {
     if (typeof window !== 'undefined') {
       try {
         sessionStorage.setItem(PHONE_POPUP_LANGUAGE_TRIGGER_KEY, String(Date.now()));
+        sessionStorage.setItem(LANGUAGE_SELECTED_SESSION_KEY, '1');
       } catch (_) {
         // ignore storage errors
       }
@@ -217,6 +219,7 @@ export const LanguageProvider = ({ children }) => {
     if (typeof window !== 'undefined') {
       try {
         sessionStorage.setItem(PHONE_POPUP_LANGUAGE_TRIGGER_KEY, String(Date.now()));
+        sessionStorage.setItem(LANGUAGE_SELECTED_SESSION_KEY, '1');
       } catch (_) {
         // ignore storage errors
       }
