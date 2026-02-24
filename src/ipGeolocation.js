@@ -122,6 +122,58 @@ function writeGeoCache(value) {
   }
 }
 
+function clearGeoCache() {
+  inMemoryGeoCache = null;
+  if (typeof window === 'undefined') return;
+  try {
+    sessionStorage.removeItem(GEO_CACHE_KEY);
+  } catch (_) {
+    // ignore storage errors
+  }
+}
+
+function chooseCountryWithSignals(candidates, options = {}) {
+  const {
+    preferredCountry = null,
+    timezoneCountryCode = null,
+    localeCountryCode = null,
+  } = options;
+
+  const normalizedCandidates = Array.from(
+    new Set(
+      (Array.isArray(candidates) ? candidates : [])
+        .map((code) => normalizeCountryCode(code || null))
+        .filter(Boolean)
+    )
+  );
+
+  if (!normalizedCandidates.length) return null;
+  if (normalizedCandidates.length === 1) return normalizedCandidates[0];
+
+  const normalizedPreferred = normalizeCountryCode(preferredCountry || null);
+  const normalizedTimezone = normalizeCountryCode(timezoneCountryCode || null);
+  const normalizedLocale = normalizeCountryCode(localeCountryCode || null);
+
+  const scored = normalizedCandidates.map((country) => {
+    let score = 0;
+    if (normalizedTimezone && country === normalizedTimezone) score += 2;
+    if (normalizedLocale && country === normalizedLocale) score += 1;
+    return { country, score };
+  });
+
+  scored.sort((left, right) => right.score - left.score);
+
+  if (scored[0].score > scored[1].score) {
+    return scored[0].country;
+  }
+
+  if (normalizedPreferred && normalizedCandidates.includes(normalizedPreferred)) {
+    return normalizedPreferred;
+  }
+
+  return scored[0].country;
+}
+
 export function normalizeCountryCode(countryCode) {
   if (!countryCode) return null;
   const normalized = String(countryCode).trim().toUpperCase();
@@ -455,6 +507,7 @@ export async function detectLanguageFromIP() {
     if (!detectedCountryCode && data.countryCode) {
       detectedCountryCode = data.countryCode;
     }
+    detectedCountryCode = normalizeCountryCode(detectedCountryCode || null);
     detectedCountryCode = normalizeCountryCode(detectedCountryCode);
 
     if (!detectedCountryCode) {
@@ -923,9 +976,17 @@ export async function detectLanguageFromIPWithRestrictions() {
     
     // Access decision is based on shipping country allowlist.
     // Keep non-VPN decisions strictly IP-based so normal users are not affected by VPN heuristics.
-    const ipCountries = [detectedCountryCode, secondaryCountryCode].filter(Boolean);
-    const allowedIpCountry = ipCountries.find((code) => isAllowedAccessCountry(code)) || null;
+    const ipCountries = [detectedCountryCode, secondaryCountryCode]
+      .map((code) => normalizeCountryCode(code || null))
+      .filter(Boolean);
     const timezoneCountryCode = normalizeCountryCode(inferCountryCodeFromBrowserTimezone(browserTimezone) || null);
+    const mismatchPreferredCountry = countryMismatchDetected ? secondaryCountryCode : detectedCountryCode;
+    const allowedIpCountries = ipCountries.filter((code) => isAllowedAccessCountry(code));
+    const allowedIpCountry = chooseCountryWithSignals(allowedIpCountries, {
+      preferredCountry: mismatchPreferredCountry,
+      timezoneCountryCode,
+      localeCountryCode,
+    });
     const signalCountries = [
       detectedCountryCode,
       secondaryCountryCode,
@@ -939,13 +1000,21 @@ export async function detectLanguageFromIPWithRestrictions() {
 
     if (vpnDetection.isVPN) {
       // VPN policy: use VPN exit country and allow only if it is in the explicit allowlist.
-      finalCountryCode = normalizeCountryCode(allowedIpCountry || detectedCountryCode || secondaryCountryCode || null);
+      finalCountryCode = normalizeCountryCode(allowedIpCountry || null);
       if (!finalCountryCode) {
-        finalCountryCode = normalizeCountryCode(detectedCountryCode || secondaryCountryCode || null);
+        finalCountryCode = chooseCountryWithSignals(ipCountries, {
+          preferredCountry: mismatchPreferredCountry,
+          timezoneCountryCode,
+          localeCountryCode,
+        });
       }
       blocked = !isAllowedAccessCountry(finalCountryCode);
     } else {
-      finalCountryCode = normalizeCountryCode(detectedCountryCode || secondaryCountryCode || null);
+      finalCountryCode = chooseCountryWithSignals(ipCountries, {
+        preferredCountry: mismatchPreferredCountry,
+        timezoneCountryCode,
+        localeCountryCode,
+      });
       if (!finalCountryCode) {
         finalCountryCode = normalizeCountryCode(timezoneCountryCode || localeCountryCode || null);
       }
@@ -983,7 +1052,12 @@ export async function detectLanguageFromIPWithRestrictions() {
     };
 
     console.log('Final Result:', result);
-    writeGeoCache(result);
+    const shouldCacheResult = !(result.isVPNDetected || result.countryMismatchDetected);
+    if (shouldCacheResult) {
+      writeGeoCache(result);
+    } else {
+      clearGeoCache();
+    }
     return result;
   } catch (error) {
     console.error('Error in enhanced IP detection:', error);
