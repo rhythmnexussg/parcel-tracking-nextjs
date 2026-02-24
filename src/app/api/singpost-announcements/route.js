@@ -113,6 +113,114 @@ export async function GET(request) {
           $tile.remove();
         }
       });
+
+      const isEligibleAnnouncement = (titleText, dateText) => {
+        const normalizedTitle = (titleText || '').trim().toLowerCase();
+        const normalizedDate = (dateText || '').trim();
+        const normalizedFullText = `${normalizedDate} ${normalizedTitle}`.toLowerCase();
+
+        if (datesToRemove.includes(normalizedDate)) return false;
+
+        const isUsTariffNotice =
+          /\b(united states|usa|u\.s\.a\.?|u\.s\.?|us)\b/.test(normalizedFullText) &&
+          /(tariff|de\s*minimis|section\s*122|import\s*fee|import\s*fees|import\s*duty|duties|customs)\b/.test(normalizedFullText);
+
+        if (isUsTariffNotice) return false;
+
+        let mentionsAllowedCountry = false;
+        for (const countryName of allowedCountryNames) {
+          if (normalizedTitle.includes(countryName.toLowerCase())) {
+            mentionsAllowedCountry = true;
+            break;
+          }
+        }
+
+        const mentionsCountry = /([A-Z][a-z]+(\s[A-Z][a-z]+)*)\s*[–—-]/.test(titleText || '');
+        if (mentionsCountry && !mentionsAllowedCountry) return false;
+
+        return true;
+      };
+
+      const tileSelector = '.sgp-tile';
+      const getTileKey = (title, date) => `${(title || '').trim().toLowerCase()}|${(date || '').trim().toLowerCase()}`;
+      const existingTileKeys = new Set();
+      $(tileSelector).each(function () {
+        const $tile = $(this);
+        const titleText = $tile.find('h3, .sgp-h3').first().text().trim();
+        const dateText = $tile.find('.sgp-tile__date').first().text().trim();
+        existingTileKeys.add(getTileKey(titleText, dateText));
+      });
+
+      if ($(tileSelector).length < 9) {
+        const nextPageHref = (
+          $('a[rel="next"]').first().attr('href') ||
+          $('a[aria-label*="next" i]').first().attr('href') ||
+          $('a:contains("Go to next page")').first().attr('href') ||
+          ''
+        ).trim();
+
+        const candidatePaths = [
+          nextPageHref,
+          '/send-receive/service-announcements?page=1',
+          '/send-receive/service-announcements?page=2',
+          '/send-receive/service-announcements/page/2'
+        ].filter(Boolean);
+
+        const nextPageCandidates = [...new Set(candidatePaths.map((path) => {
+          if (/^https?:\/\//i.test(path)) return path;
+          return `https://www.singpost.com${path.startsWith('/') ? path : `/${path}`}`;
+        }))];
+
+        const $targetTileContainer = $(tileSelector).first().parent();
+
+        for (const nextPageUrl of nextPageCandidates) {
+          if ($(tileSelector).length >= 9 || !$targetTileContainer.length) break;
+
+          try {
+            const nextResp = await fetch(nextPageUrl, {
+              headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Cache-Control': 'no-cache',
+              },
+              cache: 'no-store',
+            });
+
+            if (!nextResp.ok) continue;
+
+            const nextHtml = await nextResp.text();
+            const $next = cheerio.load(nextHtml);
+
+            $next(tileSelector).each(function () {
+              if ($(tileSelector).length >= 9) return false;
+
+              const $tile = $next(this);
+              const titleText = $tile.find('h3, .sgp-h3').first().text().trim();
+              const dateText = $tile.find('.sgp-tile__date').first().text().trim();
+              const tileKey = getTileKey(titleText, dateText);
+
+              if (!titleText || existingTileKeys.has(tileKey)) return;
+              if (!isEligibleAnnouncement(titleText, dateText)) return;
+
+              existingTileKeys.add(tileKey);
+              $targetTileContainer.append($tile.toString());
+            });
+          } catch (e) {
+            console.warn('Failed to backfill announcements from next page:', nextPageUrl, e?.message || e);
+          }
+        }
+      }
+
+      // Keep first page concise: 3x3 announcement grid (9 cards)
+      $(tileSelector).slice(9).remove();
+
+      const $firstTile = $(tileSelector).first();
+      if ($firstTile.length) {
+        const $tileContainer = $firstTile.parent();
+        $tileContainer.addClass('rnx-announcement-grid');
+        $tileContainer.children(tileSelector).addClass('rnx-announcement-card');
+      }
       
       let rowsRemoved = 0;
       
@@ -301,6 +409,11 @@ export async function GET(request) {
 
     // Convert relative URLs to absolute for href/src/url
     let processedHtml = $global.html();
+
+    if (!processedHtml.includes('id="rnx-announcement-grid-style"')) {
+      processedHtml = processedHtml.replace(/<head>/i, `<head>\n<style id="rnx-announcement-grid-style">\n.rnx-announcement-grid {\n  display: grid !important;\n  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;\n  gap: 16px !important;\n}\n.rnx-announcement-card {\n  margin: 0 !important;\n  width: auto !important;\n  height: 100%;\n}\n@media (max-width: 900px) {\n  .rnx-announcement-grid {\n    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;\n  }\n}\n@media (max-width: 640px) {\n  .rnx-announcement-grid {\n    grid-template-columns: 1fr !important;\n  }\n}\n</style>`);
+    }
+
     processedHtml = processedHtml
       .replace(/href=["']?\/(?!\/)([^"'>\s]*)/gi, 'href="https://www.singpost.com/$1"')
       .replace(/src=["']?\/(?!\/)([^"'>\s]*)/gi, 'src="https://www.singpost.com/$1"')

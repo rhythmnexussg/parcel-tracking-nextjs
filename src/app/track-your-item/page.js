@@ -30,7 +30,7 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
   const iframeSrc = `/api/singpost-announcements${allowedDestinations && allowedDestinations.length > 0 ? '?countries=' + allowedDestinations.join(',') + '&' : '?'}lang=${currentLanguage}`;
 
   return (
-    <div className="service-announcement-container" style={{
+    <div className="service-announcement-container service-announcement-landscape" style={{
       marginBottom: '2rem',
       border: '2px solid #0066cc',
       borderRadius: '8px',
@@ -106,7 +106,7 @@ const ServiceAnnouncement = ({ allowedDestinations }) => {
           src={iframeSrc}
           style={{
             width: '100%',
-            minHeight: '500px',
+            height: '100%',
             border: 'none',
             backgroundColor: 'white'
           }}
