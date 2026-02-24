@@ -3,10 +3,20 @@
 import { Navigation } from '../../components/Navigation';
 import { useLanguage } from '../../LanguageContext';
 import { useRouter } from 'next/navigation';
+import { countryName } from '../../lib/ratesI18n';
 
 export default function PostalContacts() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const router = useRouter();
+
+  const flagFromCountryCode = (countryCode) => {
+    return String.fromCodePoint(
+      ...countryCode
+        .toUpperCase()
+        .split('')
+        .map((char) => 127397 + char.charCodeAt(0))
+    );
+  };
 
   const postalServices = [
     { countryCode: 'SG', provider: 'SingPost', website: 'https://singpost.com/', contactForm: 'https://crmint.singpost.com/spcontactus', contactNumber: '1605 | +65 6222 5777 - Overseas', contactEmail: '' },
@@ -147,16 +157,14 @@ export default function PostalContacts() {
               </thead>
               <tbody>
                 {postalServices.map((service, index) => {
-                  const countryTranslation = t(`country${service.countryCode}`) || `${service.countryCode}`;
-                  const flagMatch = countryTranslation.match(/^([\u{1F1E6}-\u{1F1FF}]{2})\s*/u);
-                  const flag = flagMatch ? flagMatch[1] : '';
-                  const countryName = countryTranslation.replace(/^[\u{1F1E6}-\u{1F1FF}]{2}\s*/u, '').trim();
+                  const localizedCountryName = countryName(language, service.countryCode, service.countryCode);
+                  const flag = flagFromCountryCode(service.countryCode);
                   
                   return (
                     <tr key={index} style={{ borderBottom: '1px solid #dee2e6' }}>
                       <td style={{ padding: '0.75rem', verticalAlign: 'top' }}>
                         {flag && <span style={{ fontSize: '1.5rem', marginRight: '0.5rem' }}>{flag}</span>}
-                        <strong>{countryName}</strong>
+                        <strong>{localizedCountryName}</strong>
                         <br />
                         <span style={{ fontSize: '0.9rem', color: '#666' }}>({service.provider})</span>
                       </td>

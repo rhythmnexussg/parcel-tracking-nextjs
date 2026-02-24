@@ -91,3 +91,76 @@ a {
     width: 100%;
   }
 }
+
+.rates-page {
+  padding-bottom: 20px;
+}
+
+.rates-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  padding: 18px;
+}
+
+.rates-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.rates-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.rates-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(12px, 1.7vw, 14px);
+}
+
+.rates-table th,
+.rates-table td {
+  border: 1px solid #e5e7eb;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.rates-table thead th {
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+.rates-country-cell {
+  min-width: 180px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.rates-tight {
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .rates-card {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .rates-table th,
+  .rates-table td {
+    padding: 6px;
+  }
+
+  .rates-country-cell {
+    min-width: 140px;
+  }
+}

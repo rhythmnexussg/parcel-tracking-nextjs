@@ -82,13 +82,13 @@ export default function Home() {
         <div className="home-section">
           <h2>{t('deliveryInfo')}</h2>
           <div className="info-links">
-            <a href="https://docs.google.com/spreadsheets/d/1Q08_ePn3d0IEp8FU6hShyZ7ayEFbeh1k3SE1wX_T4TY/edit?gid=947614375#gid=947614375" className="info-link">
+            <a href="/delivery-rates-2026" className="info-link">
               {t('deliveryRates2026')}
             </a>
-            <a href="https://docs.google.com/spreadsheets/d/1Q08_ePn3d0IEp8FU6hShyZ7ayEFbeh1k3SE1wX_T4TY/edit?gid=1938431161#gid=1938431161" className="info-link">
+            <a href="/singapore-rates" className="info-link">
               {t('sgDeliveryRates')}
             </a>
-            <a href="https://docs.google.com/spreadsheets/d/1Q08_ePn3d0IEp8FU6hShyZ7ayEFbeh1k3SE1wX_T4TY/edit?gid=389317311#gid=389317311" className="info-link">
+            <a href="/speedpost-express-rates" className="info-link">
               {t('speedPostRates')}
             </a>
           </div>
