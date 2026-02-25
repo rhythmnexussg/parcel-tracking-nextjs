@@ -15,6 +15,7 @@ import { useLanguage } from "../../LanguageContext";
 import { LanguageSelector } from "../../LanguageSelector";
 import { detectLanguageFromIPWithRestrictions, isAccessAllowedFromChina } from "../../ipGeolocation";
 import { Navigation } from "../../components/Navigation";
+import USAWinterStormNotice from "../../components/USAWinterStormNotice";
 
 // --- Service Announcement Component ---
 const ServiceAnnouncement = ({ allowedDestinations }) => {
@@ -993,6 +994,9 @@ function App() {
             
             <h1 className="mt-4">{t('parcelTracking')}</h1>
         </div>
+
+    {/* USA Winter Storm Notice */}
+    <USAWinterStormNotice userCountry={userCountry} t={t} />
 
     {/* Service Announcement Section */}
     <ServiceAnnouncement allowedDestinations={allowedDestinations} />
