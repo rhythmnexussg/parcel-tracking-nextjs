@@ -1164,7 +1164,7 @@ function App() {
           <h4>⚠️ <strong>{t('disclaimer')}</strong></h4>
           <p>
             <strong>{t('rhythmNexusNotResponsible') || 'Rhythm Nexus is NOT RESPONSIBLE for handling the deliveries as it is out of our control and we would kindly prefer for you to track your item status instead.'}</strong><br/>
-            {t('issuesAfterDelivery') || 'Any issues with your delivery after 30/45 days (14 days for SpeedPost Express) or status show delivered but you didn\'t receive, please contact us'} <a href="https://docs.google.com/forms/d/e/1FAIpQLSdH1xkzlxYTR-DOZbybKnF2efa2SienCBL78jpflcA_BZAIAA/viewform?usp=preview">{t('here')}</a>.
+            {t('issuesAfterDelivery') || 'Any issues with your delivery after 30/45 days (14 days for SpeedPost Express) or status show delivered but you didn\'t receive, please contact us'} <a href="https://rhythmnexus.org/contact/parcel-enquiry">{t('here')}</a>.
           </p>
           <p>
             <strong>{t('didNotReceiveEmail')}</strong>

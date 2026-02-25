@@ -81,7 +81,7 @@ export default function Home() {
           <h2>{t('deliveryInfo')}</h2>
           <div className="info-links">
             <a href="https://rhythmnexus.org/delivery-rates-2026" className="info-link">
-              Review our shipping rates here
+              {t('deliveryRates2026')}
             </a>
             <a href="/singapore-rates" className="info-link">
               {t('sgDeliveryRates')}
@@ -93,12 +93,6 @@ export default function Home() {
         </div>
 
         <div className="mt-4">
-          <p>
-            Any issues with your delivery after 30/45 days (14 days for SpeedPost Express) or status show delivered but you didn't receive, please contact us <a href="https://rhythmnexus.org/contact/parcel-enquiry" target="_blank" rel="noopener noreferrer">here</a>.
-          </p>
-          <p>
-            Please contact us through <a href="https://rhythmnexus.org/contact" target="_blank" rel="noopener noreferrer">here</a> for any enquiries you have regarding your order.
-          </p>
         </div>
         <p className="text-muted">
           © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}

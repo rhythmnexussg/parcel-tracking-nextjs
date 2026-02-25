@@ -36,6 +36,12 @@ export const Navigation = () => {
   useEffect(() => {
     const detectUserLocation = async () => {
       try {
+        // Use override country if provided, otherwise detect from IP
+        if (hasOverrideCountry) {
+          setUserCountry(overrideCountry);
+          return;
+        }
+        
         const geoData = await detectLanguageFromIPWithRestrictions();
         if (geoData && geoData.countryCode) {
           setUserCountry(geoData.countryCode);
@@ -46,7 +52,7 @@ export const Navigation = () => {
     };
     
     detectUserLocation();
-  }, []);
+  }, [hasOverrideCountry, overrideCountry]);
 
   useEffect(() => {
     const now = new Date();
