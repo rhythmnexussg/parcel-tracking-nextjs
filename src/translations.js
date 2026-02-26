@@ -15358,7 +15358,7 @@ export const translations = {
     "topCountries": "முதல் 5 நாடுகள்",
     "otherCountries": "பிற நாடுகள்",
     "note": "குறிப்பு",
-    "disclaimer": "⚠️ மறுப்பு",
+    "disclaimer": "மறுப்பு",
     "importantInformation": "முக்கிய தகவல்:",
     "didNotReceiveEmail": "Etsy, eBay, Shopee அல்லது Payhip இலிருந்து உங்கள் உறுதிப்படுத்தல் மின்னஞ்சலைப் பெறவில்லை என்றால், உங்கள் மின்னஞ்சல் முகவரி அல்லது இந்த ஆர்டருடன் இணைக்கப்பட்ட தொலைபேசி எண் மூலம் உங்கள் ஆர்டரைத் தேட கீழே உருட்டவும்.",
     "searchByEmailOrPhone": "மின்னஞ்சல் அல்லது தொலைபேசி மூலம் தேடவும்",
