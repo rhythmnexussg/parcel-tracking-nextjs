@@ -144,6 +144,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
     'Asia/Brunei': 'BNT',
     'Asia/Shanghai': 'CST',
+    'Asia/Urumqi': 'XJT',
     'Asia/Hong_Kong': 'HKT',
     'Asia/Kolkata': 'IST',
     'Asia/Jakarta': 'WIB',

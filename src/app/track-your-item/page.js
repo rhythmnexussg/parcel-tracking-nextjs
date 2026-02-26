@@ -16,6 +16,7 @@ import { LanguageSelector } from "../../LanguageSelector";
 import { detectLanguageFromIPWithRestrictions, isAccessAllowedFromChina } from "../../ipGeolocation";
 import { Navigation } from "../../components/Navigation";
 import USAWinterStormNotice from "../../components/USAWinterStormNotice";
+import ItalyOlympicsNotice from "../../components/ItalyOlympicsNotice";
 
 // --- Service Announcement Component ---
 const ServiceAnnouncement = ({ allowedDestinations }) => {
@@ -423,6 +424,8 @@ function App() {
   const [accessBlocked, setAccessBlocked] = useState(false);
   const [blockMessage, setBlockMessage] = useState("");
   const [allowedDestinations, setAllowedDestinations] = useState(null);
+  const [countryLockedByGeo, setCountryLockedByGeo] = useState(false);
+  const [countryLockedByUrl, setCountryLockedByUrl] = useState(false);
   
 ///  const handleClosePopup = () => {
 ///     const currentIndex = popupSequence.indexOf(activePopup);
@@ -529,7 +532,7 @@ function App() {
     if (!searchParams) return;
     
     const t = searchParams.get("trackingNumber");
-    const c = searchParams.get("destinationCountry");
+    const c = searchParams.get("destinationCountry") || searchParams.get("country");
     const p = searchParams.get("postcode");
     const o = searchParams.get("orderNumber") || searchParams.get("order_number");
     const f = searchParams.get("fromDate");
@@ -542,6 +545,11 @@ function App() {
       setOrderNumber(o);
       setIsLoadingFromUrl(true);
       setAutoSubmit(true);
+      setCountryLockedByUrl(true);
+    } else if (c) {
+      // Pre-set country from URL even without full tracking params
+      setDestinationCountry(c);
+      setCountryLockedByUrl(true);
     }
 
     if (t && /^PX\d{9}SG$/.test(t)) {
@@ -579,6 +587,14 @@ function App() {
         
         // List of all shipped destination countries
         const shippedDestinations = ['AU', 'AT', 'BE', 'BN', 'CA', 'CN', 'CZ', 'FI', 'FR', 'DE', 'HK', 'IN', 'ID', 'IE', 'IL', 'IT', 'JP', 'MO', 'MY', 'NL', 'NZ', 'NO', 'PH', 'PL', 'PT', 'KR', 'SG', 'ES', 'SE', 'CH', 'TW', 'TH', 'GB', 'US', 'VN'];
+
+        // Auto-set destination country from geo if not already set by URL param
+        const urlCountry = searchParams?.get('destinationCountry') || searchParams?.get('country');
+        if (!urlCountry && geoData.countryCode && shippedDestinations.includes(geoData.countryCode)) {
+          setDestinationCountry(geoData.countryCode);
+          setCountryLockedByGeo(true);
+          setCountrySpecificMessage(geoData.countryCode);
+        }
         
         // Special handling for China access restrictions
         if (geoData.countryCode === 'CN') {
@@ -998,6 +1014,9 @@ function App() {
     {/* USA Winter Storm Notice */}
     <USAWinterStormNotice userCountry={userCountry} t={t} />
 
+    {/* Italy Milano Cortina 2026 Olympics & Paralympics Notice */}
+    <ItalyOlympicsNotice language={currentLanguage} />
+
     {/* Service Announcement Section */}
     <ServiceAnnouncement allowedDestinations={allowedDestinations} />
 
@@ -1035,7 +1054,8 @@ function App() {
             value={destinationCountry}
             onChange={handleCountryChange}
             required
-            disabled={accessBlocked}
+            disabled={accessBlocked || countryLockedByGeo || countryLockedByUrl}
+            style={(countryLockedByGeo || countryLockedByUrl) ? { backgroundColor: '#f8f9fa', cursor: 'not-allowed', opacity: 1 } : undefined}
           >
             <option value="" disabled>{t('selectCourier')}</option>
             
@@ -1078,6 +1098,11 @@ function App() {
               );
             })()}
           </select>
+          {(countryLockedByGeo || countryLockedByUrl) && (
+            <small style={{ display: 'block', marginTop: '6px', color: '#666' }}>
+              🔒 {countryLockedByGeo ? (t('countryAutoDetected') || 'Destination pre-set based on your location') : (t('countryAutoDetectedFromLink') || 'Destination pre-set from link')}
+            </small>
+          )}
           </div>
 
         <div className="mb-4">
