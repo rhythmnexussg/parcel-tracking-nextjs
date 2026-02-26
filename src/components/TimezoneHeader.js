@@ -3,6 +3,13 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext';
 
+// Māori month names (traditional)
+const maoriMonths = [
+  'Kohi-tātea', 'Hui-tanguru', 'Poutū-te-rangi', 'Paenga-whāwhā',
+  'Haratua', 'Pipiri', 'Hōngongoi', 'Here-turi-kōkā',
+  'Mahuru', 'Whiringa-ā-nuku', 'Whiringa-ā-rangi', 'Hakihea',
+];
+
 // Country flag emojis
 const countryFlags = {
   SG: '🇸🇬', AU: '🇦🇺', AT: '🇦🇹', BE: '🇧🇪', BN: '🇧🇳', CA: '🇨🇦',
@@ -443,11 +450,26 @@ const TimezoneHeader = ({ userCountry, t }) => {
     };
     const locale = localeByLanguage[currentLanguage] || 'en-US';
 
-    const formattedDate = new Intl.DateTimeFormat(locale, {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    }).format(nextDstTransition.date);
+    let formattedDate;
+    if (currentLanguage === 'mi') {
+      const d = nextDstTransition.date;
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'UTC',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      }).formatToParts(d);
+      const dYear = Number(parts.find((p) => p.type === 'year')?.value || d.getUTCFullYear());
+      const dMonth = Number(parts.find((p) => p.type === 'month')?.value || d.getUTCMonth() + 1);
+      const dDay = Number(parts.find((p) => p.type === 'day')?.value || d.getUTCDate());
+      formattedDate = `${dDay} ${maoriMonths[dMonth - 1]} ${dYear}`;
+    } else {
+      formattedDate = new Intl.DateTimeFormat(locale, {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      }).format(nextDstTransition.date);
+    }
 
     const suffix = (() => {
       if (userCountry === 'AU') return ' (NSW, VIC, SA, TAS, ACT)';
@@ -541,11 +563,26 @@ const TimezoneHeader = ({ userCountry, t }) => {
         zh: 'zh-CN',
         es: 'es-ES',
         sv: 'sv-SE',
+        mi: 'mi-NZ',
         tl: 'fil-PH',
+        ta: 'ta-IN',
         th: 'th-TH',
         vi: 'vi-VN',
         cy: 'cy-GB',
       };
+
+      if (currentLanguage === 'mi') {
+        const parts = new Intl.DateTimeFormat('en-US', {
+          timeZone: timezone,
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }).formatToParts(currentTime);
+        const year = Number(parts.find((p) => p.type === 'year')?.value || currentTime.getFullYear());
+        const month = Number(parts.find((p) => p.type === 'month')?.value || currentTime.getMonth() + 1);
+        const day = Number(parts.find((p) => p.type === 'day')?.value || currentTime.getDate());
+        return `${day} ${maoriMonths[month - 1]} ${year}`;
+      }
 
       const isTaiwanDualYearFormat =
         userCountry === 'TW' &&
