@@ -21,8 +21,15 @@ export default function TermsOfServicePage() {
   const isEnglish = normalizeLang(language) === 'en';
   const ui = getTermsUiLabels(language);
   const localizedDate = getLocalizedPolicyDate(language);
-  const termSentences = p.termsText.split(/(?<=[.!?])\s+/).filter(Boolean);
-  const supplementSentences = p.termsSupplement.split(/(?<=[.!?])\s+/).filter(Boolean);
+  const parseSections = (value = '') => {
+    if (value.includes('|||')) {
+      return value.split('|||').map((s) => s.trim()).filter(Boolean);
+    }
+    return value.split(/(?<=[.!?])\s+/).filter(Boolean);
+  };
+
+  const termSentences = parseSections(p.termsText);
+  const supplementSentences = parseSections(p.termsSupplement);
 
   const sectionText = (index, fallback = '') => termSentences[index] || fallback;
   const supplementText = (index, fallback = '') => supplementSentences[index] || fallback;
@@ -71,17 +78,17 @@ export default function TermsOfServicePage() {
               <p>We may terminate or suspend your account at any time for violations of these Terms.</p>
 
               <h2>3. {ui.sectionTitles[2]}</h2>
-              <h3>3.1 Product Information</h3>
+              <h3>3.1 {ui.subsectionTitles.productInformation}</h3>
               <p>
                 We strive to display product information accurately, but we do not warrant that product descriptions or other content
                 are error-free.
               </p>
 
-              <h3>3.2 Pricing</h3>
-              <p>Prices are shown in [Currency] and include applicable taxes where required by law.</p>
+              <h3>3.2 {ui.subsectionTitles.pricing}</h3>
+              <p>Prices are shown in United States Dollar (USD) and include applicable taxes where required by law.</p>
               <p>We may change prices at any time before you place an order.</p>
 
-              <h3>3.3 Order Acceptance</h3>
+              <h3>3.3 {ui.subsectionTitles.orderAcceptance}</h3>
               <p>
                 Your order is an offer to buy. Acceptance occurs when we confirm your order by email, or when we ship the products,
                 whichever happens first.
@@ -112,7 +119,7 @@ export default function TermsOfServicePage() {
               </ul>
 
               <h2>6. {ui.sectionTitles[5]}</h2>
-              <h3>6.1 EU / EEA / Swiss Customers: Right of Withdrawal</h3>
+              <h3>6.1 {ui.subsectionTitles.euWithdrawal}</h3>
               <p>
                 If you reside in the EU, EEA, or Switzerland, you have the legal right to return products within 14 days of receipt
                 for a full refund.
@@ -130,7 +137,7 @@ export default function TermsOfServicePage() {
                 </li>
               </ul>
 
-              <h3>6.2 USA Customers</h3>
+              <h3>6.2 {ui.subsectionTitles.usaCustomers}</h3>
               <p>
                 Return eligibility for US customers is outlined in our separate Return &amp; Refund Policy posted on the Website.
                 Some items (e.g., digital downloads, personalized items) may be non-refundable.
@@ -177,7 +184,7 @@ export default function TermsOfServicePage() {
               <p>EU/EEA/Swiss users may have additional protections under local law that cannot be waived.</p>
 
               <h2>11. {ui.sectionTitles[10]}</h2>
-              <h3>11.1 EU/EEA/Swiss Users</h3>
+              <h3>11.1 {ui.subsectionTitles.euUsers}</h3>
               <p>
                 You may access the EU Online Dispute Resolution platform:
                 {' '}
@@ -186,7 +193,7 @@ export default function TermsOfServicePage() {
                 </a>
               </p>
 
-              <h3>11.2 USA Users</h3>
+              <h3>11.2 {ui.subsectionTitles.usaUsers}</h3>
               <p>Disputes may be resolved through:</p>
               <ul>
                 <li>Negotiation</li>
@@ -213,22 +220,30 @@ export default function TermsOfServicePage() {
               <p>{sectionText(2, p.termsText)}</p>
 
               <h2>3. {ui.sectionTitles[2]}</h2>
+              <h3>3.1 {ui.subsectionTitles.productInformation}</h3>
               <p>{sectionText(3, p.termsText)}</p>
-
-              <h2>4. {ui.sectionTitles[3]}</h2>
+              <h3>3.2 {ui.subsectionTitles.pricing}</h3>
               <p>{sectionText(4, p.termsText)}</p>
-
-              <h2>5. {ui.sectionTitles[4]}</h2>
+              <h3>3.3 {ui.subsectionTitles.orderAcceptance}</h3>
               <p>{sectionText(5, p.termsText)}</p>
 
-              <h2>6. {ui.sectionTitles[5]}</h2>
+              <h2>4. {ui.sectionTitles[3]}</h2>
               <p>{sectionText(6, p.termsText)}</p>
 
-              <h2>7. {ui.sectionTitles[6]}</h2>
+              <h2>5. {ui.sectionTitles[4]}</h2>
               <p>{sectionText(7, p.termsText)}</p>
 
-              <h2>8. {ui.sectionTitles[7]}</h2>
+              <h2>6. {ui.sectionTitles[5]}</h2>
+              <h3>6.1 {ui.subsectionTitles.euWithdrawal}</h3>
               <p>{sectionText(8, p.termsText)}</p>
+              <h3>6.2 {ui.subsectionTitles.usaCustomers}</h3>
+              <p>{sectionText(9, p.termsText)}</p>
+
+              <h2>7. {ui.sectionTitles[6]}</h2>
+              <p>{sectionText(10, p.termsText)}</p>
+
+              <h2>8. {ui.sectionTitles[7]}</h2>
+              <p>{sectionText(11, p.termsText)}</p>
 
               <h2>9. {ui.sectionTitles[8]}</h2>
               <p>{supplementText(0, p.termsSupplement)}</p>
@@ -237,10 +252,14 @@ export default function TermsOfServicePage() {
               <p>{supplementText(1, p.termsSupplement)}</p>
 
               <h2>11. {ui.sectionTitles[10]}</h2>
+              <h3>11.1 {ui.subsectionTitles.euUsers}</h3>
               <p>{supplementText(2, p.termsSupplement)}</p>
 
-              <h2>12. {ui.sectionTitles[11]}</h2>
+              <h3>11.2 {ui.subsectionTitles.usaUsers}</h3>
               <p>{supplementText(3, p.termsSupplement)}</p>
+
+              <h2>12. {ui.sectionTitles[11]}</h2>
+              <p>{supplementText(4, p.termsSupplement)}</p>
 
               <p>
                 <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>

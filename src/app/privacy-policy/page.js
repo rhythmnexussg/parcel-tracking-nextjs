@@ -21,8 +21,15 @@ export default function PrivacyPolicyPage() {
   const isEnglish = normalizeLang(language) === 'en';
   const ui = getPrivacyUiLabels(language);
   const localizedDate = getLocalizedPolicyDate(language);
-  const privacySentences = p.privacyText.split(/(?<=[.!?])\s+/).filter(Boolean);
-  const supplementSentences = p.privacySupplement.split(/(?<=[.!?])\s+/).filter(Boolean);
+  const parseSections = (value = '') => {
+    if (value.includes('|||')) {
+      return value.split('|||').map((s) => s.trim()).filter(Boolean);
+    }
+    return value.split(/(?<=[.!?])\s+/).filter(Boolean);
+  };
+
+  const privacySentences = parseSections(p.privacyText);
+  const supplementSentences = parseSections(p.privacySupplement);
 
   const sectionText = (index, fallback = '') => privacySentences[index] || fallback;
   const supplementText = (index, fallback = '') => supplementSentences[index] || fallback;
@@ -52,7 +59,7 @@ export default function PrivacyPolicyPage() {
               <p>This policy applies to users from the EU, EEA, Switzerland, and the USA.</p>
 
               <h2>1. {ui.sectionTitles[0]}</h2>
-              <h3>1.1 Personal Data You Provide</h3>
+              <h3>1.1 {ui.subsectionTitles.personalDataProvided}</h3>
               <p>We collect the personal information you voluntarily provide, including:</p>
               <ul>
                 <li>Name</li>
@@ -62,7 +69,7 @@ export default function PrivacyPolicyPage() {
                 <li>Payment information (handled by third-party processors)</li>
               </ul>
 
-              <h3>1.2 Automatically Collected Data</h3>
+              <h3>1.2 {ui.subsectionTitles.automaticData}</h3>
               <p>We automatically collect:</p>
               <ul>
                 <li>IP address</li>
@@ -115,7 +122,7 @@ export default function PrivacyPolicyPage() {
               <p>We do not sell personal data.</p>
 
               <h2>6. {ui.sectionTitles[5]}</h2>
-              <h3>6.1 EU/EEA/Swiss Users (GDPR Rights)</h3>
+              <h3>6.1 {ui.subsectionTitles.euRights}</h3>
               <p>You have the right to:</p>
               <ul>
                 <li>Access your personal data</li>
@@ -128,7 +135,7 @@ export default function PrivacyPolicyPage() {
               </ul>
               <p>To exercise these rights, contact us at: rhythmnexusco@gmail.com</p>
 
-              <h3>6.2 USA Users (CCPA/CPRA, Where Applicable)</h3>
+              <h3>6.2 {ui.subsectionTitles.usaRights}</h3>
               <p>If you are a California resident, you have the rights to:</p>
               <ul>
                 <li>Know what personal data is collected</li>
@@ -194,31 +201,39 @@ export default function PrivacyPolicyPage() {
               <p>{sectionText(0, p.privacyText)}</p>
 
               <h2>1. {ui.sectionTitles[0]}</h2>
+              <h3>1.1 {ui.subsectionTitles.personalDataProvided}</h3>
               <p>{sectionText(1, p.privacyText)}</p>
 
-              <h2>2. {ui.sectionTitles[1]}</h2>
+              <h3>1.2 {ui.subsectionTitles.automaticData}</h3>
               <p>{sectionText(2, p.privacyText)}</p>
 
-              <h2>3. {ui.sectionTitles[2]}</h2>
+              <h2>2. {ui.sectionTitles[1]}</h2>
               <p>{sectionText(3, p.privacyText)}</p>
+
+              <h2>3. {ui.sectionTitles[2]}</h2>
+              <p>{sectionText(4, p.privacyText)}</p>
 
               <h2>4. {ui.sectionTitles[3]}</h2>
               <p>{supplementText(0, p.privacySupplement)}</p>
 
               <h2>5. {ui.sectionTitles[4]}</h2>
-              <p>{sectionText(4, p.privacyText)}</p>
-
-              <h2>6. {ui.sectionTitles[5]}</h2>
               <p>{sectionText(5, p.privacyText)}</p>
 
-              <h2>7. {ui.sectionTitles[6]}</h2>
+              <h2>6. {ui.sectionTitles[5]}</h2>
+              <h3>6.1 {ui.subsectionTitles.euRights}</h3>
               <p>{sectionText(6, p.privacyText)}</p>
 
-              <h2>8. {ui.sectionTitles[7]}</h2>
+              <h3>6.2 {ui.subsectionTitles.usaRights}</h3>
               <p>{sectionText(7, p.privacyText)}</p>
 
-              <h2>9. {ui.sectionTitles[8]}</h2>
+              <h2>7. {ui.sectionTitles[6]}</h2>
               <p>{sectionText(8, p.privacyText)}</p>
+
+              <h2>8. {ui.sectionTitles[7]}</h2>
+              <p>{sectionText(9, p.privacyText)}</p>
+
+              <h2>9. {ui.sectionTitles[8]}</h2>
+              <p>{sectionText(10, p.privacyText)}</p>
 
               <h2>10. {ui.sectionTitles[9]}</h2>
               <p>{supplementText(1, p.privacySupplement)}</p>
