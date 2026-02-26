@@ -470,11 +470,34 @@ export async function GET(request) {
     var inited = false;
     var targetLang = '${gtLang}';
     var reloadGuardKey = 'rnx_singpost_gt_reload_' + targetLang;
+    var reloadGuardTimeKey = 'rnx_singpost_gt_reload_time_' + targetLang;
+
+    // Reload guard expires after 8 s so mobile retries work
+    function isReloadGuardActive() {
+      try {
+        if (sessionStorage.getItem(reloadGuardKey) !== '1') return false;
+        var t = parseInt(sessionStorage.getItem(reloadGuardTimeKey) || '0', 10);
+        if (Date.now() - t > 8000) {
+          sessionStorage.removeItem(reloadGuardKey);
+          sessionStorage.removeItem(reloadGuardTimeKey);
+          return false;
+        }
+        return true;
+      } catch(e) { return false; }
+    }
+
+    function clearReloadGuard() {
+      try {
+        sessionStorage.removeItem(reloadGuardKey);
+        sessionStorage.removeItem(reloadGuardTimeKey);
+      } catch(e) {}
+    }
 
     function triggerFallbackReload() {
       try {
-        if (sessionStorage.getItem(reloadGuardKey) === '1') return;
+        if (isReloadGuardActive()) return;
         sessionStorage.setItem(reloadGuardKey, '1');
+        sessionStorage.setItem(reloadGuardTimeKey, String(Date.now()));
 
         var googleTransFromEn = '/en/' + targetLang;
         document.cookie = 'googtrans=' + googleTransFromEn + '; path=/';
@@ -482,9 +505,41 @@ export async function GET(request) {
         document.cookie = 'googtrans=/auto/' + targetLang + '; path=/';
         document.cookie = 'googtrans=/auto/' + targetLang + '; path=/; domain=' + location.hostname;
         try { localStorage.setItem('googtrans', googleTransFromEn); } catch(e) {}
-
         location.reload();
       } catch(e) {}
+    }
+
+    // Try selecting language via the desktop combo dropdown
+    function tryComboSelect() {
+      try {
+        var combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          combo.value = targetLang;
+          combo.dispatchEvent(new Event('change'));
+          clearReloadGuard();
+          return true;
+        }
+      } catch(e) {}
+      return false;
+    }
+
+    // Mobile: Google Translate shows a banner — try clicking its buttons
+    function tryMobileBanner() {
+      try {
+        // Common mobile banner selectors
+        var selectors = [
+          '.goog-te-banner-content button',
+          '.VIpgJd-ZVi9od-ORHb-OEVmcd',
+          '.VIpgJd-ZVi9od-xl07Ob-lTBxed span',
+          '[class*="translate_button"]',
+          '.goog-te-gadget a'
+        ];
+        for (var i = 0; i < selectors.length; i++) {
+          var el = document.querySelector(selectors[i]);
+          if (el) { el.click(); clearReloadGuard(); return true; }
+        }
+      } catch(e) {}
+      return false;
     }
 
     function applyLanguageSelection() {
@@ -492,19 +547,13 @@ export async function GET(request) {
         var attempts = 0;
         var timer = setInterval(function () {
           attempts += 1;
-          var combo = document.querySelector('.goog-te-combo');
-          if (combo) {
-            combo.value = targetLang;
-            combo.dispatchEvent(new Event('change'));
-            try { sessionStorage.removeItem(reloadGuardKey); } catch(e) {}
-            clearInterval(timer);
-            return;
-          }
-          if (attempts > 30) {
+          if (tryComboSelect()) { clearInterval(timer); return; }
+          if (attempts > 15) { tryMobileBanner(); }
+          if (attempts > 40) {
             clearInterval(timer);
             triggerFallbackReload();
           }
-        }, 100);
+        }, 150);
       } catch(e) {}
     }
 
@@ -516,12 +565,7 @@ export async function GET(request) {
         if (!document.getElementById('google_translate_element')) {
           var container = document.createElement('div');
           container.id = 'google_translate_element';
-          container.style.position = 'fixed';
-          container.style.left = '-9999px';
-          container.style.top = '-9999px';
-          container.style.width = '1px';
-          container.style.height = '1px';
-          container.style.overflow = 'hidden';
+          container.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden';
           document.body.appendChild(container);
         }
       } catch(e) {}
@@ -535,8 +579,10 @@ export async function GET(request) {
         }, 'google_translate_element');
       } catch(e) {}
 
+      // Multiple delayed attempts — mobile script execution is slower
       applyLanguageSelection();
-      setTimeout(applyLanguageSelection, 300);
+      setTimeout(applyLanguageSelection, 500);
+      setTimeout(applyLanguageSelection, 1500);
     }
 
     window.googleTranslateElementInit = initTranslate;
@@ -550,7 +596,7 @@ export async function GET(request) {
           initTranslate();
           return;
         }
-        if (tries > 30) {
+        if (tries > 40) {
           clearInterval(bootstrapTimer);
           triggerFallbackReload();
         }
@@ -558,7 +604,7 @@ export async function GET(request) {
     } catch(e) {}
   })();
 </script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit&hl=${gtLang}"></script>
 <div id="google_translate_element" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden"></div>
 `;
 
