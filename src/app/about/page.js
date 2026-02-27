@@ -11,32 +11,34 @@ export default function About() {
   return (
     <>
       <Navigation />
-      
-      <div className="container text-center">
-        <h1 className="mt-3">{t('aboutTitle')}</h1>
 
-        <div className="about-content-card">
-          <p>
-            {t('aboutP1')}
-          </p>
+      <main>
+        <div className="container text-center">
+          <h1 className="mt-3">{t('aboutTitle')}</h1>
 
-          <p>
-            {t('aboutP2')}
-          </p>
+          <div className="about-content-card">
+            <p>
+              {t('aboutP1')}
+            </p>
 
-          <p>
-            {t('aboutP3')}
-          </p>
+            <p>
+              {t('aboutP2')}
+            </p>
 
-          <p>
-            {t('aboutP4')}
+            <p>
+              {t('aboutP3')}
+            </p>
+
+            <p>
+              {t('aboutP4')}
+            </p>
+          </div>
+
+          <p className="text-muted">
+            © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
           </p>
         </div>
-        
-        <p className="text-muted">
-          © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
-        </p>
-      </div>
+      </main>
     </>
   );
 }

@@ -4,9 +4,10 @@ import Script from 'next/script';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+// Only allow ads on pages with genuine, unique publisher content.
+// Navigation pages, store directories, and tool-only pages are excluded
+// per Google AdSense policy (screens used for navigation/behavioural purposes).
 const ALLOWED_EXACT_PATHS = new Set([
-  '/',
-  '/home',
   '/about',
   '/faq',
   '/FAQ',
@@ -100,7 +101,14 @@ const isIndexablePage = () => {
 const hasMinimumStructuralContent = () => {
   if (typeof document === 'undefined') return false;
   const paragraphCount = document.querySelectorAll('main p, article p, .blog-content-card p, .about-content-card p, .faq-content p').length;
-  const headingCount = document.querySelectorAll('main h1, article h1, .blog-content-card h1, .about-content-card h1, .faq-content h1').length;
+  // Accept h1, h2, or h3 — blog posts canonically use h2, FAQ cards use h3
+  const headingCount = document.querySelectorAll(
+    'main h1, main h2, main h3,'
+    + ' article h1, article h2,'
+    + ' .blog-content-card h1, .blog-content-card h2,'
+    + ' .about-content-card h1, .about-content-card h2,'
+    + ' .faq-content h1'
+  ).length;
 
   return paragraphCount >= MINIMUM_PARAGRAPHS && headingCount >= MINIMUM_HEADING_COUNT;
 };
