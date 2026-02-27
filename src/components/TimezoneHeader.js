@@ -400,6 +400,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
       zh: 'zh-CN',
       'zh-hant': 'zh-Hant-TW',
       zh_hk: 'zh-Hant-HK',
+      yue: 'zh-Hant-HK',
       es: 'es-ES',
       sv: 'sv-SE',
       tl: 'fil-PH',
@@ -431,6 +432,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
       zh: { starts: '夏令时开始', ends: '夏令时结束', reverts: '恢复标准时间', europe: '欧洲', newZealand: '新西兰' },
       'zh-hant': { starts: '夏令時間開始', ends: '夏令時間結束', reverts: '恢復標準時間', europe: '歐洲', newZealand: '紐西蘭' },
       zh_hk: { starts: '夏令時間開始', ends: '夏令時間結束', reverts: '恢復標準時間', europe: '歐洲', newZealand: '紐西蘭' },
+      yue: { starts: '夏令時間開始', ends: '夏令時間結束', reverts: '恢復標準時間', europe: '歐洲', newZealand: '紐西蘭' },
       es: { starts: 'El horario de verano comienza', ends: 'El horario de verano termina', reverts: 'vuelve al horario estándar', europe: 'Europa', newZealand: 'Nueva Zelanda' },
       sv: { starts: 'Sommartid börjar', ends: 'Sommartid slutar', reverts: 'återgår till normaltid', europe: 'Europa', newZealand: 'Nya Zeeland' },
       tl: { starts: 'Nagsisimula ang daylight saving time', ends: 'Nagtatapos ang daylight saving time', reverts: 'bumabalik sa karaniwang oras', europe: 'Europa', newZealand: 'New Zealand' },
@@ -560,6 +562,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
         pt: 'pt-PT',
         'zh-hant': 'zh-Hant-TW',
         zh_hk: 'zh-Hant-HK',
+        yue: 'zh-Hant-HK',
         zh: 'zh-CN',
         es: 'es-ES',
         sv: 'sv-SE',
@@ -605,7 +608,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
         return `${year}年${month}月${day}日（民國${rocYear}年${month}月${day}日）`;
       }
 
-      if (currentLanguage === 'zh' || currentLanguage === 'zh-hant' || currentLanguage === 'zh_hk') {
+      if (currentLanguage === 'zh' || currentLanguage === 'zh-hant' || currentLanguage === 'zh_hk' || currentLanguage === 'yue') {
         const locale = currentLanguage === 'zh' ? 'zh-CN' : 'zh-Hant-TW';
         const parts = new Intl.DateTimeFormat(locale, {
           timeZone: timezone,

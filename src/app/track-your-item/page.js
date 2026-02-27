@@ -686,6 +686,7 @@ function App() {
         pt: 'pt-PT',
         'zh-hant': 'zh-Hant-TW',
         zh_hk: 'zh-Hant-HK',
+        yue: 'zh-Hant-HK',
         zh: 'zh-CN',
         es: 'es-ES',
         sv: 'sv-SE',
@@ -885,13 +886,13 @@ function App() {
               langKey = currentLanguage === "id" ? "id" : "en";
             } else if (destinationCountry === "MO") {
               langKey =
-                currentLanguage === "zh" || currentLanguage === "zh-hk" ? "zh" :
+                currentLanguage === "zh" || currentLanguage === "zh-hk" || currentLanguage === "yue" ? "zh" :
                 currentLanguage === "zh-cn" ? "zh_cn" :
                 currentLanguage === "pt" ? "pt" :
                 "en";
             } else if (destinationCountry === "HK") {
               langKey =
-                currentLanguage === "zh" || currentLanguage === "zh-hk" ? "zh" :
+                currentLanguage === "zh" || currentLanguage === "zh-hk" || currentLanguage === "yue" ? "zh" :
                 currentLanguage === "zh-cn" ? "zh_cn" :
                 "en";
             } else if (destinationCountry === "IE") {

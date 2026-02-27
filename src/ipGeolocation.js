@@ -6,7 +6,7 @@ const countryToLanguageMap = {
   // Major markets
   'CN': 'zh',        // China → Simplified Chinese
   'TW': 'zh-hant',   // Taiwan → Traditional Chinese
-  'HK': 'zh-hant',   // Hong Kong → Traditional Chinese (default, can choose English)
+  'HK': 'yue',      // Hong Kong → Cantonese
   'JP': 'ja',        // Japan → Japanese
   'KR': 'ko',        // South Korea → Korean
   'FR': 'fr',        // France → French
@@ -29,7 +29,7 @@ const countryToLanguageMap = {
   'IE': 'ga',        // Ireland → Irish
   'IL': 'he',        // Israel → Hebrew
   'BN': 'ms',        // Brunei → Malay (default, can choose English)
-  'MO': 'zh-hant',   // Macau → Traditional Chinese (default, can choose English/Portuguese)
+  'MO': 'yue',      // Macau → Cantonese (default, can choose English/Portuguese)
   'BE': 'fr',        // Belgium → French (default, can choose Dutch/German/English)
   'CH': 'de',        // Switzerland → German (default, can choose French/Italian/English)
   // Default to English for other countries
@@ -266,8 +266,9 @@ const multiLanguageCountries = {
     { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' }
   ],
   'HK': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇭🇰' }
+    { code: 'yue', name: '廣東話（Cantonese）', flag: '🇭🇰' },
+    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇭🇰' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'IN': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -295,9 +296,10 @@ const multiLanguageCountries = {
     { code: 'ja', name: '日本語 (Japanese)', flag: '🇯🇵' }
   ],
   'MO': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'yue', name: '廣東話（Cantonese）', flag: '🇲🇴' },
     { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇲🇴' },
-    { code: 'pt', name: 'Português (Portuguese)', flag: '🇵🇹' }
+    { code: 'pt', name: 'Português (Portuguese)', flag: '🇵🇹' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'MY': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -596,7 +598,7 @@ export function detectLanguageFromBrowser() {
   
   // Map common browser language codes to our supported languages
   const browserLangMap = {
-    'zh': browserLang.includes('TW') || browserLang.includes('HK') ? 'zh-hant' : 'zh',
+    'zh': browserLang.includes('TW') ? 'zh-hant' : browserLang.includes('HK') ? 'yue' : 'zh',
     'ja': 'ja',
     'ko': 'ko',
     'fr': 'fr',

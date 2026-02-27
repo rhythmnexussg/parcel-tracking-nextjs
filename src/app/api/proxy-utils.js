@@ -291,7 +291,7 @@ ap-header, header, footer, .cookie-banner, .ap-cookie-banner { display: none !im
         'fi': 'fi', 'no': 'no', 'pl': 'pl', 'cs': 'cs', 'da': 'da', 'el': 'el', 'hu': 'hu', 'ro': 'ro',
         'sk': 'sk', 'sl': 'sl', 'bg': 'bg', 'hr': 'hr', 'lt': 'lt', 'lv': 'lv', 'et': 'et', 'tr': 'tr',
         'ru': 'ru', 'uk': 'uk', 'ar': 'ar', 'he': 'iw', 'iw': 'iw', 'id': 'id', 'ms': 'ms', 'th': 'th', 'vi': 'vi',
-        'ja': 'ja', 'ko': 'ko', 'zh': 'zh-CN', 'zh-cn': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-hant': 'zh-TW', 'zh-tw': 'zh-TW', 'zh-hk': 'zh-TW',
+        'ja': 'ja', 'ko': 'ko', 'zh': 'zh-CN', 'zh-cn': 'zh-CN', 'zh-hans': 'zh-CN', 'zh-hant': 'zh-TW', 'zh-tw': 'zh-TW', 'zh-hk': 'zh-TW', 'yue': 'zh-TW',
         'cy': 'cy', 'ta': 'ta', 'mi': 'mi', 'hi': 'hi', 'ga': 'ga', 'tl': 'tl'
       };
       const gtLang = langCodeMap[targetLang] || targetLang;

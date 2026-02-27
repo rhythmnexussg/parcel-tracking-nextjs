@@ -35,6 +35,7 @@ const languageEnglishNames = {
   cy: 'Welsh',
   ta: 'Tamil',
   mi: 'Maori',
+  yue: 'Traditional Chinese-Cantonese',
 };
 
 export const LanguageSelector = () => {

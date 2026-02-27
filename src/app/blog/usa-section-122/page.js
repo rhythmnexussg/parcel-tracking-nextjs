@@ -348,12 +348,27 @@ const BLOG_USA_SECTION_122_I18N = {
     nextText: 'Os bydd amodau polisi yn parhau i newid, gall costau cludo i UDA gael eu hadolygu eto. Byddwn yn cadw diweddariadau prisio’n dryloyw er mwyn parhau â’r gwasanaeth heb golledion anghynaliadwy.',
     thanks: 'Diolch am eich cefnogaeth barhaus.',
   },
+  yue: {
+    title: '美國 Section 122 運輸更新',
+    intro: '因應 Section 122 最新關稅政策變更，我哋發布寄往美國貨物嘅運營更新。',
+    changesTitle: '目前變更內容',
+    change1: '寄往美國嘅包裹將收取 10% 處理費。',
+    change2: '所有商品另加 10% 關稅相關附加費。',
+    effectiveTitle: '生效日期',
+    effectiveText: '以上調整即日起生效，並與今日開始實施嘅 Section 122 一致。',
+    nextTitle: '後續可能變動',
+    nextText: '若政策持續變動，寄往美國嘅運費可能再次調整。我哋會保持透明嘅價格更新，確保服務可持續運作。',
+    thanks: '多謝你持續支持。',
+  },
 };
 
 function getBlogContentByLanguage(languageCode) {
   const normalized = String(languageCode || 'en').toLowerCase();
-  if (normalized === 'zh-tw' || normalized === 'zh-hk' || normalized === 'zh-hant') {
+  if (normalized === 'zh-tw' || normalized === 'zh-hant') {
     return BLOG_USA_SECTION_122_I18N['zh-hant'];
+  }
+  if (normalized === 'zh-hk' || normalized === 'yue') {
+    return BLOG_USA_SECTION_122_I18N['yue'];
   }
   if (normalized.startsWith('zh')) {
     return BLOG_USA_SECTION_122_I18N.zh;

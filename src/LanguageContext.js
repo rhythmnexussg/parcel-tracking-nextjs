@@ -27,6 +27,7 @@ const getLanguageName = (code) => {
     'ja': '日本語 (Japanese)',
     'zh': '简体中文 (Simplified Chinese)',
     'zh-hant': '繁體中文 (Traditional Chinese)',
+    'yue': '廣東話（Cantonese）',
     'pt': 'Português (Portuguese)',
     'hi': 'हिन्दी (Hindi)',
     'th': 'ภาษาไทย (Thai)',
@@ -47,7 +48,7 @@ const getLanguageName = (code) => {
     'vi': 'Tiếng Việt (Vietnamese)',
     'cy': 'Cymraeg (Welsh)',
     'ta': 'தமிழ் (Tamil)',
-    'mi': 'Māori (Te Reo Māori)'
+    'mi': 'Māori (Te Reo Māori)',
   };
   return names[code] || 'English';
 };
@@ -107,7 +108,8 @@ export const LanguageProvider = ({ children }) => {
           const normalizeLang = (code) => {
             const c = (code || 'en').toLowerCase();
             if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
-            if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+            if (c === 'zh-tw' || c === 'zh-hant') return 'zh-hant';
+            if (c === 'zh-hk' || c === 'yue') return 'yue';
             return c;
           };
           const blockedDefaultLang = ipResult.countryCode === 'SG'
@@ -128,7 +130,8 @@ export const LanguageProvider = ({ children }) => {
         const normalizeLang = (code) => {
           const c = (code || 'en').toLowerCase();
           if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
-          if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+          if (c === 'zh-tw' || c === 'zh-hant') return 'zh-hant';
+          if (c === 'zh-hk' || c === 'yue') return 'yue';
           return c;
         };
         const detectedDefaultLang = ipResult.countryCode === 'SG'
@@ -162,7 +165,8 @@ export const LanguageProvider = ({ children }) => {
         const normalizeLang = (code) => {
           const c = (code || 'en').toLowerCase();
           if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
-          if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+          if (c === 'zh-tw' || c === 'zh-hant') return 'zh-hant';
+          if (c === 'zh-hk' || c === 'yue') return 'yue';
           return c;
         };
         setLanguage(normalizeLang(browserLang));
@@ -190,7 +194,8 @@ export const LanguageProvider = ({ children }) => {
     const normalizeLang = (code) => {
       const c = (code || 'en').toLowerCase();
       if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
-      if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+      if (c === 'zh-tw' || c === 'zh-hant') return 'zh-hant';
+      if (c === 'zh-hk' || c === 'yue') return 'yue';
       return c;
     };
     setLanguage(normalizeLang(langCode));
@@ -209,13 +214,14 @@ export const LanguageProvider = ({ children }) => {
 
   // Simple language change without any storage
   const changeLanguage = (langCode) => {
-    const normalizeLang = (code) => {
+    const normalizeLang2 = (code) => {
       const c = (code || 'en').toLowerCase();
       if (c === 'zh-cn' || c === 'zh-hans') return 'zh';
-      if (c === 'zh-tw' || c === 'zh-hant' || c === 'zh-hk') return 'zh-hant';
+      if (c === 'zh-tw' || c === 'zh-hant') return 'zh-hant';
+      if (c === 'zh-hk' || c === 'yue') return 'yue';
       return c;
     };
-    setLanguage(normalizeLang(langCode));
+    setLanguage(normalizeLang2(langCode));
     if (typeof window !== 'undefined') {
       try {
         sessionStorage.setItem(PHONE_POPUP_LANGUAGE_TRIGGER_KEY, String(Date.now()));

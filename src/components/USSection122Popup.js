@@ -91,7 +91,7 @@ function detectUSFromGeoData(geoData) {
 
 function getPopupText(languageCode) {
   const normalized = String(languageCode || 'en').toLowerCase();
-  if (normalized === 'zh-tw' || normalized === 'zh-hk' || normalized === 'zh-hant') {
+  if (normalized === 'zh-tw' || normalized === 'zh-hk' || normalized === 'zh-hant' || normalized === 'yue') {
     return POPUP_I18N['zh-hant'];
   }
   if (normalized.startsWith('zh')) {

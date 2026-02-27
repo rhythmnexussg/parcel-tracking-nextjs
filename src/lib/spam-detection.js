@@ -292,7 +292,8 @@ function detectExcessiveCapsLockMessage(message, language) {
 function normalizeLanguageCode(language) {
   const code = (language || 'en').toLowerCase();
   if (code === 'zh-cn' || code === 'zh-hans') return 'zh';
-  if (code === 'zh-tw' || code === 'zh-hk' || code === 'zh-hant') return 'zh-hant';
+  if (code === 'zh-tw' || code === 'zh-hant') return 'zh-hant';
+  if (code === 'zh-hk' || code === 'yue') return 'zh-hant';
   return code;
 }
 

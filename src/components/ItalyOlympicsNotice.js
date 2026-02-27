@@ -8,7 +8,8 @@ const normalizeLang = (language) => {
   if (code === 'iw') return 'he';
   if (code === 'fil') return 'tl';
   if (code === 'zh-cn' || code === 'zh-hans') return 'zh';
-  if (code === 'zh-tw' || code === 'zh-hk' || code === 'zh-hant') return 'zh-hant';
+  if (code === 'zh-tw' || code === 'zh-hant') return 'zh-hant';
+  if (code === 'zh-hk' || code === 'yue') return 'zh-hant';
   if (code.startsWith('nb') || code.startsWith('nn')) return 'no';
   return code;
 };

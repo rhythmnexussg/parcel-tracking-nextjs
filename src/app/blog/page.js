@@ -175,11 +175,17 @@ const BLOG_CARD_I18N = {
     usa122Title: 'Whakahōunga tuku USA Section 122',
     usa122Desc: 'Pānui nui mō ngā tukunga ki USA: kua mana ināianei ngā whakatikatika utu mō te whakahaere me ngā utu tāke e pā ana.',
   },
+  yue: {
+    phoneTitle: '寄送需要提供電話號碼',
+    phoneDesc: '解釋部分 Etsy 訂單必須提供收件人電話號碼嘅重要要求，以及唔同目的地國家嘅相關規定。',
+    usa122Title: '美國 Section 122 運輸更新',
+    usa122Desc: '寄往美國嘅包裹重要通知：目前處理費與關稅相關費率調整已正式生效。',
+  },
 };
 
 const BLOG_CARD_LANGUAGE_ALIASES = {
   'zh-tw': 'zh-hant',
-  'zh-hk': 'zh-hant',
+  'zh-hk': 'yue',
   'zh-hans': 'zh',
   'fil': 'tl',
   'iw': 'he',

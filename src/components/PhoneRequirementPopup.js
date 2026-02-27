@@ -27,7 +27,7 @@ const STRICT_CUSTOMS_PHONE_REQUIRED_COUNTRIES = new Set(['CN', 'IN', 'ID', 'PH',
 
 function normalizeLanguageCode(languageCode) {
   const lang = String(languageCode || 'en').toLowerCase();
-  if (lang.startsWith('zh-hant') || lang === 'zh-tw' || lang === 'zh-hk') return 'zh-hant';
+  if (lang.startsWith('zh-hant') || lang === 'zh-tw' || lang === 'zh-hk' || lang === 'yue') return 'zh-hant';
   if (lang.startsWith('zh')) return 'zh';
   return lang;
 }

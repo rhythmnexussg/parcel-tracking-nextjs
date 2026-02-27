@@ -377,7 +377,8 @@ const normalizeLang = (language) => {
   if (code === 'iw') return 'he';
   if (code === 'fil') return 'tl';
   if (code === 'zh-cn' || code === 'zh-hans') return 'zh';
-  if (code === 'zh-tw' || code === 'zh-hk' || code === 'zh-hant') return 'zh-hant';
+  if (code === 'zh-tw' || code === 'zh-hant') return 'zh-hant';
+  if (code === 'zh-hk' || code === 'yue') return 'zh-hant'; // Cantonese falls back to zh-hant for policy
   if (code.startsWith('nb') || code.startsWith('nn')) return 'no';
   return code;
 };
@@ -394,8 +395,10 @@ const pickTitle = (primary, fallback, englishFallback) => {
 
 export const policyText = (language) => {
   const lang = normalizeLang(language);
-  const translation = POLICY_TRANSLATIONS[lang];
-  const supplement = POLICY_SUPPLEMENTS[lang];
+  // Cantonese (yue) falls back to zh-hant; any other unknown lang falls back to en
+  const resolvedLang = POLICY_TRANSLATIONS[lang] ? lang : (lang === 'yue' ? 'zh-hant' : 'en');
+  const translation = POLICY_TRANSLATIONS[resolvedLang];
+  const supplement = POLICY_SUPPLEMENTS[resolvedLang];
 
   if (!translation || !supplement) {
     throw new Error(`Missing policy translation pack for language: ${lang}`);

@@ -13,6 +13,7 @@ const allLanguages = [
   { code: 'ja', name: '日本語 (Japanese)', flag: '🇯🇵' },
   { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
   { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇹🇼' },
+  { code: 'yue', name: '廣東話（Cantonese）', flag: '🇭🇰' },
   { code: 'pt', name: 'Português (Portuguese)', flag: '🇵🇹' },
   { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳' },
   { code: 'th', name: 'ไทย (Thai)', flag: '🇹🇭' },
@@ -38,8 +39,8 @@ const allLanguages = [
 
 const countryNativeLanguage = {
   AU: 'en', AT: 'de', BE: 'fr', BN: 'ms', BR: 'pt', CA: 'en', CN: 'zh', CZ: 'cs',
-  FI: 'fi', FR: 'fr', DE: 'de', HK: 'zh-hant', IN: 'hi', ID: 'id', IE: 'ga', IL: 'he',
-  IT: 'it', JP: 'ja', MO: 'zh-hant', MY: 'ms', NL: 'nl', NZ: 'en', NO: 'no', PH: 'tl',
+  FI: 'fi', FR: 'fr', DE: 'de', HK: 'yue', IN: 'hi', ID: 'id', IE: 'ga', IL: 'he',
+  IT: 'it', JP: 'ja', MO: 'yue', MY: 'ms', NL: 'nl', NZ: 'en', NO: 'no', PH: 'tl',
   PL: 'pl', PT: 'pt', KR: 'ko', SG: 'en', ES: 'es', SE: 'sv', CH: 'de', TW: 'zh-hant',
   TH: 'th', GB: 'en', US: 'en', VN: 'vi', RU: 'ru'
 };
@@ -73,6 +74,7 @@ const modalActionText = {
   cy: { showAll: 'Dangos pob iaith', showRecommended: 'Dangos ieithoedd a argymhellir', chooseLater: 'Fe ddewisaf yn nes ymlaen' },
   ta: { showAll: 'அனைத்து மொழிகளையும் காட்டு', showRecommended: 'பரிந்துரைக்கப்பட்ட மொழிகளை காட்டு', chooseLater: 'பிறகு தேர்வு செய்கிறேன்' },
   mi: { showAll: 'Whakaatu ngā reo katoa', showRecommended: 'Whakaatu ngā reo taunaki', chooseLater: 'Ka kōwhiri au ā muri ake' },
+  yue: { showAll: '顯示所有語言', showRecommended: '顯示推薦語言', chooseLater: '我稍後唘選' },
 };
 
 const modalI18n = {
@@ -109,11 +111,13 @@ const modalI18n = {
   cy: { title: 'Dewiswch eich iaith', detectedPrefix: 'Canfuom eich bod yn ', detectedSuffix: '. Dewiswch eich iaith ddewisol:', welcome: 'Dewiswch eich iaith ddewisol:' },
   ta: { title: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்', detectedPrefix: 'நீங்கள் ', detectedSuffix: ' பகுதியில் இருப்பதை கண்டறிந்தோம். தயவுசெய்து உங்கள் விருப்ப மொழியைத் தேர்ந்தெடுக்கவும்:', welcome: 'தயவுசெய்து உங்கள் விருப்ப மொழியைத் தேர்ந்தெடுக்கவும்:' },
   mi: { title: 'Kōwhiria tō reo', detectedPrefix: 'Kua kitea kei ', detectedSuffix: ' koe. Tēnā kōwhiria tō reo pai:', welcome: 'Tēnā kōwhiria tō reo pai:' },
+  yue: { title: '選擇你嘘語言', detectedPrefix: '我們檢測到你喺啟', detectedSuffix: '。請選擇你嘘偉好嘘語言：', welcome: '請選擇你嘘偉好嘘語言：' },
 };
 
 function getLocaleTag(languageCode) {
   const normalized = String(languageCode || 'en').toLowerCase();
   if (normalized === 'zh-hant') return 'zh-Hant';
+  if (normalized === 'yue') return 'zh-HK';
   if (normalized === 'tl') return 'fil';
   return normalized;
 }
