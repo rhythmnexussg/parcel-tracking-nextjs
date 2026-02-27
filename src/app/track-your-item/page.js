@@ -1201,7 +1201,7 @@ function App() {
           <hr />
           <p>
             {t('reviewShippingRates') || 'Review our current shipping rates'} <a href="https://rhythmnexus.org/delivery-rates-2026">{t('here')}</a><br />
-            {t('contactUsForm') || 'Please contact us through this'}{' '}
+            {t('contactUsForm') || 'Please contact us through'}{' '}
             {['CN', 'RU'].includes(userCountry) ? (
               <a href="mailto:rhythmnexusco@gmail.com">{t('here')}</a>
             ) : (
