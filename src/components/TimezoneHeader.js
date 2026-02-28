@@ -608,8 +608,8 @@ const TimezoneHeader = ({ userCountry, t }) => {
       }
 
       // Show ROC (Republic of China) calendar for Taiwan visitors in all 28 languages.
-      // Traditional Chinese characters (民國) are used for all languages except zh (Simplified),
-      // which uses Simplified characters (民国).
+      // Chinese languages keep their native date format with ROC year appended.
+      // All other languages show their normal localized date + ROC annotation in parentheses.
       const isTaiwanROCFormat =
         userCountry === 'TW' && timezone === 'Asia/Taipei';
 
@@ -626,12 +626,27 @@ const TimezoneHeader = ({ userCountry, t }) => {
         const day = Number(parts.find((part) => part.type === 'day')?.value || currentTime.getDate());
         const rocYear = year - 1911;
 
-        if (currentLanguage === 'zh') {
-          // Simplified Chinese: use simplified characters 民国
-          return `${year}年${month}月${day}日（民国${rocYear}年${month}月${day}日）`;
+        const isChineseScript =
+          currentLanguage === 'zh' ||
+          currentLanguage === 'zh-hant' ||
+          currentLanguage === 'zh_hk' ||
+          currentLanguage === 'yue';
+
+        if (isChineseScript) {
+          // Chinese languages: full Chinese date + ROC year
+          const rocChar = currentLanguage === 'zh' ? '民国' : '民國';
+          return `${year}年${month}月${day}日（${rocChar}${rocYear}年${month}月${day}日）`;
         }
-        // All other languages: Traditional Chinese form 民國
-        return `${year}年${month}月${day}日（民國${rocYear}年${month}月${day}日）`;
+
+        // All other languages: localized date string + ROC annotation
+        const resolvedLocale = localeByLanguage[currentLanguage] || 'en-US';
+        const localizedDate = currentTime.toLocaleDateString(resolvedLocale, {
+          timeZone: timezone,
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+        return `${localizedDate} (民國${rocYear}年)`;
       }
 
       if (currentLanguage === 'zh' || currentLanguage === 'zh-hant' || currentLanguage === 'zh_hk' || currentLanguage === 'yue') {
