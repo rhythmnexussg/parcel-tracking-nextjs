@@ -104,9 +104,11 @@ const TimezoneHeader = ({ userCountry, t }) => {
   const { language: currentLanguage } = useLanguage();
   const countryTimezones = getCountryTimezones(t);
 
-  // Derived date token (YYYY-MM-DD UTC) — changes once per day, used to
-  // trigger a daily re-scan of the next DST transition after one has passed.
-  const todayUTCToken = isMounted ? currentTime.toISOString().slice(0, 10) : '';
+  // Derived hourly token (YYYY-MM-DDTHH UTC) — changes once per UTC hour, used
+  // to trigger a rescan of the next DST transition shortly after it passes.
+  // Hourly granularity means the notice flips within ~1 hour of the actual
+  // scheduled transition time (e.g. 07:00 UTC for US, 01:00 UTC for EU CET/EET).
+  const todayUTCToken = isMounted ? currentTime.toISOString().slice(0, 13) : '';
 
   // Prevent hydration mismatch by only rendering time on client
   useEffect(() => {
@@ -491,12 +493,24 @@ const TimezoneHeader = ({ userCountry, t }) => {
       return '';
     })();
 
+    // Real-time guard: suppress the notice as soon as the transition has
+    // actually occurred (re-evaluated every UTC hour via todayUTCToken).
+    // This ensures CET/EET zones flip at 01:00 UTC and US/CA at 07:00 UTC,
+    // not prematurely at midnight UTC when todayNoonUTC crosses the day boundary.
+    const tzData = countryTimezones[userCountry];
+    const primaryTz = Array.isArray(tzData)
+      ? (tzData.find(({ timezone }) => timezone !== 'Australia/Perth' && timezone !== 'Pacific/Honolulu')?.timezone ?? tzData[0].timezone)
+      : tzData;
+    const dstNowActive = primaryTz ? isDST(primaryTz) : null;
+    if (nextDstTransition.type === 'start' && dstNowActive === true) return null;
+    if (nextDstTransition.type === 'end' && dstNowActive === false) return null;
+
     if (nextDstTransition.type === 'end') {
       return `${translatedPhrases.ends}: ${formattedDate} (${translatedPhrases.reverts})${suffix}`;
     }
 
     return `${translatedPhrases.starts}: ${formattedDate}${suffix}`;
-  }, [nextDstTransition, userCountry, currentLanguage, t]);
+  }, [nextDstTransition, userCountry, currentLanguage, t, todayUTCToken]);
 
   useEffect(() => {
     const timer = setInterval(() => {
