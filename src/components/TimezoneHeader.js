@@ -104,6 +104,10 @@ const TimezoneHeader = ({ userCountry, t }) => {
   const { language: currentLanguage } = useLanguage();
   const countryTimezones = getCountryTimezones(t);
 
+  // Derived date token (YYYY-MM-DD UTC) — changes once per day, used to
+  // trigger a daily re-scan of the next DST transition after one has passed.
+  const todayUTCToken = isMounted ? currentTime.toISOString().slice(0, 10) : '';
+
   // Prevent hydration mismatch by only rendering time on client
   useEffect(() => {
     setIsMounted(true);
@@ -372,7 +376,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
     }
 
     return getNextDSTTransition(timezoneData);
-  }, [userCountry, t]);
+  }, [userCountry, t, todayUTCToken]);
 
   const daylightTimeNotice = useMemo(() => {
     if (!nextDstTransition) return null;
@@ -439,6 +443,8 @@ const TimezoneHeader = ({ userCountry, t }) => {
       th: { starts: 'เวลาออมแสงเริ่มต้น', ends: 'เวลาออมแสงสิ้นสุด', reverts: 'กลับสู่เวลามาตรฐาน', europe: 'ยุโรป', newZealand: 'นิวซีแลนด์' },
       vi: { starts: 'Giờ mùa hè bắt đầu', ends: 'Giờ mùa hè kết thúc', reverts: 'trở về giờ chuẩn', europe: 'Châu Âu', newZealand: 'New Zealand' },
       cy: { starts: 'Mae amser haf yn dechrau', ends: 'Mae amser haf yn dod i ben', reverts: 'dychwelyd i amser safonol', europe: 'Ewrop', newZealand: 'Seland Newydd' },
+      ta: { starts: 'டேலைட் நேரம் தொடங்குகிறது', ends: 'டேலைட் நேரம் முடிந்துவிட்டது', reverts: 'நிலையான நேரத்திற்கு திரும்பியது', europe: 'ஐரோப்பா', newZealand: 'நியூ சிலாந்து' },
+      mi: { starts: 'Ka timata te hora arorangirangi', ends: 'Ka mutu te hora arorangirangi', reverts: 'ka hoki ki te wā ture', europe: 'Europa', newZealand: 'Aotearoa' },
     };
 
     // Get fallback translations first, then override with t() values if available
