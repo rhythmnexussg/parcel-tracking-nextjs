@@ -439,6 +439,21 @@ export async function GET(request) {
       const re = new RegExp(brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
       content = content.replace(re, (m) => `<span class="notranslate" translate="no">${m}</span>`);
     }
+
+    // Protect 2-letter ISO 3166-1 country codes from being translated.
+    // Only replaces in text nodes (between > and <) to avoid corrupting HTML attributes/URLs.
+    // Case-sensitive so common lowercase words (e.g. "in", "no") are never touched.
+    const isoCodes = [
+      'AT','AU','BE','BN','CA','CH','CN','CZ','DE','ES','FI','FR',
+      'GB','HK','ID','IE','IL','IN','IT','JP','KR','MO','MY','NL',
+      'NO','NZ','PH','PL','PT','RU','SE','SG','TH','TW','US','VN',
+    ];
+    const isoRe = new RegExp(`\\b(${isoCodes.join('|')})\\b`, 'g');
+    content = content.replace(/>([^<]+)</g, (match, text) => {
+      const replaced = text.replace(isoRe, '<span class="notranslate" translate="no">$1</span>');
+      return `>${replaced}<`;
+    });
+
     // Remove any accidental double-wrapping
     content = content.replace(
       /<span class="notranslate" translate="no">(<span class="notranslate" translate="no">([^<]*)<\/span>)<\/span>/gi,
