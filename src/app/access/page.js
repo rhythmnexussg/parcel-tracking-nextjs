@@ -11,7 +11,7 @@ const CAPTCHA_LANGUAGES = [
   { code: 'en', label: 'English' },
   { code: 'zh', label: '简体中文 (Chinese Simplified)' },
   { code: 'zh-hant', label: '繁體中文 (Chinese Traditional)' },
-  { code: 'yue', label: '廣東話(Cantonese)' },
+  { code: 'yue', label: '廣東話 (Cantonese)' },
   { code: 'cs', label: 'Čeština (Czech)' },
   { code: 'nl', label: 'Nederlands (Dutch)' },
   { code: 'fi', label: 'Suomi (Finnish)' },
