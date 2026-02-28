@@ -26,7 +26,7 @@ const countryToLanguageMap = {
   'RU': 'ru',        // Russia → Russian
   'PH': 'tl',        // Philippines → Tagalog/Filipino
   'VN': 'vi',        // Vietnam → Vietnamese
-  'IE': 'ga',        // Ireland → Irish
+  'IE': 'en',        // Ireland → English
   'IL': 'he',        // Israel → Hebrew
   'BN': 'ms',        // Brunei → Malay (default, can choose English)
   'MO': 'yue',      // Macau → Cantonese (default, can choose English/Portuguese)
@@ -35,10 +35,10 @@ const countryToLanguageMap = {
   // Default to English for other countries
   'US': 'en',
   'GB': 'en',
-  'CA': 'fr',
+  'CA': 'en',
   'AU': 'en',
   'NZ': 'en',
-  'SG': 'en',        // Singapore → Malay
+  'SG': 'en',        // Singapore → English (default, can choose Chinese/Malay/Tamil)
 };
 
 // Countries allowed to access the site (shipping destinations)
@@ -227,43 +227,43 @@ function getCountryNameFromCode(countryCode) {
 // Countries with multiple official languages
 const multiLanguageCountries = {
   'AT': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'de', name: 'Deutsch (German)', flag: '🇦🇹' }
+    { code: 'de', name: 'Deutsch (German)', flag: '🇦🇹' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'BE': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'nl', name: 'Nederlands (Dutch)', flag: '🇳🇱' },
     { code: 'fr', name: 'Français (French)', flag: '🇫🇷' },
-    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' }
+    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'BN': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇧🇳' }
+    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇧🇳' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'CA': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'fr', name: 'Français (French)', flag: '🇫🇷' }
   ],
   'CN': [
+    { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' }
   ],
   'CZ': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'cs', name: 'Čeština (Czech)', flag: '🇨🇿' }
+    { code: 'cs', name: 'Čeština (Czech)', flag: '🇨🇿' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'FI': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'fi', name: 'Suomi (Finnish)', flag: '🇫🇮' },
-    { code: 'sv', name: 'Svenska (Swedish)', flag: '🇸🇪' }
+    { code: 'sv', name: 'Svenska (Swedish)', flag: '🇸🇪' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'FR': [
     { code: 'fr', name: 'Français (French)', flag: '🇫🇷' },
     { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'DE': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' }
+    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'HK': [
     { code: 'yue', name: '廣東話（Cantonese）', flag: '🇭🇰' },
@@ -271,29 +271,29 @@ const multiLanguageCountries = {
     { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'IN': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳' },
-    { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' }
-  ],
-  'ID': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'id', name: 'Bahasa Indonesia (Indonesian)', flag: '🇮🇩' }
-  ],
-  'IE': [
-    { code: 'ga', name: 'Gaeilge (Irish)', flag: '🇮🇪' },
+    { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' },
     { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
-  'IL': [
+  'ID': [
+    { code: 'id', name: 'Bahasa Indonesia (Indonesian)', flag: '🇮🇩' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
+  ],
+  'IE': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'he', name: 'עברית (Hebrew)', flag: '🇮🇱' }
+    { code: 'ga', name: 'Gaeilge (Irish)', flag: '🇮🇪' }
+  ],
+  'IL': [
+    { code: 'he', name: 'עברית (Hebrew)', flag: '🇮🇱' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'IT': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'it', name: 'Italiano (Italian)', flag: '🇮🇹' }
+    { code: 'it', name: 'Italiano (Italian)', flag: '🇮🇹' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'JP': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ja', name: '日本語 (Japanese)', flag: '🇯🇵' }
+    { code: 'ja', name: '日本語 (Japanese)', flag: '🇯🇵' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'MO': [
     { code: 'yue', name: '廣東話（Cantonese）', flag: '🇲🇴' },
@@ -302,56 +302,56 @@ const multiLanguageCountries = {
     { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'MY': [
+    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇲🇾' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
     { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' },
-    { code: 'ms', name: 'Bahasa Melayu (Malay)', flag: '🇲🇾' },
     { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' }
   ],
   'NL': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'nl', name: 'Nederlands (Dutch)', flag: '🇳🇱' }
+    { code: 'nl', name: 'Nederlands (Dutch)', flag: '🇳🇱' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'NO': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'no', name: 'Norsk (Norwegian)', flag: '🇳🇴' }
+    { code: 'no', name: 'Norsk (Norwegian)', flag: '🇳🇴' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'PH': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'tl', name: 'Tagalog', flag: '🇵🇭' }
+    { code: 'tl', name: 'Tagalog', flag: '🇵🇭' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'PL': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'pl', name: 'Polski (Polish)', flag: '🇵🇱' }
+    { code: 'pl', name: 'Polski (Polish)', flag: '🇵🇱' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'PT': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'pt', name: 'Português (Portuguese)', flag: '🇵🇹' }
+    { code: 'pt', name: 'Português (Portuguese)', flag: '🇵🇹' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'KR': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'ko', name: '한국어 (Korean)', flag: '🇰🇷' }
+    { code: 'ko', name: '한국어 (Korean)', flag: '🇰🇷' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'ES': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'es', name: 'Español (Spanish)', flag: '🇪🇸' }
+    { code: 'es', name: 'Español (Spanish)', flag: '🇪🇸' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'SE': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'sv', name: 'Svenska (Swedish)', flag: '🇸🇪' }
+    { code: 'sv', name: 'Svenska (Swedish)', flag: '🇸🇪' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'CH': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' },
+        { code: 'de', name: 'Deutsch (German)', flag: '🇩🇪' },
     { code: 'fr', name: 'Français (French)', flag: '🇫🇷' },
-    { code: 'it', name: 'Italiano (Italian)', flag: '🇮🇹' }
+    { code: 'it', name: 'Italiano (Italian)', flag: '🇮🇹' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'TW': [
+    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇹🇼' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'zh-hant', name: '繁體中文 (Traditional Chinese)', flag: '🇹🇼' }
   ],
   'TH': [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'th', name: 'ภาษาไทย (Thai)', flag: '🇹🇭' }
+    { code: 'th', name: 'ภาษาไทย (Thai)', flag: '🇹🇭' },
+    { code: 'en', name: 'English', flag: '🇬🇧' }
   ],
   'GB': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
@@ -363,8 +363,8 @@ const multiLanguageCountries = {
     { code: 'zh', name: '简体中文 (Simplified Chinese)', flag: '🇨🇳' }
   ],
   'VN': [
+    { code: 'vi', name: 'Tiếng Việt (Vietnamese)', flag: '🇻🇳' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'vi', name: 'Tiếng Việt (Vietnamese)', flag: '🇻🇳' }
   ],
   'SG': [
     { code: 'en', name: 'English', flag: '🇬🇧' },
