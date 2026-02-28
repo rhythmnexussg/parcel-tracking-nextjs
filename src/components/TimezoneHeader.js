@@ -607,13 +607,14 @@ const TimezoneHeader = ({ userCountry, t }) => {
         return `${day} ${maoriMonths[month - 1]} ${year}`;
       }
 
-      const isTaiwanDualYearFormat =
-        userCountry === 'TW' &&
-        timezone === 'Asia/Taipei' &&
-        (currentLanguage === 'zh-hant' || currentLanguage === 'en');
+      // Show ROC (Republic of China) calendar for Taiwan visitors in all 28 languages.
+      // Traditional Chinese characters (民國) are used for all languages except zh (Simplified),
+      // which uses Simplified characters (民国).
+      const isTaiwanROCFormat =
+        userCountry === 'TW' && timezone === 'Asia/Taipei';
 
-      if (isTaiwanDualYearFormat) {
-        const parts = new Intl.DateTimeFormat('zh-Hant-TW', {
+      if (isTaiwanROCFormat) {
+        const parts = new Intl.DateTimeFormat('en-US', {
           timeZone: timezone,
           year: 'numeric',
           month: 'numeric',
@@ -625,6 +626,11 @@ const TimezoneHeader = ({ userCountry, t }) => {
         const day = Number(parts.find((part) => part.type === 'day')?.value || currentTime.getDate());
         const rocYear = year - 1911;
 
+        if (currentLanguage === 'zh') {
+          // Simplified Chinese: use simplified characters 民国
+          return `${year}年${month}月${day}日（民国${rocYear}年${month}月${day}日）`;
+        }
+        // All other languages: Traditional Chinese form 民國
         return `${year}年${month}月${day}日（民國${rocYear}年${month}月${day}日）`;
       }
 
