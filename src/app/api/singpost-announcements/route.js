@@ -431,6 +431,20 @@ export async function GET(request) {
     }
 
     let content = processedHtml;
+
+    // Protect SpeedPost product brand names from being translated in all 28 languages.
+    // Longer variants must be replaced first to avoid partial matches on "SpeedPost" alone.
+    const protectedBrands = ['SpeedPost Express', 'SpeedPost Priority', 'SpeedPost Saver', 'DHL Express'];
+    for (const brand of protectedBrands) {
+      const re = new RegExp(brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+      content = content.replace(re, (m) => `<span class="notranslate" translate="no">${m}</span>`);
+    }
+    // Remove any accidental double-wrapping
+    content = content.replace(
+      /<span class="notranslate" translate="no">(<span class="notranslate" translate="no">([^<]*)<\/span>)<\/span>/gi,
+      '<span class="notranslate" translate="no">$2</span>'
+    );
+
     try {
       const targetLang = (lang || '').toLowerCase();
       if (targetLang) {
