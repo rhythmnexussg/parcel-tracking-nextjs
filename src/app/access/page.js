@@ -19,7 +19,7 @@ const CAPTCHA_LANGUAGES = [
   { code: 'de', label: 'Deutsch (German)' },
   { code: 'he', label: 'עברית (Hebrew)' },
   { code: 'hi', label: 'हिन्दी (Hindi)' },
-  { code: 'id', label: 'Bahasa Indonesia (Indonesian)' },
+  { code: 'id', label: 'Bahasa Indonesia (Indonesian)' }, 
   { code: 'ga', label: 'Gaeilge (Irish)' },
   { code: 'it', label: 'Italiano (Italian)' },
   { code: 'mi', label: 'Māori (Te Reo Māori)' },
