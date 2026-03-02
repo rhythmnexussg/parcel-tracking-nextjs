@@ -434,7 +434,7 @@ export async function GET(request) {
 
     // Protect SpeedPost product brand names from being translated in all 28 languages.
     // Longer variants must be replaced first to avoid partial matches on "SpeedPost" alone.
-    const protectedBrands = ['SpeedPost Express', 'SpeedPost Priority', 'SpeedPost Saver', 'DHL Express', 'ePAC', 'EMS'];
+    const protectedBrands = ['SpeedPost Express', 'SpeedPost Priority', 'SpeedPost Saver', 'DHL Express', 'ePAC', '(EMS)'];
     for (const brand of protectedBrands) {
       const re = new RegExp(brand.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
       content = content.replace(re, (m) => `<span class="notranslate" translate="no">${m}</span>`);
