@@ -834,7 +834,7 @@ function App() {
 
     if (destinationCountry === "SG") {
       const ppRegex = /^PP\d{9}SG$/;
-      const spnddRegex = /^SPNDD\d{10}$/;
+      const spnddRegex = /^SPNDD\d{8}$/;
 
       if (!(ppRegex.test(trackingNumber) || spnddRegex.test(trackingNumber))) {
         alert(t('invalidSingPostFormat'));
