@@ -628,23 +628,219 @@ function inferCountryCodeFromBrowserTimezone(browserTimezone) {
   if (!browserTimezone) return null;
 
   const timezoneToCountry = {
-    // China
+    // ── China ──────────────────────────────────────────────
     'Asia/Shanghai': 'CN',
     'Asia/Chongqing': 'CN',
     'Asia/Urumqi': 'CN',
     'Asia/Harbin': 'CN',
 
-    // Taiwan
+    // ── Taiwan ─────────────────────────────────────────────
     'Asia/Taipei': 'TW',
 
-    // Hong Kong / Macau
+    // ── Hong Kong / Macau ──────────────────────────────────
     'Asia/Hong_Kong': 'HK',
     'Asia/Macau': 'MO',
     'Asia/Macao': 'MO',
 
-    // Singapore
+    // ── Singapore ──────────────────────────────────────────
     'Asia/Singapore': 'SG',
 
+    // ── Japan ──────────────────────────────────────────────
+    'Asia/Tokyo': 'JP',
+
+    // ── South Korea ────────────────────────────────────────
+    'Asia/Seoul': 'KR',
+
+    // ── Thailand ───────────────────────────────────────────
+    'Asia/Bangkok': 'TH',
+
+    // ── Malaysia ───────────────────────────────────────────
+    'Asia/Kuala_Lumpur': 'MY',
+    'Asia/Kuching': 'MY',
+
+    // ── Indonesia ──────────────────────────────────────────
+    'Asia/Jakarta': 'ID',
+    'Asia/Makassar': 'ID',
+    'Asia/Pontianak': 'ID',
+    'Asia/Jayapura': 'ID',
+
+    // ── Philippines ────────────────────────────────────────
+    'Asia/Manila': 'PH',
+
+    // ── Vietnam ────────────────────────────────────────────
+    'Asia/Ho_Chi_Minh': 'VN',
+    'Asia/Saigon': 'VN',
+
+    // ── India ──────────────────────────────────────────────
+    'Asia/Kolkata': 'IN',
+    'Asia/Calcutta': 'IN',
+
+    // ── Brunei ─────────────────────────────────────────────
+    'Asia/Brunei': 'BN',
+
+    // ── Israel ─────────────────────────────────────────────
+    'Asia/Jerusalem': 'IL',
+    'Asia/Tel_Aviv': 'IL',
+
+    // ── Australia ──────────────────────────────────────────
+    'Australia/Sydney': 'AU',
+    'Australia/Melbourne': 'AU',
+    'Australia/Brisbane': 'AU',
+    'Australia/Adelaide': 'AU',
+    'Australia/Darwin': 'AU',
+    'Australia/Perth': 'AU',
+    'Australia/Hobart': 'AU',
+    'Australia/Canberra': 'AU',
+    'Australia/Currie': 'AU',
+    'Australia/Lord_Howe': 'AU',
+    'Australia/Lindeman': 'AU',
+    'Australia/Broken_Hill': 'AU',
+    'Australian/ACT': 'AU',
+
+    // ── New Zealand ────────────────────────────────────────
+    'Pacific/Auckland': 'NZ',
+    'Pacific/Chatham': 'NZ',
+
+    // ── United States ──────────────────────────────────────
+    'America/New_York': 'US',
+    'America/Chicago': 'US',
+    'America/Denver': 'US',
+    'America/Los_Angeles': 'US',
+    'America/Phoenix': 'US',
+    'America/Anchorage': 'US',
+    'America/Adak': 'US',
+    'America/Boise': 'US',
+    'America/Detroit': 'US',
+    'America/Indiana/Indianapolis': 'US',
+    'America/Indiana/Knox': 'US',
+    'America/Indiana/Marengo': 'US',
+    'America/Indiana/Petersburg': 'US',
+    'America/Indiana/Tell_City': 'US',
+    'America/Indiana/Vevay': 'US',
+    'America/Indiana/Vincennes': 'US',
+    'America/Indiana/Winamac': 'US',
+    'America/Kentucky/Louisville': 'US',
+    'America/Kentucky/Monticello': 'US',
+    'America/Menominee': 'US',
+    'America/North_Dakota/Beulah': 'US',
+    'America/North_Dakota/Center': 'US',
+    'America/North_Dakota/New_Salem': 'US',
+    'Pacific/Honolulu': 'US',
+    'Pacific/Johnston': 'US',
+    'America/Nome': 'US',
+    'America/Sitka': 'US',
+    'America/Yakutat': 'US',
+    'America/Juneau': 'US',
+    'America/Metlakatla': 'US',
+
+    // ── Canada ─────────────────────────────────────────────
+    'America/Toronto': 'CA',
+    'America/Vancouver': 'CA',
+    'America/Edmonton': 'CA',
+    'America/Winnipeg': 'CA',
+    'America/Halifax': 'CA',
+    'America/St_Johns': 'CA',
+    'America/Regina': 'CA',
+    'America/Glace_Bay': 'CA',
+    'America/Goose_Bay': 'CA',
+    'America/Moncton': 'CA',
+    'America/Whitehorse': 'CA',
+    'America/Dawson': 'CA',
+    'America/Creston': 'CA',
+    'America/Dawson_Creek': 'CA',
+    'America/Fort_Nelson': 'CA',
+    'America/Cambridge_Bay': 'CA',
+    'America/Inuvik': 'CA',
+    'America/Yellowknife': 'CA',
+    'America/Rankin_Inlet': 'CA',
+    'America/Resolute': 'CA',
+    'America/Iqaluit': 'CA',
+    'America/Pangnirtung': 'CA',
+    'America/Nipigon': 'CA',
+    'America/Rainy_River': 'CA',
+    'America/Thunder_Bay': 'CA',
+    'America/Atikokan': 'CA',
+    'America/Swift_Current': 'CA',
+    'America/Blanc-Sablon': 'CA',
+
+    // ── United Kingdom ─────────────────────────────────────
+    'Europe/London': 'GB',
+
+    // ── Ireland ────────────────────────────────────────────
+    'Europe/Dublin': 'IE',
+
+    // ── France ─────────────────────────────────────────────
+    'Europe/Paris': 'FR',
+
+    // ── Germany ────────────────────────────────────────────
+    'Europe/Berlin': 'DE',
+    'Europe/Busingen': 'DE',
+
+    // ── Austria ────────────────────────────────────────────
+    'Europe/Vienna': 'AT',
+
+    // ── Belgium ────────────────────────────────────────────
+    'Europe/Brussels': 'BE',
+
+    // ── Netherlands ────────────────────────────────────────
+    'Europe/Amsterdam': 'NL',
+
+    // ── Switzerland ────────────────────────────────────────
+    'Europe/Zurich': 'CH',
+
+    // ── Italy ──────────────────────────────────────────────
+    'Europe/Rome': 'IT',
+
+    // ── Spain ──────────────────────────────────────────────
+    'Europe/Madrid': 'ES',
+    'Atlantic/Canary': 'ES',
+    'Africa/Ceuta': 'ES',
+
+    // ── Portugal ───────────────────────────────────────────
+    'Europe/Lisbon': 'PT',
+    'Atlantic/Madeira': 'PT',
+    'Atlantic/Azores': 'PT',
+
+    // ── Sweden ─────────────────────────────────────────────
+    'Europe/Stockholm': 'SE',
+
+    // ── Norway ─────────────────────────────────────────────
+    'Europe/Oslo': 'NO',
+
+    // ── Finland ────────────────────────────────────────────
+    'Europe/Helsinki': 'FI',
+
+    // ── Poland ─────────────────────────────────────────────
+    'Europe/Warsaw': 'PL',
+
+    // ── Czech Republic ─────────────────────────────────────
+    'Europe/Prague': 'CZ',
+
+    // ── Russia (major zones) ───────────────────────────────
+    'Europe/Moscow': 'RU',
+    'Europe/Kaliningrad': 'RU',
+    'Europe/Samara': 'RU',
+    'Europe/Volgograd': 'RU',
+    'Europe/Saratov': 'RU',
+    'Europe/Ulyanovsk': 'RU',
+    'Asia/Yekaterinburg': 'RU',
+    'Asia/Omsk': 'RU',
+    'Asia/Novosibirsk': 'RU',
+    'Asia/Barnaul': 'RU',
+    'Asia/Tomsk': 'RU',
+    'Asia/Novokuznetsk': 'RU',
+    'Asia/Krasnoyarsk': 'RU',
+    'Asia/Irkutsk': 'RU',
+    'Asia/Chita': 'RU',
+    'Asia/Yakutsk': 'RU',
+    'Asia/Khandyga': 'RU',
+    'Asia/Vladivostok': 'RU',
+    'Asia/Ust-Nera': 'RU',
+    'Asia/Magadan': 'RU',
+    'Asia/Sakhalin': 'RU',
+    'Asia/Srednekolymsk': 'RU',
+    'Asia/Kamchatka': 'RU',
+    'Asia/Anadyr': 'RU',
   };
 
   return timezoneToCountry[browserTimezone] || null;
@@ -976,6 +1172,48 @@ export async function detectLanguageFromIPWithRestrictions() {
         ],
       };
     }
+
+    // ── Mobile Roaming Detection ──────────────────────────────────────────
+    // When a user is physically abroad on mobile data roaming, their IP is
+    // often still routed through the home carrier's network (e.g. Singtel SG,
+    // Starhub SG, M1 SG, NTT JP, SK Telecom KR …), so the IP says "home"
+    // while the browser timezone reflects the real physical location.
+    // In this case we trust the timezone over the IP for country selection.
+    const timezoneCountryCodeForRoaming = normalizeCountryCode(
+      inferCountryCodeFromBrowserTimezone(browserTimezone) || null
+    );
+    const isMobileCarrierOrg = (() => {
+      const org = (data.org || data.isp || '').toLowerCase();
+      const mobileKeywords = [
+        'mobile', 'cellular', 'telecom', 'telekom', 'telecommunication',
+        'singtel', 'starhub', 'm1 limited', 'optus', 'telstra', 'vodafone',
+        'at&t', 'verizon', 't-mobile', 'sprint', 'ntt', 'docomo', 'kddi',
+        'softbank', 'sk telecom', 'kt corp', 'lg uplus', 'chunghwa',
+        'celcom', 'digi', 'maxis', 'globe telecom', 'smart communications',
+        'true move', 'ais ', 'dtac', 'viettel', 'mobifone', 'vinaphone',
+        'airtel', 'reliance jio', 'bsnl', 'idea cellular', 'vi mobile',
+        'telkomsel', 'indosat', 'xl axiata', 'three ', '3 uk', 'o2',
+        'ee limited', 'bt group', 'orange', 'sfr', 'bouygues',
+        'deutsche telekom', 'telefonica', 'telenor', 'telia', 'mts '
+      ];
+      return mobileKeywords.some((kw) => org.includes(kw));
+    })();
+    const isLikelyMobileRoaming = Boolean(
+      timezoneCountryCodeForRoaming &&
+      detectedCountryCode &&
+      timezoneCountryCodeForRoaming !== detectedCountryCode &&
+      isAllowedAccessCountry(timezoneCountryCodeForRoaming) &&
+      // Only override if the IP country looks like a home mobile carrier,
+      // or if the timezone country is allowed and the IP country is the same as
+      // the timezone region origin (typical roaming scenario).
+      (isMobileCarrierOrg || !vpnDetection.isVPN)
+    );
+    if (isLikelyMobileRoaming) {
+      console.log(
+        `📱 Mobile roaming detected: IP says ${detectedCountryCode}, timezone says ${timezoneCountryCodeForRoaming}. Preferring timezone country.`
+      );
+    }
+    // ─────────────────────────────────────────────────────────────────────
     
     console.log('=== Enhanced Detection Results ===');
     console.log('Detected Country (IP):', detectedCountryCode);
@@ -1012,7 +1250,11 @@ export async function detectLanguageFromIPWithRestrictions() {
     let finalCountryCode;
     let blocked;
 
-    if (vpnDetection.isVPN) {
+    if (isLikelyMobileRoaming) {
+      // Physical location (timezone) takes priority over home-carrier IP for roamers.
+      finalCountryCode = timezoneCountryCodeForRoaming;
+      blocked = !isAllowedAccessCountry(finalCountryCode);
+    } else if (vpnDetection.isVPN) {
       // VPN policy: use VPN exit country and allow only if it is in the explicit allowlist.
       finalCountryCode = normalizeCountryCode(allowedIpCountry || null);
       if (!finalCountryCode) {
@@ -1049,6 +1291,8 @@ export async function detectLanguageFromIPWithRestrictions() {
       vpnLikelihood: vpnDetection.likelihood,
       vpnIndicators: vpnDetection.indicators,
       estimatedActualCountry: vpnDetection.actualCountry,
+      isMobileRoaming: isLikelyMobileRoaming,
+      roamingPhysicalCountry: isLikelyMobileRoaming ? timezoneCountryCodeForRoaming : null,
       ipCountries,
       allowedIpCountry,
       signalCountries,
@@ -1066,7 +1310,7 @@ export async function detectLanguageFromIPWithRestrictions() {
     };
 
     console.log('Final Result:', result);
-    const shouldCacheResult = !(result.isVPNDetected || result.countryMismatchDetected);
+    const shouldCacheResult = !(result.isVPNDetected || result.countryMismatchDetected || result.isMobileRoaming);
     if (shouldCacheResult) {
       writeGeoCache(result);
     } else {
