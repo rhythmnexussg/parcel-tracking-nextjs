@@ -84,6 +84,7 @@ export default function AccessPage() {
   const [question, setQuestion] = useState('');
   const [challengeMode, setChallengeMode] = useState('math');
   const [challengeOptions, setChallengeOptions] = useState([]);
+  const [charTarget, setCharTarget] = useState('');
   const [challengeExpiresAt, setChallengeExpiresAt] = useState(null);
   const [token, setToken] = useState('');
   const [answer, setAnswer] = useState('');
@@ -117,8 +118,10 @@ export default function AccessPage() {
         throw new Error('Unable to load challenge');
       }
       setQuestion(data.question);
-      setChallengeMode(data?.mode === 'match' ? 'match' : 'math');
+      const validModes = ['math', 'match', 'puzzle', 'keyword', 'char'];
+      setChallengeMode(validModes.includes(data?.mode) ? data.mode : 'math');
       setChallengeOptions(Array.isArray(data?.options) ? data.options : []);
+      setCharTarget(data?.charTarget || '');
       setChallengeExpiresAt(Number.isFinite(data?.expiresAt) ? data.expiresAt : Date.now() + 5 * 60 * 1000);
       setToken(data.token);
       setAnswer('');
@@ -284,6 +287,7 @@ export default function AccessPage() {
               setQuestion('');
               setChallengeMode('math');
               setChallengeOptions([]);
+              setCharTarget('');
               setChallengeExpiresAt(null);
               setToken('');
               setAnswer('');
@@ -312,16 +316,35 @@ export default function AccessPage() {
           <label style={{ display: 'block', marginBottom: '8px', color: '#374151' }}>
             {text.answerLabel}
           </label>
-          {challengeMode === 'match' ? (
+          {challengeMode === 'char' && charTarget && (
+            <div
+              style={{
+                marginBottom: '10px',
+                padding: '12px 16px',
+                background: '#f1f5f9',
+                border: '1px solid #cbd5e1',
+                borderRadius: '8px',
+                fontFamily: 'monospace',
+                fontSize: '1.5rem',
+                letterSpacing: '0.25em',
+                textAlign: 'center',
+                color: '#0f172a',
+                userSelect: 'none',
+              }}
+            >
+              {charTarget}
+            </div>
+          )}
+          {['match', 'puzzle', 'keyword'].includes(challengeMode) ? (
             <div className="access-match-options" style={{ marginBottom: '12px', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
-              {challengeOptions.map((symbol) => {
-                const isSelected = answer === symbol;
+              {challengeOptions.map((option) => {
+                const isSelected = answer === option;
                 return (
                   <button
-                    key={symbol}
+                    key={option}
                     type="button"
                     disabled={!selectedLang || !token || loading}
-                    onClick={() => setAnswer(symbol)}
+                    onClick={() => setAnswer(option)}
                     style={{
                       padding: '10px 12px',
                       border: `1px solid ${isSelected ? '#2563eb' : '#d1d5db'}`,
@@ -332,11 +355,32 @@ export default function AccessPage() {
                       cursor: 'pointer',
                     }}
                   >
-                    {symbol}
+                    {option}
                   </button>
                 );
               })}
             </div>
+          ) : challengeMode === 'char' ? (
+            <input
+              type="text"
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              placeholder={text.answerPlaceholder}
+              required
+              disabled={!selectedLang || !token || loading}
+              autoComplete="off"
+              spellCheck="false"
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px',
+                marginBottom: '12px',
+                fontFamily: 'monospace',
+                letterSpacing: '0.1em',
+                fontSize: '1.1rem',
+              }}
+            />
           ) : (
             <input
               type="number"

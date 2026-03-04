@@ -113,13 +113,24 @@ export async function POST(request) {
       if (answerNumber !== expectedAnswer) {
         return secureApiResponse(NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 }));
       }
-    } else if (payload.mode === 'match') {
+    } else if (payload.mode === 'match' || payload.mode === 'puzzle' || payload.mode === 'keyword') {
+      // All option-based modes: compare answer to the stored correct option
       const expectedOption = normalizeInputValue(payload.correctOption);
       if (!expectedOption) {
         return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
       }
 
       if (normalizedAnswer !== expectedOption) {
+        return secureApiResponse(NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 }));
+      }
+    } else if (payload.mode === 'char') {
+      // Character matching: exact case-sensitive string comparison
+      const expectedAnswer = normalizeInputValue(payload.correctAnswer);
+      if (!expectedAnswer) {
+        return secureApiResponse(NextResponse.json({ ok: false, error: 'invalid_payload' }, { status: 400 }));
+      }
+
+      if (normalizedAnswer !== expectedAnswer) {
         return secureApiResponse(NextResponse.json({ ok: false, error: 'wrong_answer' }, { status: 401 }));
       }
     } else {
