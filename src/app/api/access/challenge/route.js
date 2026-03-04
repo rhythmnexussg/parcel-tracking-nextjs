@@ -6,7 +6,7 @@ import { rateLimit, secureApiResponse } from '../../security';
 const SUPPORTED_LANGS = new Set([
   'en', 'cs', 'nl', 'fi', 'fr', 'de', 'he', 'hi', 'id', 'ga', 'it', 'ja',
   'ko', 'ms', 'no', 'pl', 'pt', 'ru', 'zh', 'es', 'sv', 'ta', 'tl', 'th', 'mi', 'zh-hant',
-  'vi', 'cy',
+  'vi', 'cy', 'yue',
 ]);
 
 const OPERATOR_SYMBOLS = {
@@ -45,6 +45,7 @@ const LOCALIZED_OPERATOR_WORDS = {
   'zh-hant': { add: '加', sub: '減', mul: '乘以', div: '除以' },
   vi: { add: 'cộng', sub: 'trừ', mul: 'nhân', div: 'chia' },
   cy: { add: 'plws', sub: 'minws', mul: 'wedi lluosi â', div: 'wedi rhannu â' },
+  yue: { add: '加', sub: '減', mul: '乘以', div: '除以' },
 };
 
 const NATIVE_QUESTION_START = {
@@ -76,6 +77,7 @@ const NATIVE_QUESTION_START = {
   'zh-hant': '請計算',
   vi: 'Bằng bao nhiêu',
   cy: 'Beth yw',
+  yue: '請計算',
 };
 
 // ─── Puzzle Challenge Data ───────────────────────────────────────────────────
@@ -351,25 +353,24 @@ function createOperationChallenge() {
   return { a: divisor * quotient, b: divisor, op: 'div' };
 }
 
-function buildQuestionText(lang, a, b, op, useEnglish) {
-  const effectiveLang = useEnglish ? 'en' : lang;
-  const start = NATIVE_QUESTION_START[effectiveLang] || NATIVE_QUESTION_START.en;
-  const word = LOCALIZED_OPERATOR_WORDS[effectiveLang]?.[op] || LOCALIZED_OPERATOR_WORDS.en[op];
+function buildQuestionText(lang, a, b, op) {
+  const start = NATIVE_QUESTION_START[lang];
+  const word = LOCALIZED_OPERATOR_WORDS[lang]?.[op];
   const symbol = OPERATOR_SYMBOLS[op] || '?';
 
-  if (effectiveLang === 'ja') {
+  if (lang === 'ja') {
     return `${start}: ${a} ${word} ${b}（${symbol}）?`;
   }
 
-  if (effectiveLang === 'zh' || effectiveLang === 'zh-hant') {
+  if (lang === 'zh' || lang === 'zh-hant' || lang === 'yue') {
     return `${start}：${a} ${word} ${b}（${symbol}）？`;
   }
 
-  if (effectiveLang === 'he') {
+  if (lang === 'he') {
     return `${start}: ${a} ${word} ${b} (${symbol})?`;
   }
 
-  if (effectiveLang === 'tl') {
+  if (lang === 'tl') {
     return `${start} ${a} ${word} ${b}? (${symbol})`;
   }
 
@@ -524,25 +525,14 @@ export async function GET(request) {
     const captchaSecret = getCaptchaSecretOrThrow();
     const exp = Date.now() + 5 * 60 * 1000;
 
-    // 25% math | 25% puzzle | 25% keyword | 25% char
-    const roll = randomInt(0, 3);
-    let challenge;
-
-    if (roll === 0) {
-      const { a, b, op } = createOperationChallenge();
-      challenge = {
-        question: buildQuestionText(lang, a, b, op, false),
-        options: null,
-        charTarget: null,
-        payload: { mode: 'math', a, b, op },
-      };
-    } else if (roll === 1) {
-      challenge = createPuzzleChallenge(lang);
-    } else if (roll === 2) {
-      challenge = createKeywordChallenge(lang);
-    } else {
-      challenge = createCharChallenge(lang);
-    }
+    // MDAS math only
+    const { a, b, op } = createOperationChallenge();
+    const challenge = {
+      question: buildQuestionText(lang, a, b, op),
+      options: null,
+      charTarget: null,
+      payload: { mode: 'math', a, b, op },
+    };
 
     const payload = { ...challenge.payload, exp };
     const payloadBase64 = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64url');

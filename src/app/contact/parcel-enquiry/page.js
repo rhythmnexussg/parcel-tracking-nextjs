@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navigation } from '../../../components/Navigation';
+import { MathCaptcha } from '../../../components/MathCaptcha';
 import { useLanguage } from '../../../LanguageContext';
 import Link from 'next/link';
 import { getSchoolEmailWarningMessage, isSchoolEmailDomain } from '../../../lib/spam-detection';
@@ -25,6 +26,7 @@ export default function ParcelEnquiry() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [showNoDeliveryMessage, setShowNoDeliveryMessage] = useState(false);
+  const [captchaData, setCaptchaData] = useState({ token: '', answer: '' });
 
   const schoolEmailWarning = getSchoolEmailWarningMessage(language);
 
@@ -81,6 +83,8 @@ export default function ParcelEnquiry() {
       }
 
       formDataToSend.append('language', language);
+      formDataToSend.append('captchaToken', captchaData.token);
+      formDataToSend.append('captchaAnswer', captchaData.answer);
 
       const response = await fetch('/api/parcel-enquiry', {
         method: 'POST',
@@ -103,7 +107,7 @@ export default function ParcelEnquiry() {
   };
 
   const showDeliveredButMissingQuestion = formData.undeliveredLongTime === 'Yes';
-  const canSubmit = formData.undeliveredLongTime === 'Yes' && formData.agreed;
+  const canSubmit = formData.undeliveredLongTime === 'Yes' && formData.agreed && captchaData.answer.trim() !== '';
 
   return (
     <>
@@ -476,6 +480,9 @@ export default function ParcelEnquiry() {
                   </p>
                 </div>
               </div>
+
+              {/* Math Captcha */}
+              <MathCaptcha lang={language || 'en'} onChange={setCaptchaData} />
 
               {/* Agreement Checkbox */}
               <div style={{

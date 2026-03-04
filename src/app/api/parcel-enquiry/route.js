@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sendParcelEnquiryEmail } from '../../../lib/email';
 import { validateEmail } from '../../../lib/spam-detection';
+import { verifyCaptchaToken } from '../captcha/verify-token';
 
 export async function POST(request) {
   try {
@@ -17,6 +18,20 @@ export async function POST(request) {
     const imageEvidence = formData.get('imageEvidence');
     const language = formData.get('language') || 'en';
     const agreed = formData.get('agreed') === 'true';
+    const captchaToken = formData.get('captchaToken') || '';
+    const captchaAnswer = formData.get('captchaAnswer') || '';
+
+    // Verify math captcha
+    const captchaResult = verifyCaptchaToken(captchaToken, captchaAnswer);
+    if (!captchaResult.ok) {
+      const userMessage =
+        captchaResult.error === 'captcha_expired'
+          ? 'The verification question has expired. Please refresh and try again.'
+          : captchaResult.error === 'wrong_captcha_answer'
+          ? 'Incorrect answer to the verification question. Please try again.'
+          : 'Verification failed. Please complete the math question and try again.';
+      return NextResponse.json({ error: userMessage }, { status: 400 });
+    }
 
     // Validate required fields
     if (!name || !orderNumber || !email || !shippingMethod || !trackingNumber || !undeliveredLongTime || !agreed) {

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navigation } from '../../components/Navigation';
+import { MathCaptcha } from '../../components/MathCaptcha';
 import { useLanguage } from '../../LanguageContext';
 import Link from 'next/link';
 import { getSchoolEmailWarningMessage, isSchoolEmailDomain } from '../../lib/spam-detection';
@@ -20,6 +21,7 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [captchaData, setCaptchaData] = useState({ token: '', answer: '' });
 
   const schoolEmailWarning = getSchoolEmailWarningMessage(language);
 
@@ -51,6 +53,8 @@ export default function Contact() {
         body: JSON.stringify({
           ...formData,
           language,
+          captchaToken: captchaData.token,
+          captchaAnswer: captchaData.answer,
         }),
       });
 
@@ -366,6 +370,9 @@ export default function Contact() {
             </label>
           </div>
 
+          {/* Math Captcha */}
+          <MathCaptcha lang={language || 'en'} onChange={setCaptchaData} />
+
           {/* Submit Status */}
           {submitStatus && (
             <div style={{
@@ -382,25 +389,25 @@ export default function Contact() {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={isSubmitting || !formData.agreed || !formData.enquiryType}
+            disabled={isSubmitting || !formData.agreed || !formData.enquiryType || !captchaData.answer.trim()}
             style={{
               padding: '1rem',
-              backgroundColor: (isSubmitting || !formData.agreed || !formData.enquiryType) ? '#ccc' : '#007bff',
+              backgroundColor: (isSubmitting || !formData.agreed || !formData.enquiryType || !captchaData.answer.trim()) ? '#ccc' : '#007bff',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
               fontSize: '1rem',
               fontWeight: 'bold',
-              cursor: (isSubmitting || !formData.agreed || !formData.enquiryType) ? 'not-allowed' : 'pointer',
+              cursor: (isSubmitting || !formData.agreed || !formData.enquiryType || !captchaData.answer.trim()) ? 'not-allowed' : 'pointer',
               transition: 'background-color 0.2s'
             }}
             onMouseEnter={(e) => {
-              if (!isSubmitting && formData.agreed && formData.enquiryType) {
+              if (!isSubmitting && formData.agreed && formData.enquiryType && captchaData.answer.trim()) {
                 e.target.style.backgroundColor = '#0056b3';
               }
             }}
             onMouseLeave={(e) => {
-              if (!isSubmitting && formData.agreed && formData.enquiryType) {
+              if (!isSubmitting && formData.agreed && formData.enquiryType && captchaData.answer.trim()) {
                 e.target.style.backgroundColor = '#007bff';
               }
             }}
