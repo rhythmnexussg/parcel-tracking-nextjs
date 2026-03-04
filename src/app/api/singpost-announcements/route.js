@@ -71,6 +71,61 @@ export async function GET(request) {
       
       // Remove specific dated announcements
       const datesToRemove = ['16 Dec 2025', '15 Sep 2025'];
+
+      /**
+       * Returns true when the announcement title refers to a broad geographic region
+       * or continent rather than a specific country.
+       * Rules:
+       *  - Matches region names (Middle East, Europe, Africa, Asia, Asia Pacific,
+       *    North/South/Central America, Oceania, Caribbean) as whole words.
+       *  - Matches abbreviations "U.S." and "U.S.A." as standalone tokens.
+       *  - Does NOT match "United States" or "United States of America" so those
+       *    country-specific announcements are retained.
+       */
+      const isRegionWideAnnouncement = (text) => {
+        const t = (text || '').toLowerCase();
+
+        // Continent / region keyword patterns (whole-word)
+        const regionPatterns = [
+          /\bmiddle[\s\-]*east\b/,
+          /\beurope\b/,
+          /\beuropean\b/,
+          /\bafrica\b/,
+          /\bafrican\b/,
+          /\basia[\s\-]*pacific\b/,
+          /\basia\b/,
+          /\basian\b/,
+          /\bnorth[\s\-]*america\b/,
+          /\bsouth[\s\-]*america\b/,
+          /\bcentral[\s\-]*america\b/,
+          /\boceania\b/,
+          /\bcaribbean\b/,
+          /\bcarribean\b/, // common misspelling
+          /\bgulf[\s\-]*region\b/,
+          /\bgulf[\s\-]*states\b/,
+          /\bsoutheast[\s\-]*asia\b/,
+          /\bsouth[\s\-]*east[\s\-]*asia\b/,
+          /\beast[\s\-]*asia\b/,
+          /\bsouth[\s\-]*asia\b/,
+          /\bcentral[\s\-]*asia\b/,
+          /\bmiddle[\s\-]*east[\s\-]*and[\s\-]*north[\s\-]*africa\b/,
+          /\bmena\b/,
+          /\bsub[\s\-]*saharan\b/,
+          /\blatam\b/,
+          /\blatin[\s\-]*america\b/,
+        ];
+
+        if (regionPatterns.some(re => re.test(t))) return true;
+
+        // Abbreviations U.S. and U.S.A. as standalone tokens
+        // Must NOT be preceded/followed by letters that would make it part of
+        // a longer word — and must not occur inside "United States" context.
+        // Strategy: strip occurrences of "united states" first, then check.
+        const stripped = t.replace(/united\s+states(\s+of\s+america)?/g, '');
+        if (/\bu\.s\.a?\.?(\s|$|[^a-z])/.test(stripped)) return true;
+
+        return false;
+      };
       
       // Find and remove announcement tiles
       $('.sgp-tile').each(function() {
@@ -93,6 +148,12 @@ export async function GET(request) {
 
         if (isUsTariffNotice) {
           console.log(`Removing US tariff update announcement: ${titleText}`);
+          $tile.remove();
+          return;
+        }
+
+        if (isRegionWideAnnouncement(titleText)) {
+          console.log(`Removing region-wide announcement: ${titleText}`);
           $tile.remove();
           return;
         }
@@ -126,6 +187,8 @@ export async function GET(request) {
           /(tariff|de\s*minimis|section\s*122|import\s*fee|import\s*fees|import\s*duty|duties|customs)\b/.test(normalizedFullText);
 
         if (isUsTariffNotice) return false;
+
+        if (isRegionWideAnnouncement(titleText)) return false;
 
         let mentionsAllowedCountry = false;
         for (const countryName of allowedCountryNames) {

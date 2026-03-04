@@ -18,6 +18,7 @@ import { Navigation } from "../../components/Navigation";
 import USAWinterStormNotice from "../../components/USAWinterStormNotice";
 import ItalyOlympicsNotice from "../../components/ItalyOlympicsNotice";
 import MiddleEastAirspaceNotice from "../../components/MiddleEastAirspaceNotice";
+import { EuropeAirspaceNotice } from "../../components/MiddleEastAirspaceNotice";
 
 // --- Service Announcement Component ---
 const ServiceAnnouncement = ({ allowedDestinations }) => {
@@ -1021,6 +1022,9 @@ function App() {
 
     {/* Middle East Airspace Closure Notice (Israel) */}
     <MiddleEastAirspaceNotice language={currentLanguage} />
+
+    {/* Middle East Airspace Rerouting Notice (European destinations) */}
+    <EuropeAirspaceNotice language={currentLanguage} />
 
     {/* Service Announcement Section */}
     <ServiceAnnouncement allowedDestinations={allowedDestinations} />
