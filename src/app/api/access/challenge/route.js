@@ -116,46 +116,53 @@ const PUZZLE_FILL_BLANK_PROMPT = {
 
 // ─── Keyword Challenge Data ──────────────────────────────────────────────────
 
-const LANGUAGE_NAMES = {
-  en: 'English', cs: 'Czech', nl: 'Dutch', fi: 'Finnish', fr: 'French',
-  de: 'German', he: 'Hebrew', hi: 'Hindi', id: 'Indonesian', ga: 'Irish',
-  it: 'Italian', ja: 'Japanese', ko: 'Korean', ms: 'Malay', no: 'Norwegian',
-  pl: 'Polish', pt: 'Portuguese', ru: 'Russian', zh: 'Chinese', es: 'Spanish',
-  sv: 'Swedish', ta: 'Tamil', tl: 'Filipino', th: 'Thai', mi: 'Māori',
-  'zh-hant': 'Chinese', vi: 'Vietnamese', cy: 'Welsh', yue: 'Cantonese',
+// Native-script name for each language, used in keyword challenge prompts so
+// non-English users never see an English language name in the question.
+const LANGUAGE_NATIVE_NAMES = {
+  en: 'English',      cs: 'Čeština',          nl: 'Nederlands',
+  fi: 'Suomi',        fr: 'Français',          de: 'Deutsch',
+  he: 'עברית',        hi: 'हिन्दी',            id: 'Bahasa Indonesia',
+  ga: 'Gaeilge',      it: 'Italiano',          ja: '日本語',
+  ko: '한국어',        ms: 'Bahasa Melayu',     no: 'Norsk',
+  pl: 'Polski',       pt: 'Português',         ru: 'Русский',
+  zh: '简体中文',      es: 'Español',           sv: 'Svenska',
+  ta: 'தமிழ்',        tl: 'Tagalog',           th: 'ภาษาไทย',
+  mi: 'Te Reo Māori', 'zh-hant': '繁體中文',   vi: 'Tiếng Việt',
+  cy: 'Cymraeg',      yue: '廣東話',
 };
 
-// Prompt template: {wordLang} = language name, {word} = foreign word
+// Prompt template: {wordLang} = native language name, {word} = foreign word
+// Options are always shown in the user's own language — no English required.
 const KEYWORD_PROMPT = {
-  en: 'Select the English meaning of the {wordLang} word "{word}":',
-  cs: 'Vyberte anglický překlad {wordLang}ského slova „{word}":',
-  nl: 'Kies de Engelse betekenis van het {wordLang}se woord «{word}»:',
-  fi: 'Valitse sanan "{word}" ({wordLang}) englanninkielinen merkitys:',
-  fr: 'Sélectionnez le sens anglais du mot {wordLang} «\u202f{word}\u202f»\u00a0:',
-  de: 'Wählen Sie die englische Bedeutung des {wordLang}en Worts „{word}":',
-  he: 'בחר/י את המשמעות באנגלית של מילת ה{wordLang} „{word}":',
-  hi: '{wordLang} के शब्द "{word}" का अंग्रेजी अर्थ चुनें:',
-  id: 'Pilih arti bahasa Inggris dari kata {wordLang} "{word}":',
-  ga: 'Roghnaigh chiall Bhéarla an fhocail {wordLang} «{word}»:',
-  it: 'Seleziona il significato inglese della parola {wordLang} «{word}»:',
-  ja: '{wordLang}語の「{word}」の英語の意味を選んでください：',
-  ko: '{wordLang}어 단어 「{word}」의 영어 의미를 선택하세요:',
-  ms: 'Pilih makna Inggeris bagi perkataan {wordLang} "{word}":',
-  no: 'Velg den engelske betydningen av det {wordLang}e ordet «{word}»:',
-  pl: 'Wybierz angielskie znaczenie słowa {wordLang}skiego „{word}":',
-  pt: 'Selecione o significado em inglês da palavra {wordLang} «{word}»:',
-  ru: 'Выберите английское значение слова на {wordLang}ском «{word}»:',
-  zh: '请选择{wordLang}语单词"{word}"的英语含义：',
-  es: 'Selecciona el significado en inglés de la palabra {wordLang} «{word}»:',
-  sv: 'Välj den engelska betydelsen av det {wordLang}ska ordet «{word}»:',
-  ta: '{wordLang} வார்த்தை "{word}" இன் ஆங்கில அர்த்தத்தைத் தேர்ந்தெடுக்கவும்:',
-  tl: 'Piliin ang kahulugan sa Ingles ng salitang {wordLang} "{word}":',
-  th: 'เลือกความหมายภาษาอังกฤษของคำ{wordLang} "{word}":',
-  mi: 'Tīpakohia te tikanga Ingarihi o te kupu {wordLang} «{word}»:',
-  'zh-hant': '請選擇{wordLang}語詞彙「{word}」的英語含義：',
-  vi: 'Chọn nghĩa tiếng Anh của từ tiếng {wordLang} "{word}":',
-  cy: 'Dewiswch ystyr Saesneg y gair {wordLang} «{word}»:',
-  yue: '請選擇{wordLang}語詞彙「{word}」的英語含義：',
+  en: 'What does the {wordLang} word "{word}" mean?',
+  cs: 'Co znamená slovo „{word}" v jazyce {wordLang}?',
+  nl: 'Wat betekent het {wordLang}se woord «{word}»?',
+  fi: 'Mitä sana „{word}" tarkoittaa {wordLang}ssa?',
+  fr: 'Que signifie le mot {wordLang} «\u202f{word}\u202f»\u00a0?',
+  de: 'Was bedeutet das Wort „{word}" auf {wordLang}?',
+  he: 'מה פירוש המילה „{word}" ב{wordLang}?',
+  hi: '{wordLang} में "{word}" का अर्थ क्या है?',
+  id: 'Apa arti kata "{word}" dalam bahasa {wordLang}?',
+  ga: 'Cé is ciall leis an bhfocal «{word}» sa teanga {wordLang}?',
+  it: 'Cosa significa «{word}» in {wordLang}?',
+  ja: '{wordLang}の「{word}」はどういう意味ですか？',
+  ko: '{wordLang} 단어 「{word}」는 무슨 뜻입니까?',
+  ms: 'Apakah makna kata "{word}" dalam {wordLang}?',
+  no: 'Hva betyr ordet «{word}» på {wordLang}?',
+  pl: 'Co oznacza słowo „{word}" w języku {wordLang}?',
+  pt: 'O que significa «{word}» em {wordLang}?',
+  ru: 'Что означает «{word}» на {wordLang}?',
+  zh: '{wordLang}单词"{word}"是什么意思？',
+  es: '¿Qué significa «{word}» en {wordLang}?',
+  sv: 'Vad betyder «{word}» på {wordLang}?',
+  ta: '{wordLang}இல் "{word}" என்றால் என்ன?',
+  tl: 'Ano ang ibig sabihin ng "{word}" sa {wordLang}?',
+  th: '"{word}" ในภาษา{wordLang}หมายความว่าอะไร?',
+  mi: 'He aha te tikanga o «{word}» i roto i te {wordLang}?',
+  'zh-hant': '{wordLang}詞彙「{word}」是什麼意思？',
+  vi: '"{word}" trong tiếng {wordLang} có nghĩa là gì?',
+  cy: 'Beth yw ystyr «{word}» yn {wordLang}?',
+  yue: '{wordLang}詞彙「{word}」係咩意思？',
 };
 
 // Common words with translations across all 28 supported languages
@@ -465,21 +472,33 @@ function createPuzzleChallenge(lang) {
 
 // ─── Keyword Challenge (multilingual word recognition, 25%) ──────────────────
 
+function getWordInLang(entry, lang) {
+  // yue shares written vocabulary with zh-hant
+  if (lang === 'yue') return entry['zh-hant'] || entry.zh || entry.en;
+  return entry[lang] || entry.en;
+}
+
 function createKeywordChallenge(lang) {
-  // Pick a random non-English language for the foreign word.
-  // Exclude 'yue' since its written vocabulary is identical to zh-hant.
-  const nonEnglishLangs = [...SUPPORTED_LANGS].filter((l) => l !== 'en' && l !== 'yue');
-  const wordLangCode = nonEnglishLangs[randomInt(0, nonEnglishLangs.length - 1)];
-  const wordLangName = LANGUAGE_NAMES[wordLangCode] || wordLangCode;
+  // Pick a foreign language to display the word in — must differ from the
+  // user's language. Also exclude yue (same script as zh-hant) and exclude
+  // zh / zh-hant when the user is yue so the word doesn't look familiar.
+  const excluded = new Set(['yue', lang]);
+  if (lang === 'yue') { excluded.add('zh-hant'); excluded.add('zh'); }
+  if (lang === 'zh') excluded.add('zh-hant');
+  if (lang === 'zh-hant') excluded.add('zh');
+
+  const foreignLangPool = [...SUPPORTED_LANGS].filter((l) => !excluded.has(l));
+  const wordLangCode = foreignLangPool[randomInt(0, foreignLangPool.length - 1)];
+  const wordLangName = LANGUAGE_NATIVE_NAMES[wordLangCode] || wordLangCode;
 
   // Pick a random word entry
   const wordEntry = WORD_POOL[randomInt(0, WORD_POOL.length - 1)];
   const foreignWord = wordEntry[wordLangCode] || wordEntry.en;
-  const correctAnswer = wordEntry.en;
 
-  // 3 English distractors from the remaining words
-  const distPool = shuffleArray(WORD_POOL.filter((w) => w.en !== correctAnswer));
-  const distractors = distPool.slice(0, 3).map((w) => w.en);
+  // Correct answer and distractors are all in the user's own language
+  const correctAnswer = getWordInLang(wordEntry, lang);
+  const distPool = shuffleArray(WORD_POOL.filter((w) => getWordInLang(w, lang) !== correctAnswer));
+  const distractors = distPool.slice(0, 3).map((w) => getWordInLang(w, lang));
 
   const promptTemplate = KEYWORD_PROMPT[lang] || KEYWORD_PROMPT.en;
   const question = promptTemplate
