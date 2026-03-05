@@ -80,37 +80,38 @@ const NATIVE_QUESTION_START = {
   yue: '請計算',
 };
 
-// ─── Puzzle Challenge Data ───────────────────────────────────────────────────
+// ─── Puzzle Challenge Data (fill-in-the-blank) ───────────────────────────────
 
-const PUZZLE_NEXT_PROMPT = {
-  en: 'What number comes next in the sequence?',
-  cs: 'Jaké číslo je v posloupnosti další?',
-  nl: 'Welk getal komt hierna in de reeks?',
-  fi: 'Mikä luku tulee seuraavaksi sarjassa?',
-  fr: 'Quel nombre vient ensuite dans la suite\u00a0?',
-  de: 'Welche Zahl kommt als Nächstes in der Folge?',
-  he: 'איזה מספר בא הבא בסדרה?',
-  hi: 'क्रम में अगला अंक क्या है?',
-  id: 'Angka apa yang selanjutnya dalam deretan ini?',
-  ga: 'Cén uimhir a thagann ina dhiaidh sin san seicheamh?',
-  it: 'Che numero viene dopo nella sequenza?',
-  ja: 'この数列の次に来る数は何ですか？',
-  ko: '수열에서 다음에 올 숫자는 무엇입니까?',
-  ms: 'Nombor apakah yang seterusnya dalam urutan ini?',
-  no: 'Hvilket tall kommer neste i rekken?',
-  pl: 'Jaka liczba jest następna w ciągu?',
-  pt: 'Que número vem a seguir na sequência?',
-  ru: 'Какое число идёт следующим в последовательности?',
-  zh: '这个数列中下一个数字是什么？',
-  es: '¿Qué número sigue en la secuencia?',
-  sv: 'Vilket tal kommer härnäst i talföljden?',
-  ta: 'தொடரில் அடுத்த எண் என்ன?',
-  tl: 'Anong numero ang susunod sa pagkakasunud-sunod?',
-  th: 'ตัวเลขถัดไปในลำดับคืออะไร?',
-  mi: 'He aha te tau e whai ake nei i roto i te raupapa?',
-  'zh-hant': '這個數列中下一個數字是什麼？',
-  vi: 'Số tiếp theo trong dãy là gì?',
-  cy: "Pa rif sy'n dod nesaf yn y dilyniant?",
+const PUZZLE_FILL_BLANK_PROMPT = {
+  en: 'Find the missing number:',
+  cs: 'Najdi chybějící číslo:',
+  nl: 'Vind het ontbrekende getal:',
+  fi: 'Löydä puuttuva luku:',
+  fr: 'Trouvez le nombre manquant\u00a0:',
+  de: 'Finden Sie die fehlende Zahl:',
+  he: 'מצא/י את המספר החסר:',
+  hi: 'लापता संख्या खोजें:',
+  id: 'Temukan angka yang hilang:',
+  ga: 'Aimsigh an uimhir atá ar iarraidh:',
+  it: 'Trova il numero mancante:',
+  ja: '？にあてはまる数を選んでください：',
+  ko: '？에 들어갈 숫자를 고르세요:',
+  ms: 'Cari nombor yang hilang:',
+  no: 'Finn det manglende tallet:',
+  pl: 'Znajdź brakującą liczbę:',
+  pt: 'Encontre o número que falta:',
+  ru: 'Найдите пропущенное число:',
+  zh: '找出缺失的数字：',
+  es: 'Encuentra el número que falta:',
+  sv: 'Hitta det saknade talet:',
+  ta: 'காணாத எண்ணைக் கண்டுபிடிக்கவும்:',
+  tl: 'Hanapin ang nawawalang numero:',
+  th: 'หาตัวเลขที่หายไป:',
+  mi: 'Kimihia te tau ngaro:',
+  'zh-hant': '找出缺少的數字：',
+  vi: 'Tìm số còn thiếu:',
+  cy: "Dewch o hyd i'r rhif coll:",
+  yue: '找出缺少的數字：',
 };
 
 // ─── Keyword Challenge Data ──────────────────────────────────────────────────
@@ -121,7 +122,7 @@ const LANGUAGE_NAMES = {
   it: 'Italian', ja: 'Japanese', ko: 'Korean', ms: 'Malay', no: 'Norwegian',
   pl: 'Polish', pt: 'Portuguese', ru: 'Russian', zh: 'Chinese', es: 'Spanish',
   sv: 'Swedish', ta: 'Tamil', tl: 'Filipino', th: 'Thai', mi: 'Māori',
-  'zh-hant': 'Chinese', vi: 'Vietnamese', cy: 'Welsh',
+  'zh-hant': 'Chinese', vi: 'Vietnamese', cy: 'Welsh', yue: 'Cantonese',
 };
 
 // Prompt template: {wordLang} = language name, {word} = foreign word
@@ -154,6 +155,7 @@ const KEYWORD_PROMPT = {
   'zh-hant': '請選擇{wordLang}語詞彙「{word}」的英語含義：',
   vi: 'Chọn nghĩa tiếng Anh của từ tiếng {wordLang} "{word}":',
   cy: 'Dewiswch ystyr Saesneg y gair {wordLang} «{word}»:',
+  yue: '請選擇{wordLang}語詞彙「{word}」的英語含義：',
 };
 
 // Common words with translations across all 28 supported languages
@@ -281,6 +283,7 @@ const CHAR_MATCH_PROMPT = {
   'zh-hant': '請原樣輸入以下字元：',
   vi: 'Gõ chính xác các ký tự sau:',
   cy: 'Teipiwch y nodau hyn yn union:',
+  yue: '請原樣輸入以下字元：',
 };
 
 // Unambiguous lowercase letters + digits (no 0/o/1/l/i visual confusion)
@@ -315,6 +318,7 @@ const MATCH_PROMPT = {
   'zh-hant': '配對謎題：請選擇與其相同的符號',
   vi: 'Câu đố ghép cặp: chọn cùng ký hiệu với',
   cy: 'Pos cydweddu: dewiswch yr un symbol â',
+  yue: '配對謎題：請選擇與其相同的符號',
 };
 
 const MATCH_SYMBOL_POOL = ['★', '◆', '●', '■', '▲', '♥', '♣', '♠', '☀', '☂', '☕', '♫', '⚙', '✈', '⌛', '⚡'];
@@ -404,55 +408,47 @@ function createMatchChallenge(lang) {
   };
 }
 
-// ─── Puzzle Challenge (number sequences, 25%) ────────────────────────────────
+// ─── Puzzle Challenge (fill-in-the-blank arithmetic, 25%) ────────────────────
 
 function createPuzzleChallenge(lang) {
-  const prompt = PUZZLE_NEXT_PROMPT[lang] || PUZZLE_NEXT_PROMPT.en;
-  const seqType = randomInt(0, 4);
+  const prompt = PUZZLE_FILL_BLANK_PROMPT[lang] || PUZZLE_FILL_BLANK_PROMPT.en;
+  const opType = randomInt(0, 3);
 
-  let sequence;
-  let correctNext;
+  let answer, knownNum, result, eqStr;
 
-  if (seqType === 0) {
-    // Arithmetic: a, a+d, a+2d, a+3d, a+4d → a+5d
-    const a = randomInt(1, 10);
-    const d = randomInt(2, 8);
-    sequence = [a, a + d, a + 2 * d, a + 3 * d, a + 4 * d];
-    correctNext = a + 5 * d;
-  } else if (seqType === 1) {
-    // Geometric ×2: a, 2a, 4a, 8a, 16a → 32a
-    const a = randomInt(1, 4);
-    sequence = [a, 2 * a, 4 * a, 8 * a, 16 * a];
-    correctNext = 32 * a;
-  } else if (seqType === 2) {
-    // Square numbers: m², (m+1)², ... → (m+5)²
-    const m = randomInt(1, 5);
-    sequence = [m ** 2, (m + 1) ** 2, (m + 2) ** 2, (m + 3) ** 2, (m + 4) ** 2];
-    correctNext = (m + 5) ** 2;
-  } else if (seqType === 3) {
-    // Triangular: T(m) = m(m+1)/2
-    const m = randomInt(1, 6);
-    sequence = [
-      (m * (m + 1)) / 2, ((m + 1) * (m + 2)) / 2, ((m + 2) * (m + 3)) / 2,
-      ((m + 3) * (m + 4)) / 2, ((m + 4) * (m + 5)) / 2,
-    ];
-    correctNext = ((m + 5) * (m + 6)) / 2;
+  if (opType === 0) {
+    // ? + b = c
+    answer = randomInt(3, 20);
+    knownNum = randomInt(2, 20);
+    result = answer + knownNum;
+    eqStr = `? + ${knownNum} = ${result}`;
+  } else if (opType === 1) {
+    // ? - b = c  (answer always positive)
+    knownNum = randomInt(2, 15);
+    answer = randomInt(knownNum + 1, knownNum + 20);
+    result = answer - knownNum;
+    eqStr = `? - ${knownNum} = ${result}`;
+  } else if (opType === 2) {
+    // ? × b = c
+    answer = randomInt(2, 12);
+    knownNum = randomInt(2, 12);
+    result = answer * knownNum;
+    eqStr = `? × ${knownNum} = ${result}`;
   } else {
-    // Fibonacci-like: f0=a, f1=b, f(n)=f(n-1)+f(n-2)
-    const a = randomInt(1, 4);
-    const b = randomInt(a + 1, a + 5);
-    sequence = [a, b, a + b, a + 2 * b, 2 * a + 3 * b];
-    correctNext = 3 * a + 5 * b;
+    // ? ÷ b = c
+    knownNum = randomInt(2, 10);
+    answer = randomInt(2, 10);
+    result = answer * knownNum; // dividend shown, divisor known, quotient = answer
+    eqStr = `${result} ÷ ${knownNum} = ?`;
   }
 
-  const correctOptStr = String(correctNext);
-  const seqStr = sequence.join(', ') + ', ___';
+  const correctOptStr = String(answer);
 
-  // 3 plausible distractors close to the correct answer
-  const candidateOffsets = shuffleArray([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7]);
+  // 3 plausible distractors
+  const offsets = shuffleArray([-3, -2, -1, 1, 2, 3, 4, 5]);
   const distractors = [];
-  for (const offset of candidateOffsets) {
-    const candidate = correctNext + offset;
+  for (const offset of offsets) {
+    const candidate = answer + offset;
     if (candidate > 0 && String(candidate) !== correctOptStr && !distractors.includes(String(candidate))) {
       distractors.push(String(candidate));
       if (distractors.length === 3) break;
@@ -460,7 +456,7 @@ function createPuzzleChallenge(lang) {
   }
 
   return {
-    question: `${prompt}\n${seqStr}`,
+    question: `${prompt}\n${eqStr}`,
     options: shuffleArray([correctOptStr, ...distractors]),
     charTarget: null,
     payload: { mode: 'puzzle', correctOption: correctOptStr },
@@ -470,8 +466,9 @@ function createPuzzleChallenge(lang) {
 // ─── Keyword Challenge (multilingual word recognition, 25%) ──────────────────
 
 function createKeywordChallenge(lang) {
-  // Pick a random non-English language for the foreign word
-  const nonEnglishLangs = [...SUPPORTED_LANGS].filter((l) => l !== 'en');
+  // Pick a random non-English language for the foreign word.
+  // Exclude 'yue' since its written vocabulary is identical to zh-hant.
+  const nonEnglishLangs = [...SUPPORTED_LANGS].filter((l) => l !== 'en' && l !== 'yue');
   const wordLangCode = nonEnglishLangs[randomInt(0, nonEnglishLangs.length - 1)];
   const wordLangName = LANGUAGE_NAMES[wordLangCode] || wordLangCode;
 
@@ -525,14 +522,25 @@ export async function GET(request) {
     const captchaSecret = getCaptchaSecretOrThrow();
     const exp = Date.now() + 5 * 60 * 1000;
 
-    // MDAS math only
-    const { a, b, op } = createOperationChallenge();
-    const challenge = {
-      question: buildQuestionText(lang, a, b, op),
-      options: null,
-      charTarget: null,
-      payload: { mode: 'math', a, b, op },
-    };
+    // 25% math | 25% fill-in-blank puzzle | 25% keyword | 25% char
+    const roll = randomInt(0, 3);
+    let challenge;
+
+    if (roll === 0) {
+      const { a, b, op } = createOperationChallenge();
+      challenge = {
+        question: buildQuestionText(lang, a, b, op),
+        options: null,
+        charTarget: null,
+        payload: { mode: 'math', a, b, op },
+      };
+    } else if (roll === 1) {
+      challenge = createPuzzleChallenge(lang);
+    } else if (roll === 2) {
+      challenge = createKeywordChallenge(lang);
+    } else {
+      challenge = createCharChallenge(lang);
+    }
 
     const payload = { ...challenge.payload, exp };
     const payloadBase64 = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64url');
