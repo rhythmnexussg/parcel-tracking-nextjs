@@ -114,151 +114,7 @@ const PUZZLE_FILL_BLANK_PROMPT = {
   yue: '找出缺少的數字：',
 };
 
-// ─── Keyword Challenge Data ──────────────────────────────────────────────────
-
-// Native-script name for each language, used in keyword challenge prompts so
-// non-English users never see an English language name in the question.
-const LANGUAGE_NATIVE_NAMES = {
-  en: 'English',      cs: 'Čeština',          nl: 'Nederlands',
-  fi: 'Suomi',        fr: 'Français',          de: 'Deutsch',
-  he: 'עברית',        hi: 'हिन्दी',            id: 'Bahasa Indonesia',
-  ga: 'Gaeilge',      it: 'Italiano',          ja: '日本語',
-  ko: '한국어',        ms: 'Bahasa Melayu',     no: 'Norsk',
-  pl: 'Polski',       pt: 'Português',         ru: 'Русский',
-  zh: '简体中文',      es: 'Español',           sv: 'Svenska',
-  ta: 'தமிழ்',        tl: 'Tagalog',           th: 'ภาษาไทย',
-  mi: 'Te Reo Māori', 'zh-hant': '繁體中文',   vi: 'Tiếng Việt',
-  cy: 'Cymraeg',      yue: '廣東話',
-};
-
-// Prompt template: {wordLang} = native language name, {word} = foreign word
-// Options are always shown in the user's own language — no English required.
-const KEYWORD_PROMPT = {
-  en: 'What does the {wordLang} word "{word}" mean?',
-  cs: 'Co znamená slovo „{word}" v jazyce {wordLang}?',
-  nl: 'Wat betekent het {wordLang}se woord «{word}»?',
-  fi: 'Mitä sana „{word}" tarkoittaa {wordLang}ssa?',
-  fr: 'Que signifie le mot {wordLang} «\u202f{word}\u202f»\u00a0?',
-  de: 'Was bedeutet das Wort „{word}" auf {wordLang}?',
-  he: 'מה פירוש המילה „{word}" ב{wordLang}?',
-  hi: '{wordLang} में "{word}" का अर्थ क्या है?',
-  id: 'Apa arti kata "{word}" dalam bahasa {wordLang}?',
-  ga: 'Cé is ciall leis an bhfocal «{word}» sa teanga {wordLang}?',
-  it: 'Cosa significa «{word}» in {wordLang}?',
-  ja: '{wordLang}の「{word}」はどういう意味ですか？',
-  ko: '{wordLang} 단어 「{word}」는 무슨 뜻입니까?',
-  ms: 'Apakah makna kata "{word}" dalam {wordLang}?',
-  no: 'Hva betyr ordet «{word}» på {wordLang}?',
-  pl: 'Co oznacza słowo „{word}" w języku {wordLang}?',
-  pt: 'O que significa «{word}» em {wordLang}?',
-  ru: 'Что означает «{word}» на {wordLang}?',
-  zh: '{wordLang}单词"{word}"是什么意思？',
-  es: '¿Qué significa «{word}» en {wordLang}?',
-  sv: 'Vad betyder «{word}» på {wordLang}?',
-  ta: '{wordLang}இல் "{word}" என்றால் என்ன?',
-  tl: 'Ano ang ibig sabihin ng "{word}" sa {wordLang}?',
-  th: '"{word}" ในภาษา{wordLang}หมายความว่าอะไร?',
-  mi: 'He aha te tikanga o «{word}» i roto i te {wordLang}?',
-  'zh-hant': '{wordLang}詞彙「{word}」是什麼意思？',
-  vi: '"{word}" trong tiếng {wordLang} có nghĩa là gì?',
-  cy: 'Beth yw ystyr «{word}» yn {wordLang}?',
-  yue: '{wordLang}詞彙「{word}」係咩意思？',
-};
-
 // Common words with translations across all 28 supported languages
-const WORD_POOL = [
-  {
-    en: 'apple',
-    cs: 'jablko', nl: 'appel', fi: 'omena', fr: 'pomme', de: 'Apfel',
-    he: 'תפוח', hi: 'सेब', id: 'apel', ga: 'úll', it: 'mela',
-    ja: 'りんご', ko: '사과', ms: 'epal', no: 'eple', pl: 'jabłko',
-    pt: 'maçã', ru: 'яблоко', zh: '苹果', es: 'manzana', sv: 'äpple',
-    ta: 'ஆப்பிள்', tl: 'mansanas', th: 'แอปเปิ้ล', mi: 'āporo',
-    'zh-hant': '蘋果', vi: 'táo', cy: 'afal',
-  },
-  {
-    en: 'water',
-    cs: 'voda', nl: 'water', fi: 'vesi', fr: 'eau', de: 'Wasser',
-    he: 'מים', hi: 'पानी', id: 'air', ga: 'uisce', it: 'acqua',
-    ja: '水', ko: '물', ms: 'air', no: 'vann', pl: 'woda',
-    pt: 'água', ru: 'вода', zh: '水', es: 'agua', sv: 'vatten',
-    ta: 'தண்ணீர்', tl: 'tubig', th: 'น้ำ', mi: 'wai',
-    'zh-hant': '水', vi: 'nước', cy: 'dŵr',
-  },
-  {
-    en: 'book',
-    cs: 'kniha', nl: 'boek', fi: 'kirja', fr: 'livre', de: 'Buch',
-    he: 'ספר', hi: 'किताब', id: 'buku', ga: 'leabhar', it: 'libro',
-    ja: '本', ko: '책', ms: 'buku', no: 'bok', pl: 'książka',
-    pt: 'livro', ru: 'книга', zh: '书', es: 'libro', sv: 'bok',
-    ta: 'புத்தகம்', tl: 'libro', th: 'หนังสือ', mi: 'pukapuka',
-    'zh-hant': '書', vi: 'sách', cy: 'llyfr',
-  },
-  {
-    en: 'sun',
-    cs: 'slunce', nl: 'zon', fi: 'aurinko', fr: 'soleil', de: 'Sonne',
-    he: 'שמש', hi: 'सूरज', id: 'matahari', ga: 'grian', it: 'sole',
-    ja: '太陽', ko: '태양', ms: 'matahari', no: 'sol', pl: 'słońce',
-    pt: 'sol', ru: 'солнце', zh: '太阳', es: 'sol', sv: 'sol',
-    ta: 'சூரியன்', tl: 'araw', th: 'ดวงอาทิตย์', mi: 'rā',
-    'zh-hant': '太陽', vi: 'mặt trời', cy: 'haul',
-  },
-  {
-    en: 'cat',
-    cs: 'kočka', nl: 'kat', fi: 'kissa', fr: 'chat', de: 'Katze',
-    he: 'חתול', hi: 'बिल्ली', id: 'kucing', ga: 'cat', it: 'gatto',
-    ja: '猫', ko: '고양이', ms: 'kucing', no: 'katt', pl: 'kot',
-    pt: 'gato', ru: 'кошка', zh: '猫', es: 'gato', sv: 'katt',
-    ta: 'பூனை', tl: 'pusa', th: 'แมว', mi: 'ngeru',
-    'zh-hant': '貓', vi: 'mèo', cy: 'cath',
-  },
-  {
-    en: 'house',
-    cs: 'dům', nl: 'huis', fi: 'talo', fr: 'maison', de: 'Haus',
-    he: 'בית', hi: 'घर', id: 'rumah', ga: 'teach', it: 'casa',
-    ja: '家', ko: '집', ms: 'rumah', no: 'hus', pl: 'dom',
-    pt: 'casa', ru: 'дом', zh: '房子', es: 'casa', sv: 'hus',
-    ta: 'வீடு', tl: 'bahay', th: 'บ้าน', mi: 'whare',
-    'zh-hant': '房子', vi: 'nhà', cy: 'tŷ',
-  },
-  {
-    en: 'tree',
-    cs: 'strom', nl: 'boom', fi: 'puu', fr: 'arbre', de: 'Baum',
-    he: 'עץ', hi: 'पेड़', id: 'pohon', ga: 'crann', it: 'albero',
-    ja: '木', ko: '나무', ms: 'pokok', no: 'tre', pl: 'drzewo',
-    pt: 'árvore', ru: 'дерево', zh: '树', es: 'árbol', sv: 'träd',
-    ta: 'மரம்', tl: 'puno', th: 'ต้นไม้', mi: 'rākau',
-    'zh-hant': '樹', vi: 'cây', cy: 'coeden',
-  },
-  {
-    en: 'fish',
-    cs: 'ryba', nl: 'vis', fi: 'kala', fr: 'poisson', de: 'Fisch',
-    he: 'דג', hi: 'मछली', id: 'ikan', ga: 'iasc', it: 'pesce',
-    ja: '魚', ko: '물고기', ms: 'ikan', no: 'fisk', pl: 'ryba',
-    pt: 'peixe', ru: 'рыба', zh: '鱼', es: 'pez', sv: 'fisk',
-    ta: 'மீன்', tl: 'isda', th: 'ปลา', mi: 'ika',
-    'zh-hant': '魚', vi: 'cá', cy: 'pysgodyn',
-  },
-  {
-    en: 'moon',
-    cs: 'měsíc', nl: 'maan', fi: 'kuu', fr: 'lune', de: 'Mond',
-    he: 'ירח', hi: 'चाँद', id: 'bulan', ga: 'gealach', it: 'luna',
-    ja: '月', ko: '달', ms: 'bulan', no: 'måne', pl: 'księżyc',
-    pt: 'lua', ru: 'луна', zh: '月亮', es: 'luna', sv: 'måne',
-    ta: 'நிலவு', tl: 'buwan', th: 'พระจันทร์', mi: 'marama',
-    'zh-hant': '月亮', vi: 'mặt trăng', cy: 'lleuad',
-  },
-  {
-    en: 'flower',
-    cs: 'květ', nl: 'bloem', fi: 'kukka', fr: 'fleur', de: 'Blume',
-    he: 'פרח', hi: 'फूल', id: 'bunga', ga: 'bláth', it: 'fiore',
-    ja: '花', ko: '꽃', ms: 'bunga', no: 'blomst', pl: 'kwiat',
-    pt: 'flor', ru: 'цветок', zh: '花', es: 'flor', sv: 'blomma',
-    ta: 'பூ', tl: 'bulaklak', th: 'ดอกไม้', mi: 'putiputi',
-    'zh-hant': '花', vi: 'hoa', cy: 'blodyn',
-  },
-];
-
 // ─── Character Matching Challenge Data ──────────────────────────────────────
 
 const CHAR_MATCH_PROMPT = {
@@ -470,49 +326,6 @@ function createPuzzleChallenge(lang) {
   };
 }
 
-// ─── Keyword Challenge (multilingual word recognition, 25%) ──────────────────
-
-function getWordInLang(entry, lang) {
-  // yue shares written vocabulary with zh-hant
-  if (lang === 'yue') return entry['zh-hant'] || entry.zh || entry.en;
-  return entry[lang] || entry.en;
-}
-
-function createKeywordChallenge(lang) {
-  // Pick a foreign language to display the word in — must differ from the
-  // user's language. Also exclude yue (same script as zh-hant) and exclude
-  // zh / zh-hant when the user is yue so the word doesn't look familiar.
-  const excluded = new Set(['yue', lang]);
-  if (lang === 'yue') { excluded.add('zh-hant'); excluded.add('zh'); }
-  if (lang === 'zh') excluded.add('zh-hant');
-  if (lang === 'zh-hant') excluded.add('zh');
-
-  const foreignLangPool = [...SUPPORTED_LANGS].filter((l) => !excluded.has(l));
-  const wordLangCode = foreignLangPool[randomInt(0, foreignLangPool.length - 1)];
-  const wordLangName = LANGUAGE_NATIVE_NAMES[wordLangCode] || wordLangCode;
-
-  // Pick a random word entry
-  const wordEntry = WORD_POOL[randomInt(0, WORD_POOL.length - 1)];
-  const foreignWord = wordEntry[wordLangCode] || wordEntry.en;
-
-  // Correct answer and distractors are all in the user's own language
-  const correctAnswer = getWordInLang(wordEntry, lang);
-  const distPool = shuffleArray(WORD_POOL.filter((w) => getWordInLang(w, lang) !== correctAnswer));
-  const distractors = distPool.slice(0, 3).map((w) => getWordInLang(w, lang));
-
-  const promptTemplate = KEYWORD_PROMPT[lang] || KEYWORD_PROMPT.en;
-  const question = promptTemplate
-    .replace('{wordLang}', wordLangName)
-    .replace('{word}', foreignWord);
-
-  return {
-    question,
-    options: shuffleArray([correctAnswer, ...distractors]),
-    charTarget: null,
-    payload: { mode: 'keyword', correctOption: correctAnswer },
-  };
-}
-
 // ─── Character Matching Challenge (type-back string, 25%) ────────────────────
 
 function createCharChallenge(lang) {
@@ -541,7 +354,7 @@ export async function GET(request) {
     const captchaSecret = getCaptchaSecretOrThrow();
     const exp = Date.now() + 5 * 60 * 1000;
 
-    // 25% math | 25% fill-in-blank puzzle | 25% keyword | 25% char
+    // 25% math | 25% fill-in-blank puzzle | 25% symbol match | 25% char
     const roll = randomInt(0, 3);
     let challenge;
 
@@ -556,7 +369,7 @@ export async function GET(request) {
     } else if (roll === 1) {
       challenge = createPuzzleChallenge(lang);
     } else if (roll === 2) {
-      challenge = createKeywordChallenge(lang);
+      challenge = createMatchChallenge(lang);
     } else {
       challenge = createCharChallenge(lang);
     }
