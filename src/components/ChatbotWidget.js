@@ -35,7 +35,8 @@ const CHATBOT_WELCOME_TRANSLATIONS = {
   tl: 'Hi, ako si Rhythm Bot, ang iyong 24/7 AI virtual assistant. Paano kita matutulungan?',
   vi: 'Xin chào, tôi là Rhythm Bot, trợ lý ảo AI 24/7 của bạn. Tôi có thể hỗ trợ bạn như thế nào?',
   cy: 'Helo, fi yw Rhythm Bot, eich cynorthwyydd rhithwir AI 24/7. Sut alla i eich helpu?',
-  ta: 'வணக்கம், நான் Rhythm Bot, உங்கள் 24/7 AI மெய்நிகர் உதவியாளர். நான் உங்களுக்கு எப்படி உதவலாம்?'
+  ta: 'வணக்கம், நான் Rhythm Bot, உங்கள் 24/7 AI மெய்நிகர் உதவியாளர். நான் உங்களுக்கு எப்படி உதவலாம்?',
+  yue: '你好，我係 Rhythm Bot，你嘅 24/7 AI 虛擬助理。請問我可以點樣幫你？'
 };
 
 const CHATBOT_UI_TRANSLATIONS = {
@@ -66,7 +67,13 @@ const CHATBOT_UI_TRANSLATIONS = {
   tl: { placeholder: 'I-type ang iyong mensahe...', send: 'Ipadala', thinking: 'Nag-iisip…', subtitle: '24/7 AI virtual assistant' },
   vi: { placeholder: 'Nhập tin nhắn của bạn...', send: 'Gửi', thinking: 'Đang suy nghĩ…', subtitle: 'Trợ lý ảo AI 24/7' },
   cy: { placeholder: 'Teipiwch eich neges...', send: 'Anfon', thinking: 'Yn meddwl…', subtitle: 'Cynorthwyydd rhithwir AI 24/7' },
-  ta: { placeholder: 'உங்கள் செய்தியை உள்ளிடவும்...', send: 'அனுப்பு', thinking: 'சிந்திக்கிறது…', subtitle: '24/7 AI மெய்நிகர் உதவியாளர்' }
+  ta: { placeholder: 'உங்கள் செய்தியை உள்ளிடவும்...', send: 'அனுப்பு', thinking: 'சிந்திக்கிறது…', subtitle: '24/7 AI மெய்நிகர் உதவியாளர்' },
+  yue: { placeholder: '請輸入你嘅訊息...', send: '發送', thinking: '思考緊…', subtitle: '24/7 AI 虛擬助理' }
+};
+
+const CHATBOT_ALT_TEXT_TRANSLATIONS = {
+  en: 'Rhythm Bot logo',
+  yue: 'Rhythm Bot 標誌',
 };
 
 const normalizeChatText = (value) => {
@@ -153,6 +160,7 @@ export function ChatbotWidget() {
     [messages]
   );
   const uiText = CHATBOT_UI_TRANSLATIONS[language] || CHATBOT_UI_TRANSLATIONS.en;
+  const logoAltText = CHATBOT_ALT_TEXT_TRANSLATIONS[language] || CHATBOT_ALT_TEXT_TRANSLATIONS.en;
 
   useEffect(() => {
     setIsClientMounted(true);
@@ -216,7 +224,7 @@ export function ChatbotWidget() {
         <div className={styles.panel} role="dialog" aria-label={title}>
           <div className={styles.header}>
             <div className={styles.headerTitleWrap}>
-              <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.headerLogo} />
+              <img src="/logo.jpg" alt={logoAltText} className={styles.headerLogo} />
               <div className={styles.headerTitle}>{title}</div>
             </div>
             <div className={styles.headerSubtitle}>{uiText.subtitle}</div>
@@ -227,7 +235,7 @@ export function ChatbotWidget() {
                 key={`${message.role}-${index}`}
                 className={`${styles.messageRow} ${message.role === 'user' ? styles.messageRowUser : ''}`}
               >
-                {message.role === 'assistant' ? <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.avatar} /> : null}
+                {message.role === 'assistant' ? <img src="/logo.jpg" alt={logoAltText} className={styles.avatar} /> : null}
                 <div className={`${styles.bubble} ${message.role === 'user' ? styles.user : styles.assistant}`}>
                   {renderChatContent(message.content)}
                 </div>
@@ -235,7 +243,7 @@ export function ChatbotWidget() {
             ))}
             {isLoading ? (
               <div className={styles.messageRow}>
-                <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.avatar} />
+                <img src="/logo.jpg" alt={logoAltText} className={styles.avatar} />
                 <div className={`${styles.bubble} ${styles.assistant}`}>{uiText.thinking}</div>
               </div>
             ) : null}
@@ -267,7 +275,7 @@ export function ChatbotWidget() {
           '×'
         ) : (
           <span className={styles.launcherInner}>
-            <img src="/logo.jpg" alt="Rhythm Bot logo" className={styles.launcherLogo} />
+            <img src="/logo.jpg" alt={logoAltText} className={styles.launcherLogo} />
             <span>Rhythm Bot</span>
           </span>
         )}
