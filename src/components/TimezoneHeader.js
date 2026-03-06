@@ -186,6 +186,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
     'Asia/Vladivostok': 'VLAT',
     'Asia/Magadan': 'MAGT',
     'Asia/Kamchatka': 'PETT',
+    'America/Phoenix': 'MST',
   };
 
   const getCodeFromName = (name) => {
@@ -238,6 +239,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
     if (timezone === 'America/New_York') return inDST ? 'EDT' : 'EST';
     if (timezone === 'America/Chicago') return inDST ? 'CDT' : 'CST';
     if (timezone === 'America/Denver') return inDST ? 'MDT' : 'MST';
+    if (timezone === 'America/Phoenix') return 'MST';
     if (timezone === 'America/Los_Angeles') return inDST ? 'PDT' : 'PST';
     if (timezone === 'America/Anchorage') return inDST ? 'AKDT' : 'AKST';
     if (timezone === 'Pacific/Honolulu') return 'HST'; // Hawaii doesn't observe DST
@@ -714,7 +716,30 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
     // Handle countries with multiple timezones
     if (Array.isArray(timezoneData)) {
-      return timezoneData.map(({ name, timezone }) => {
+      const timezonesToRender = (() => {
+        if (userCountry !== 'US') return timezoneData;
+
+        const usDstActive = isDST('America/New_York');
+        if (!usDstActive) return timezoneData;
+
+        const hasArizona = timezoneData.some((item) => item.timezone === 'America/Phoenix');
+        if (hasArizona) return timezoneData;
+
+        const denverIndex = timezoneData.findIndex((item) => item.timezone === 'America/Denver');
+        const arizonaEntry = { name: 'MST (Arizona)', timezone: 'America/Phoenix' };
+
+        if (denverIndex === -1) {
+          return [...timezoneData, arizonaEntry];
+        }
+
+        return [
+          ...timezoneData.slice(0, denverIndex + 1),
+          arizonaEntry,
+          ...timezoneData.slice(denverIndex + 1),
+        ];
+      })();
+
+      return timezonesToRender.map(({ name, timezone }) => {
         const localTime = formatTime(timezone);
         const localDate = formatDate(timezone);
         const localOffset = getUTCOffset(timezone);
@@ -878,10 +903,11 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
   // Check if this is a 6-timezone country (US or CA) or 11-timezone country (RU)
   const isSixTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 6;
+  const isSevenTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 7;
   const isElevenTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 11;
   const isAustralia = userCountry === 'AU';
-  const shouldUseGridLayout = isSixTimezoneCountry || isElevenTimezoneCountry || isAustralia;
-  const shouldUseCompactDesktopLayout = !isMobile && (isSixTimezoneCountry || isElevenTimezoneCountry);
+  const shouldUseGridLayout = isSixTimezoneCountry || isSevenTimezoneCountry || isElevenTimezoneCountry || isAustralia;
+  const shouldUseCompactDesktopLayout = !isMobile && (isSixTimezoneCountry || isSevenTimezoneCountry || isElevenTimezoneCountry);
   const isUsOrCaDesktop = !isMobile && (userCountry === 'US' || userCountry === 'CA');
   const isRuDesktop = !isMobile && userCountry === 'RU';
   const shouldUseDenseCompactCards = isUsOrCaDesktop || isRuDesktop;
@@ -1219,7 +1245,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                 </div>
               </>
             ) : (
-              // Grid layout for 6-timezone countries (US/CA) - works for both mobile and desktop
+              // Grid layout for US/CA multi-timezone countries (6-7 zones) - works for both mobile and desktop
               <>
                 <div style={{ display: 'flex', gap: isMobile ? '8px' : '6px', justifyContent: 'center', width: '100%' }}>
                   {displayTimezones.slice(0, 3).map((info, index) => (
@@ -1251,7 +1277,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: isMobile ? '8px' : '6px', justifyContent: 'center', width: '100%' }}>
-                  {displayTimezones.slice(3, 6).map((info, index) => (
+                  {displayTimezones.slice(3).map((info, index) => (
                     <div key={index + 3} style={{
                       display: 'flex',
                       flexDirection: 'column',

@@ -4,17 +4,22 @@ import Script from 'next/script';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-// Only allow ads on pages with genuine, unique publisher content.
-// Navigation pages, store directories, and tool-only pages are excluded
-// per Google AdSense policy (screens used for navigation/behavioural purposes).
+// Only allow ads on long-form editorial pages with standalone value.
+// Utility, support, navigation, legal, and tool workflows are excluded
+// per Google AdSense policy (screens without sufficient publisher content).
 const ALLOWED_EXACT_PATHS = new Set([
-  '/about',
-  '/faq',
-  '/FAQ',
-  '/track-your-item',
+  '/blog/singpost-epac',
+  '/blog/speedpost-ems',
+  '/blog/speedpost-express',
+  '/blog/us-pddp',
+  '/blog/eu-vat-ioss',
+  '/blog/uk-vat-hmrc',
+  '/blog/norway-voec',
+  '/blog/swiss-vat',
+  '/blog/phone-number-required',
+  '/blog/parcel-scams',
+  '/blog/usa-section-122',
 ]);
-
-const ALLOWED_PREFIX_PATHS = ['/blog'];
 const MINIMUM_CONTENT_WORDS = 320;
 const MINIMUM_CONTENT_CHARACTERS = 1800;
 const MINIMUM_PARAGRAPHS = 4;
@@ -44,8 +49,7 @@ const NON_WORD_CHARS_REGEX = (() => {
 
 const shouldLoadAdsOnPath = (pathname) => {
   if (!pathname) return false;
-  if (ALLOWED_EXACT_PATHS.has(pathname)) return true;
-  return ALLOWED_PREFIX_PATHS.some((prefix) => pathname.startsWith(prefix));
+  return ALLOWED_EXACT_PATHS.has(pathname);
 };
 
 const getVisibleTextContent = () => {
@@ -183,11 +187,16 @@ export function AdSenseLoader() {
   }
 
   return (
-    <Script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4194808111663749"
-      crossOrigin="anonymous"
-      strategy="lazyOnload"
-    />
+    <>
+      <Script id="adsense-npa-default" strategy="beforeInteractive">
+        {`window.adsbygoogle = window.adsbygoogle || []; window.adsbygoogle.requestNonPersonalizedAds = 1;`}
+      </Script>
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4194808111663749"
+        crossOrigin="anonymous"
+        strategy="lazyOnload"
+      />
+    </>
   );
 }

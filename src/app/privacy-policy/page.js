@@ -110,6 +110,19 @@ export default function PrivacyPolicyPage() {
               </ul>
               <p>EU/EEA/Swiss visitors will be shown a cookie consent banner.</p>
               <p>You can manage cookie preferences in your browser settings.</p>
+              <p>
+                Google and its partners may place and read cookies, use web beacons, and use IP addresses to personalise ads and measure ad performance.
+                For more information, see{' '}
+                <a
+                  href="https://policies.google.com/technologies/partner-sites"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'underline' }}
+                >
+                  How Google uses information from sites or apps that use our services
+                </a>
+                .
+              </p>
 
               <h2>5. {ui.sectionTitles[4]}</h2>
               <p>We may share your data with:</p>
@@ -216,6 +229,19 @@ export default function PrivacyPolicyPage() {
 
               <h2>4. {ui.sectionTitles[3]}</h2>
               <p>{supplementText(0, p.privacySupplement)}</p>
+              <p>
+                Google and its partners may place and read cookies, use web beacons, and use IP addresses to personalise ads and measure ad performance.
+                For more information, see{' '}
+                <a
+                  href="https://policies.google.com/technologies/partner-sites"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'underline' }}
+                >
+                  How Google uses information from sites or apps that use our services
+                </a>
+                .
+              </p>
 
               <h2>5. {ui.sectionTitles[4]}</h2>
               <p>{sectionText(5, p.privacyText)}</p>
