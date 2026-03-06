@@ -10,7 +10,8 @@ function calculateExpectedAnswer({ a, b, op }) {
 }
 
 /**
- * Verifies a math captcha token and answer submitted with a form.
+ * Verifies a captcha token and answer submitted with a form.
+ * Supports all 4 challenge modes: math, puzzle, match, char.
  * Returns { ok: true } on success or { ok: false, error: string } on failure.
  */
 export function verifyCaptchaToken(token, rawAnswer) {
@@ -55,25 +56,45 @@ export function verifyCaptchaToken(token, rawAnswer) {
       return { ok: false, error: 'captcha_expired' };
     }
 
-    if (payload.mode !== 'math') {
-      return { ok: false, error: 'invalid_captcha_mode' };
+    const { mode } = payload;
+
+    if (mode === 'math') {
+      const answerNumber = Number(normalizedAnswer);
+      if (!Number.isFinite(answerNumber)) {
+        return { ok: false, error: 'invalid_captcha_answer' };
+      }
+      const expected = calculateExpectedAnswer(payload);
+      if (!Number.isFinite(expected)) {
+        return { ok: false, error: 'invalid_captcha_token' };
+      }
+      if (answerNumber !== expected) {
+        return { ok: false, error: 'wrong_captcha_answer' };
+      }
+      return { ok: true };
     }
 
-    const answerNumber = Number(normalizedAnswer);
-    if (!Number.isFinite(answerNumber)) {
-      return { ok: false, error: 'invalid_captcha_answer' };
+    if (mode === 'puzzle' || mode === 'match') {
+      if (!payload.correctOption) {
+        return { ok: false, error: 'invalid_captcha_token' };
+      }
+      if (normalizedAnswer !== payload.correctOption) {
+        return { ok: false, error: 'wrong_captcha_answer' };
+      }
+      return { ok: true };
     }
 
-    const expected = calculateExpectedAnswer(payload);
-    if (!Number.isFinite(expected)) {
-      return { ok: false, error: 'invalid_captcha_token' };
+    if (mode === 'char') {
+      if (!payload.correctAnswer) {
+        return { ok: false, error: 'invalid_captcha_token' };
+      }
+      // Case-sensitive exact match
+      if (rawAnswer !== payload.correctAnswer) {
+        return { ok: false, error: 'wrong_captcha_answer' };
+      }
+      return { ok: true };
     }
 
-    if (answerNumber !== expected) {
-      return { ok: false, error: 'wrong_captcha_answer' };
-    }
-
-    return { ok: true };
+    return { ok: false, error: 'invalid_captcha_mode' };
   } catch {
     return { ok: false, error: 'captcha_verification_failed' };
   }
