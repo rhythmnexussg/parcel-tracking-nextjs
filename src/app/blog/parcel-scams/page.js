@@ -50,7 +50,7 @@ const OUR_FAKE_DOMAINS = [
 ];
 
 const SINGPOST = {
-  official: ['singpost.com', 'speedpost.com'],
+  official: ['singpost.com', 'speedpost.com.sg'],
   fake: [
     { domain: 'singp0st.com', pattern: 'letterSubstitution' },
     { domain: 'sing-post.com', pattern: 'hyphenInserted' },
@@ -436,7 +436,7 @@ const WARNING_I18N = {
   en: {
     smallRedeliveryPayment: 'SMS/email asks for a small redelivery payment',
     fullCreditCardDetails: 'Page requests full credit card details',
-    domainNotExactSingpostSpeedpost: 'Domain is not exactly singpost.com or speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Domain is not exactly singpost.com or speedpost.com.sg',
     unexpectedPayToRelease: 'Unexpected message asks you to pay to release package',
     trackingShouldResolveUspsTools: 'Tracking should resolve on usps.com or tools.usps.com',
     unusualSensitiveIdentity: 'Unusual forms ask for sensitive identity data',
@@ -447,7 +447,7 @@ const WARNING_I18N = {
   cs: {
     smallRedeliveryPayment: 'SMS/e-mail žádá malý poplatek za opětovné doručení',
     fullCreditCardDetails: 'Stránka požaduje úplné údaje o platební kartě',
-    domainNotExactSingpostSpeedpost: 'Doména není přesně singpost.com nebo speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Doména není přesně singpost.com nebo speedpost.com.sg',
     unexpectedPayToRelease: 'Nečekaná zpráva vás vyzývá k platbě za uvolnění zásilky',
     trackingShouldResolveUspsTools: 'Sledování má vést na usps.com nebo tools.usps.com',
     unusualSensitiveIdentity: 'Neobvyklé formuláře žádají citlivé identifikační údaje',
@@ -458,7 +458,7 @@ const WARNING_I18N = {
   nl: {
     smallRedeliveryPayment: 'SMS/e-mail vraagt om een kleine herbezorgingsbetaling',
     fullCreditCardDetails: 'Pagina vraagt om volledige creditcardgegevens',
-    domainNotExactSingpostSpeedpost: 'Domein is niet exact singpost.com of speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Domein is niet exact singpost.com of speedpost.com.sg',
     unexpectedPayToRelease: 'Onverwacht bericht vraagt betaling om pakket vrij te geven',
     trackingShouldResolveUspsTools: 'Tracking moet openen op usps.com of tools.usps.com',
     unusualSensitiveIdentity: 'Ongewone formulieren vragen om gevoelige identiteitsgegevens',
@@ -469,7 +469,7 @@ const WARNING_I18N = {
   fi: {
     smallRedeliveryPayment: 'SMS/sähköposti pyytää pientä uudelleentoimitusmaksua',
     fullCreditCardDetails: 'Sivu pyytää täydet luottokorttitiedot',
-    domainNotExactSingpostSpeedpost: 'Verkkotunnus ei ole täsmälleen singpost.com tai speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Verkkotunnus ei ole täsmälleen singpost.com tai speedpost.com.sg',
     unexpectedPayToRelease: 'Yllättävä viesti pyytää maksamaan paketin vapauttamiseksi',
     trackingShouldResolveUspsTools: 'Seurannan tulisi avautua usps.com- tai tools.usps.com-osoitteessa',
     unusualSensitiveIdentity: 'Poikkeavat lomakkeet pyytävät arkaluonteisia henkilötietoja',
@@ -480,7 +480,7 @@ const WARNING_I18N = {
   fr: {
     smallRedeliveryPayment: 'Le SMS/e-mail demande un petit paiement de re-livraison',
     fullCreditCardDetails: 'La page demande les informations complètes de carte bancaire',
-    domainNotExactSingpostSpeedpost: 'Le domaine n’est pas exactement singpost.com ou speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Le domaine n’est pas exactement singpost.com ou speedpost.com.sg',
     unexpectedPayToRelease: 'Message inattendu demandant de payer pour débloquer le colis',
     trackingShouldResolveUspsTools: 'Le suivi doit pointer vers usps.com ou tools.usps.com',
     unusualSensitiveIdentity: 'Des formulaires inhabituels demandent des données d’identité sensibles',
@@ -491,7 +491,7 @@ const WARNING_I18N = {
   de: {
     smallRedeliveryPayment: 'SMS/E-Mail verlangt eine kleine Nachzustellungsgebühr',
     fullCreditCardDetails: 'Seite fordert vollständige Kreditkartendaten an',
-    domainNotExactSingpostSpeedpost: 'Domain ist nicht exakt singpost.com oder speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Domain ist nicht exakt singpost.com oder speedpost.com.sg',
     unexpectedPayToRelease: 'Unerwartete Nachricht verlangt Zahlung zur Freigabe des Pakets',
     trackingShouldResolveUspsTools: 'Tracking sollte auf usps.com oder tools.usps.com öffnen',
     unusualSensitiveIdentity: 'Ungewöhnliche Formulare verlangen sensible Identitätsdaten',
@@ -502,7 +502,7 @@ const WARNING_I18N = {
   he: {
     smallRedeliveryPayment: 'הודעת SMS/אימייל מבקשת תשלום קטן למסירה מחדש',
     fullCreditCardDetails: 'העמוד מבקש פרטי כרטיס אשראי מלאים',
-    domainNotExactSingpostSpeedpost: 'הדומיין אינו בדיוק singpost.com או speedpost.com',
+    domainNotExactSingpostSpeedpost: 'הדומיין אינו בדיוק singpost.com או speedpost.com.sg',
     unexpectedPayToRelease: 'הודעה לא צפויה מבקשת תשלום לשחרור החבילה',
     trackingShouldResolveUspsTools: 'קישור המעקב צריך להיפתח ב-usps.com או tools.usps.com',
     unusualSensitiveIdentity: 'טפסים חריגים מבקשים נתוני זיהוי רגישים',
@@ -513,7 +513,7 @@ const WARNING_I18N = {
   hi: {
     smallRedeliveryPayment: 'SMS/ईमेल में छोटी री-डिलीवरी फीस मांगी जाती है',
     fullCreditCardDetails: 'पेज पूर्ण क्रेडिट कार्ड विवरण मांगता है',
-    domainNotExactSingpostSpeedpost: 'डोमेन ठीक singpost.com या speedpost.com नहीं है',
+    domainNotExactSingpostSpeedpost: 'डोमेन ठीक singpost.com या speedpost.com.sg नहीं है',
     unexpectedPayToRelease: 'अचानक संदेश पैकेज रिलीज़ करने के लिए भुगतान मांगता है',
     trackingShouldResolveUspsTools: 'ट्रैकिंग usps.com या tools.usps.com पर खुलनी चाहिए',
     unusualSensitiveIdentity: 'असामान्य फॉर्म संवेदनशील पहचान जानकारी मांगते हैं',
@@ -524,7 +524,7 @@ const WARNING_I18N = {
   id: {
     smallRedeliveryPayment: 'SMS/email meminta pembayaran kecil untuk pengiriman ulang',
     fullCreditCardDetails: 'Halaman meminta detail kartu kredit lengkap',
-    domainNotExactSingpostSpeedpost: 'Domain tidak persis singpost.com atau speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Domain tidak persis singpost.com atau speedpost.com.sg',
     unexpectedPayToRelease: 'Pesan tak terduga meminta Anda membayar untuk melepas paket',
     trackingShouldResolveUspsTools: 'Pelacakan harus menuju usps.com atau tools.usps.com',
     unusualSensitiveIdentity: 'Formulir tidak biasa meminta data identitas sensitif',
@@ -535,7 +535,7 @@ const WARNING_I18N = {
   ga: {
     smallRedeliveryPayment: 'Iarrann SMS/r-phost táille bheag athsheachadta',
     fullCreditCardDetails: 'Iarrann an leathanach sonraí iomlána cárta creidmheasa',
-    domainNotExactSingpostSpeedpost: 'Níl an fearann go díreach singpost.com ná speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Níl an fearann go díreach singpost.com ná speedpost.com.sg',
     unexpectedPayToRelease: 'Iarrann teachtaireacht gan choinne íocaíocht chun an beartán a scaoileadh',
     trackingShouldResolveUspsTools: 'Ba chóir don rianú oscailt ar usps.com nó tools.usps.com',
     unusualSensitiveIdentity: 'Iarrann foirmeacha neamhghnácha sonraí íogaire aitheantais',
@@ -546,7 +546,7 @@ const WARNING_I18N = {
   it: {
     smallRedeliveryPayment: 'SMS/e-mail chiede un piccolo pagamento per riconsegna',
     fullCreditCardDetails: 'La pagina richiede i dati completi della carta di credito',
-    domainNotExactSingpostSpeedpost: 'Il dominio non è esattamente singpost.com o speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Il dominio non è esattamente singpost.com o speedpost.com.sg',
     unexpectedPayToRelease: 'Messaggio inaspettato chiede di pagare per sbloccare il pacco',
     trackingShouldResolveUspsTools: 'Il tracking deve aprirsi su usps.com o tools.usps.com',
     unusualSensitiveIdentity: 'Moduli insoliti chiedono dati identificativi sensibili',
@@ -557,7 +557,7 @@ const WARNING_I18N = {
   ja: {
     smallRedeliveryPayment: 'SMS/メールで少額の再配達料金を要求してくる',
     fullCreditCardDetails: 'ページがクレジットカードの全情報を要求する',
-    domainNotExactSingpostSpeedpost: 'ドメインが singpost.com または speedpost.com と完全一致しない',
+    domainNotExactSingpostSpeedpost: 'ドメインが singpost.com または speedpost.com.sg と完全一致しない',
     unexpectedPayToRelease: '突然のメッセージで荷物解放の支払いを求める',
     trackingShouldResolveUspsTools: '追跡先は usps.com または tools.usps.com であるべき',
     unusualSensitiveIdentity: '不自然なフォームで機密性の高い本人情報を要求する',
@@ -579,7 +579,7 @@ const WARNING_I18N = {
   ms: {
     smallRedeliveryPayment: 'SMS/e-mel meminta bayaran kecil penghantaran semula',
     fullCreditCardDetails: 'Halaman meminta butiran kad kredit penuh',
-    domainNotExactSingpostSpeedpost: 'Domain bukan tepat singpost.com atau speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Domain bukan tepat singpost.com atau speedpost.com.sg',
     unexpectedPayToRelease: 'Mesej tidak dijangka meminta anda membayar untuk melepaskan bungkusan',
     trackingShouldResolveUspsTools: 'Penjejakan sepatutnya dibuka pada usps.com atau tools.usps.com',
     unusualSensitiveIdentity: 'Borang luar biasa meminta data identiti sensitif',
@@ -590,7 +590,7 @@ const WARNING_I18N = {
   no: {
     smallRedeliveryPayment: 'SMS/e-post ber om en liten omleveringsbetaling',
     fullCreditCardDetails: 'Siden ber om fullstendige kredittkortopplysninger',
-    domainNotExactSingpostSpeedpost: 'Domenet er ikke nøyaktig singpost.com eller speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Domenet er ikke nøyaktig singpost.com eller speedpost.com.sg',
     unexpectedPayToRelease: 'Uventet melding ber deg betale for å frigjøre pakken',
     trackingShouldResolveUspsTools: 'Sporing skal gå til usps.com eller tools.usps.com',
     unusualSensitiveIdentity: 'Uvanlige skjemaer ber om sensitive identitetsdata',
@@ -601,7 +601,7 @@ const WARNING_I18N = {
   pl: {
     smallRedeliveryPayment: 'SMS/e-mail prosi o małą opłatę za ponowne doręczenie',
     fullCreditCardDetails: 'Strona żąda pełnych danych karty kredytowej',
-    domainNotExactSingpostSpeedpost: 'Domena nie jest dokładnie singpost.com ani speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Domena nie jest dokładnie singpost.com ani speedpost.com.sg',
     unexpectedPayToRelease: 'Nieoczekiwana wiadomość prosi o płatność za wydanie paczki',
     trackingShouldResolveUspsTools: 'Śledzenie powinno prowadzić do usps.com lub tools.usps.com',
     unusualSensitiveIdentity: 'Nietypowe formularze proszą o wrażliwe dane tożsamości',
@@ -612,7 +612,7 @@ const WARNING_I18N = {
   pt: {
     smallRedeliveryPayment: 'SMS/e-mail pede pequeno pagamento de reentrega',
     fullCreditCardDetails: 'A página solicita dados completos do cartão de crédito',
-    domainNotExactSingpostSpeedpost: 'O domínio não é exatamente singpost.com ou speedpost.com',
+    domainNotExactSingpostSpeedpost: 'O domínio não é exatamente singpost.com ou speedpost.com.sg',
     unexpectedPayToRelease: 'Mensagem inesperada pede pagamento para liberar o pacote',
     trackingShouldResolveUspsTools: 'O rastreio deve abrir em usps.com ou tools.usps.com',
     unusualSensitiveIdentity: 'Formulários incomuns pedem dados sensíveis de identidade',
@@ -623,7 +623,7 @@ const WARNING_I18N = {
   ru: {
     smallRedeliveryPayment: 'SMS/письмо просит небольшую оплату за повторную доставку',
     fullCreditCardDetails: 'Страница запрашивает полные данные банковской карты',
-    domainNotExactSingpostSpeedpost: 'Домен не совпадает точно с singpost.com или speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Домен не совпадает точно с singpost.com или speedpost.com.sg',
     unexpectedPayToRelease: 'Неожиданное сообщение просит оплату за выпуск посылки',
     trackingShouldResolveUspsTools: 'Трекинг должен вести на usps.com или tools.usps.com',
     unusualSensitiveIdentity: 'Необычные формы просят чувствительные данные личности',
@@ -634,7 +634,7 @@ const WARNING_I18N = {
   zh: {
     smallRedeliveryPayment: '短信/邮件要求支付小额重新派送费用',
     fullCreditCardDetails: '页面要求填写完整信用卡信息',
-    domainNotExactSingpostSpeedpost: '域名并非完全等于 singpost.com 或 speedpost.com',
+    domainNotExactSingpostSpeedpost: '域名并非完全等于 singpost.com 或 speedpost.com.sg',
     unexpectedPayToRelease: '突发消息要求付费才能放行包裹',
     trackingShouldResolveUspsTools: '追踪链接应指向 usps.com 或 tools.usps.com',
     unusualSensitiveIdentity: '异常表单要求提供敏感身份信息',
@@ -645,7 +645,7 @@ const WARNING_I18N = {
   es: {
     smallRedeliveryPayment: 'SMS/correo solicita un pequeño pago por reentrega',
     fullCreditCardDetails: 'La página solicita datos completos de tarjeta de crédito',
-    domainNotExactSingpostSpeedpost: 'El dominio no es exactamente singpost.com o speedpost.com',
+    domainNotExactSingpostSpeedpost: 'El dominio no es exactamente singpost.com o speedpost.com.sg',
     unexpectedPayToRelease: 'Mensaje inesperado pide pagar para liberar el paquete',
     trackingShouldResolveUspsTools: 'El seguimiento debe abrir en usps.com o tools.usps.com',
     unusualSensitiveIdentity: 'Formularios inusuales piden datos de identidad sensibles',
@@ -656,7 +656,7 @@ const WARNING_I18N = {
   sv: {
     smallRedeliveryPayment: 'SMS/e-post ber om en liten omleveransavgift',
     fullCreditCardDetails: 'Sidan begär fullständiga kreditkortsuppgifter',
-    domainNotExactSingpostSpeedpost: 'Domänen är inte exakt singpost.com eller speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Domänen är inte exakt singpost.com eller speedpost.com.sg',
     unexpectedPayToRelease: 'Oväntat meddelande ber dig betala för att frigöra paketet',
     trackingShouldResolveUspsTools: 'Spårning ska gå till usps.com eller tools.usps.com',
     unusualSensitiveIdentity: 'Ovanliga formulär begär känsliga identitetsuppgifter',
@@ -667,7 +667,7 @@ const WARNING_I18N = {
   ta: {
     smallRedeliveryPayment: 'SMS/மின்னஞ்சல் சிறிய மறுவிநியோக கட்டணம் கேட்கிறது',
     fullCreditCardDetails: 'பக்கம் முழு கிரெடிட் கார்டு விவரங்களை கேட்கிறது',
-    domainNotExactSingpostSpeedpost: 'டொமைன் singpost.com அல்லது speedpost.com என்பதுடன் துல்லியமாக பொருந்தவில்லை',
+    domainNotExactSingpostSpeedpost: 'டொமைன் singpost.com அல்லது speedpost.com.sg என்பதுடன் துல்லியமாக பொருந்தவில்லை',
     unexpectedPayToRelease: 'எதிர்பாராத செய்தி பார்சலை விடுவிக்க பணம் கேட்கிறது',
     trackingShouldResolveUspsTools: 'டிராக்கிங் usps.com அல்லது tools.usps.com-இல் திறக்க வேண்டும்',
     unusualSensitiveIdentity: 'அசாதாரண படிவங்கள் நுணுக்கமான அடையாளத் தகவலை கேட்கின்றன',
@@ -678,7 +678,7 @@ const WARNING_I18N = {
   tl: {
     smallRedeliveryPayment: 'Humihingi ang SMS/email ng maliit na bayad sa redelivery',
     fullCreditCardDetails: 'Humihingi ang pahina ng buong detalye ng credit card',
-    domainNotExactSingpostSpeedpost: 'Hindi eksaktong singpost.com o speedpost.com ang domain',
+    domainNotExactSingpostSpeedpost: 'Hindi eksaktong singpost.com o speedpost.com.sg ang domain',
     unexpectedPayToRelease: 'Hindi inaasahang mensahe na nagpapabayad para ma-release ang package',
     trackingShouldResolveUspsTools: 'Dapat magbukas ang tracking sa usps.com o tools.usps.com',
     unusualSensitiveIdentity: 'Kakaibang form ang humihingi ng sensitibong identity data',
@@ -689,7 +689,7 @@ const WARNING_I18N = {
   th: {
     smallRedeliveryPayment: 'SMS/อีเมลขอให้จ่ายค่าจัดส่งใหม่เล็กน้อย',
     fullCreditCardDetails: 'หน้าเว็บขอข้อมูลบัตรเครดิตแบบครบถ้วน',
-    domainNotExactSingpostSpeedpost: 'โดเมนไม่ตรงกับ singpost.com หรือ speedpost.com แบบเป๊ะ',
+    domainNotExactSingpostSpeedpost: 'โดเมนไม่ตรงกับ singpost.com หรือ speedpost.com.sg แบบเป๊ะ',
     unexpectedPayToRelease: 'ข้อความไม่คาดคิดขอให้คุณจ่ายเงินเพื่อปล่อยพัสดุ',
     trackingShouldResolveUspsTools: 'ลิงก์ติดตามควรไปที่ usps.com หรือ tools.usps.com',
     unusualSensitiveIdentity: 'แบบฟอร์มผิดปกติขอข้อมูลยืนยันตัวตนที่อ่อนไหว',
@@ -700,7 +700,7 @@ const WARNING_I18N = {
   mi: {
     smallRedeliveryPayment: 'Ka tono te SMS/īmēra i tētahi utu iti mō te tuku anō',
     fullCreditCardDetails: 'Ka tono te whārangi i ngā taipitopito kāri nama katoa',
-    domainNotExactSingpostSpeedpost: 'Kāore te rohe i te tino singpost.com, speedpost.com rānei',
+    domainNotExactSingpostSpeedpost: 'Kāore te rohe i te tino singpost.com, speedpost.com.sg rānei',
     unexpectedPayToRelease: 'He karere ohorere e tono utu kia tukuna te pākete',
     trackingShouldResolveUspsTools: 'Me ahu te aroturuki ki usps.com, tools.usps.com rānei',
     unusualSensitiveIdentity: 'Ka tono ngā puka rerekē i ngā raraunga tuakiri tairongo',
@@ -711,7 +711,7 @@ const WARNING_I18N = {
   'zh-hant': {
     smallRedeliveryPayment: 'SMS/電郵要求支付小額重新派送費',
     fullCreditCardDetails: '頁面要求填寫完整信用卡資料',
-    domainNotExactSingpostSpeedpost: '網域並非完全等於 singpost.com 或 speedpost.com',
+    domainNotExactSingpostSpeedpost: '網域並非完全等於 singpost.com 或 speedpost.com.sg',
     unexpectedPayToRelease: '突發訊息要求付款才可放行包裹',
     trackingShouldResolveUspsTools: '追蹤連結應指向 usps.com 或 tools.usps.com',
     unusualSensitiveIdentity: '異常表單要求敏感身份資料',
@@ -722,7 +722,7 @@ const WARNING_I18N = {
   vi: {
     smallRedeliveryPayment: 'SMS/email yêu cầu trả một khoản phí giao lại nhỏ',
     fullCreditCardDetails: 'Trang yêu cầu đầy đủ thông tin thẻ tín dụng',
-    domainNotExactSingpostSpeedpost: 'Tên miền không chính xác là singpost.com hoặc speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Tên miền không chính xác là singpost.com hoặc speedpost.com.sg',
     unexpectedPayToRelease: 'Tin nhắn bất ngờ yêu cầu bạn trả tiền để giải phóng bưu kiện',
     trackingShouldResolveUspsTools: 'Theo dõi phải mở trên usps.com hoặc tools.usps.com',
     unusualSensitiveIdentity: 'Biểu mẫu bất thường yêu cầu dữ liệu danh tính nhạy cảm',
@@ -733,7 +733,7 @@ const WARNING_I18N = {
   cy: {
     smallRedeliveryPayment: 'Mae SMS/e-bost yn gofyn am daliad bach ail-ddosbarthu',
     fullCreditCardDetails: 'Mae’r dudalen yn gofyn am fanylion cerdyn credyd llawn',
-    domainNotExactSingpostSpeedpost: 'Nid yw’r parth yn union singpost.com na speedpost.com',
+    domainNotExactSingpostSpeedpost: 'Nid yw’r parth yn union singpost.com na speedpost.com.sg',
     unexpectedPayToRelease: 'Mae neges annisgwyl yn gofyn i chi dalu i ryddhau’r pecyn',
     trackingShouldResolveUspsTools: 'Dylai olrhain agor ar usps.com neu tools.usps.com',
     unusualSensitiveIdentity: 'Mae ffurflenni anarferol yn gofyn am ddata adnabod sensitif',
@@ -744,7 +744,7 @@ const WARNING_I18N = {
   yue: {
     smallRedeliveryPayment: 'SMS/電郵要求支付小額重新派送費',
     fullCreditCardDetails: '頁面要求填寫完整信用卡資料',
-    domainNotExactSingpostSpeedpost: '網域並非完全等於 singpost.com 或 speedpost.com',
+    domainNotExactSingpostSpeedpost: '網域並非完全等於 singpost.com 或 speedpost.com.sg',
     unexpectedPayToRelease: '突然訊息要求付款先可以放行包裹',
     trackingShouldResolveUspsTools: '追蹤連結應該去 usps.com 或 tools.usps.com',
     unusualSensitiveIdentity: '異常表格要求敏感身份資料',
