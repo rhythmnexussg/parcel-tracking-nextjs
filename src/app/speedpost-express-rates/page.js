@@ -10,6 +10,7 @@ export default function SpeedpostExpressRatesPage() {
   const { t, language } = useLanguage();
   const router = useRouter();
   const tr = (key) => rt(language, key);
+  const zoneLabel = (suffix) => `${tr('zone')} ${suffix}`;
 
   const zoneRows = [
     ['0.0-2.0kg', '46.92', '83.08', '122.31', '302.31'],
@@ -17,10 +18,10 @@ export default function SpeedpostExpressRatesPage() {
   ];
 
   const zoneMappingRows = [
-    ['Zone 1', `${countryName(language, 'MY', 'Malaysia')} 🇲🇾`],
-    ['Zone 2', `${tr('asiaPacific')} 🌏`],
-    ['Zone 3', `${countryName(language, 'AU', 'Australia')} / ${countryName(language, 'NZ', 'New Zealand')} / ${tr('europe')} / ${countryName(language, 'US', 'United States')} / ${countryName(language, 'CA', 'Canada')} 🇦🇺🇳🇿🇪🇺🇺🇸🇨🇦`],
-    ['Zone 4', `${countryName(language, 'IL', 'Israel')} 🇮🇱`],
+    [zoneLabel('1'), `${countryName(language, 'MY', 'Malaysia')} 🇲🇾`],
+    [zoneLabel('2'), `${tr('asiaPacific')} 🌏`],
+    [zoneLabel('3'), `${countryName(language, 'AU', 'Australia')} / ${countryName(language, 'NZ', 'New Zealand')} / ${tr('europe')} / ${countryName(language, 'US', 'United States')} / ${countryName(language, 'CA', 'Canada')} 🇦🇺🇳🇿🇪🇺🇺🇸🇨🇦`],
+    [zoneLabel('4'), `${countryName(language, 'IL', 'Israel')} 🇮🇱`],
   ];
 
   return (
@@ -61,7 +62,7 @@ export default function SpeedpostExpressRatesPage() {
             <table className="rates-table">
               <thead>
                 <tr>
-                  {[tr('weight'), 'Zone 1', 'Zone 2', 'Zone 3', 'Zone 4'].map((h) => (
+                  {[tr('weight'), zoneLabel('1'), zoneLabel('2'), zoneLabel('3'), zoneLabel('4')].map((h) => (
                     <th key={h}>{h}</th>
                   ))}
                 </tr>
@@ -76,10 +77,10 @@ export default function SpeedpostExpressRatesPage() {
             </table>
           </div>
 
-          <p><strong>Important:</strong> This service cannot be shipped to PO Box & APO/FPO boxes. Last-mile for this service is DHL; last-mile tracking is viewable on this website.</p>
-          <p><strong>USA note:</strong> USA is DDU (Delivery Duty Unpaid) by default; duties and taxes are paid to customs by recipient.</p>
-          <p><strong>Etsy note:</strong> Prices on Etsy are fixed to Zone 4. Please kindly contact us for a quote through Etsy messages.</p>
-          <p>This service is not posted on Saturdays as shipping is too costly.</p>
+          <p>{tr('spxPoBoxNotice')}</p>
+          <p>{tr('spxUsaDduNote')}</p>
+          <p>{tr('spxEtsyZone4Note')}</p>
+          <p>{tr('spxNoSaturdayNote')}</p>
           <p><strong>{t('parcelCaseReferenceLink')}:</strong> <Link href="/postal-contacts" style={{ textDecoration: 'underline' }}>{t('postalContactsTitle')}</Link>.</p>
         </div>
 

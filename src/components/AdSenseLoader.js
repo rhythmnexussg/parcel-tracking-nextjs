@@ -34,6 +34,14 @@ const SUPPORTED_LANGUAGE_PREFIXES = new Set([
   'en', 'de', 'fr', 'es', 'ja', 'zh', 'pt', 'hi', 'th', 'ms', 'nl', 'id', 'cs', 'it', 'he', 'ga', 'pl', 'ko', 'no', 'sv', 'tl', 'vi', 'fi', 'ru', 'cy', 'ta', 'mi',
 ]);
 
+const NON_WORD_CHARS_REGEX = (() => {
+  try {
+    return new RegExp("[^\\p{L}\\p{N}\\s'-]", 'gu');
+  } catch (_) {
+    return /[^A-Za-z0-9\s'-]/g;
+  }
+})();
+
 const shouldLoadAdsOnPath = (pathname) => {
   if (!pathname) return false;
   if (ALLOWED_EXACT_PATHS.has(pathname)) return true;
@@ -74,7 +82,7 @@ const getTypeTokenRatio = (chunks) => {
   if (!chunks) return 0;
   const tokens = chunks
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s'-]/gu, ' ')
+    .replace(NON_WORD_CHARS_REGEX, ' ')
     .split(/\s+/)
     .filter((token) => token.length > 1);
 

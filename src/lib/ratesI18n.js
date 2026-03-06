@@ -223,6 +223,177 @@ const EXTRA_TERMS = {
   }
 };
 
+const SPEEDPOST_NOTES = {
+  en: {
+    spxPoBoxNotice: 'Important: This service cannot be shipped to PO Box or APO/FPO addresses. Last-mile delivery is handled by DHL, and last-mile tracking is available on this website.',
+    spxUsaDduNote: 'USA note: Shipments to the United States are DDU (Delivery Duty Unpaid) by default; duties and taxes are paid by the recipient to customs.',
+    spxEtsyZone4Note: 'Etsy note: Prices on Etsy are fixed to Zone 4. Please contact us through Etsy messages for a quote.',
+    spxNoSaturdayNote: 'This service is not posted on Saturdays because shipping costs are too high.'
+  },
+  de: {
+    spxPoBoxNotice: 'Wichtig: Dieser Service kann nicht an PO-Box- oder APO/FPO-Adressen versendet werden. Die letzte Meile wird von DHL zugestellt, und die Sendungsverfolgung der letzten Meile ist auf dieser Website verfügbar.',
+    spxUsaDduNote: 'Hinweis USA: Sendungen in die USA sind standardmäßig DDU (Delivery Duty Unpaid); Zölle und Steuern werden vom Empfänger an den Zoll gezahlt.',
+    spxEtsyZone4Note: 'Hinweis Etsy: Preise auf Etsy sind auf Zone 4 festgelegt. Bitte kontaktieren Sie uns für ein Angebot über Etsy-Nachrichten.',
+    spxNoSaturdayNote: 'Dieser Service wird samstags nicht aufgegeben, da die Versandkosten zu hoch sind.'
+  },
+  fr: {
+    spxPoBoxNotice: 'Important : Ce service ne peut pas être expédié vers des adresses PO Box ou APO/FPO. La livraison du dernier kilomètre est assurée par DHL, et le suivi du dernier kilomètre est disponible sur ce site.',
+    spxUsaDduNote: 'Note USA : Les envois vers les États-Unis sont en DDU (Delivery Duty Unpaid) par défaut ; les droits et taxes sont payés par le destinataire aux douanes.',
+    spxEtsyZone4Note: 'Note Etsy : Les prix sur Etsy sont fixés à la zone 4. Veuillez nous contacter via les messages Etsy pour un devis.',
+    spxNoSaturdayNote: 'Ce service n’est pas expédié le samedi car les frais d’expédition sont trop élevés.'
+  },
+  es: {
+    spxPoBoxNotice: 'Importante: Este servicio no puede enviarse a direcciones PO Box ni APO/FPO. La última milla la gestiona DHL y el seguimiento de última milla está disponible en este sitio web.',
+    spxUsaDduNote: 'Nota para EE. UU.: Los envíos a Estados Unidos son DDU (Delivery Duty Unpaid) por defecto; los aranceles e impuestos los paga el destinatario a aduanas.',
+    spxEtsyZone4Note: 'Nota de Etsy: Los precios en Etsy están fijados en la Zona 4. Contáctanos por mensajes de Etsy para una cotización.',
+    spxNoSaturdayNote: 'Este servicio no se despacha los sábados porque el costo de envío es demasiado alto.'
+  },
+  ja: {
+    spxPoBoxNotice: '重要: このサービスは PO Box および APO/FPO 宛てには発送できません。ラストマイル配送は DHL が担当し、ラストマイル追跡はこのウェブサイトで確認できます。',
+    spxUsaDduNote: '米国向け注意: 米国向け発送はデフォルトで DDU（関税・税金受取人払い）です。関税・税金は受取人が税関へ支払います。',
+    spxEtsyZone4Note: 'Etsy 注意: Etsy 上の価格は Zone 4 固定です。お見積りは Etsy メッセージでご連絡ください。',
+    spxNoSaturdayNote: '送料が高すぎるため、このサービスは土曜日の発送を行っていません。'
+  },
+  zh: {
+    spxPoBoxNotice: '重要：此服务无法寄送至邮政信箱（PO Box）或 APO/FPO 地址。末端派送由 DHL 负责，末端追踪可在本网站查看。',
+    spxUsaDduNote: '美国说明：寄往美国的货件默认采用 DDU（关税未付）；关税与税费由收件人向海关支付。',
+    spxEtsyZone4Note: 'Etsy 说明：Etsy 上价格固定为 Zone 4。请通过 Etsy 讯息联系我们获取报价。',
+    spxNoSaturdayNote: '由于运费过高，此服务周六不出货。'
+  },
+  'zh-hant': {
+    spxPoBoxNotice: '重要：此服務無法寄送至郵政信箱（PO Box）或 APO/FPO 地址。末端派送由 DHL 負責，末端追蹤可在本網站查看。',
+    spxUsaDduNote: '美國說明：寄往美國的貨件預設為 DDU（關稅未付）；關稅與稅費由收件人向海關支付。',
+    spxEtsyZone4Note: 'Etsy 說明：Etsy 上價格固定為 Zone 4。請透過 Etsy 訊息聯絡我們取得報價。',
+    spxNoSaturdayNote: '由於運費過高，此服務週六不寄送。'
+  },
+  pt: {
+    spxPoBoxNotice: 'Importante: Este serviço não pode ser enviado para caixas postais (PO Box) ou endereços APO/FPO. A entrega de última milha é feita pela DHL, e o rastreamento da última milha está disponível neste site.',
+    spxUsaDduNote: 'Nota dos EUA: Envios para os Estados Unidos são DDU (Delivery Duty Unpaid) por padrão; taxas e impostos são pagos pelo destinatário à alfândega.',
+    spxEtsyZone4Note: 'Nota Etsy: Os preços no Etsy são fixos para a Zona 4. Entre em contato conosco por mensagens no Etsy para cotação.',
+    spxNoSaturdayNote: 'Este serviço não é postado aos sábados porque o custo de envio é muito alto.'
+  },
+  hi: {
+    spxPoBoxNotice: 'महत्वपूर्ण: यह सेवा PO Box या APO/FPO पते पर नहीं भेजी जा सकती। अंतिम-मील डिलीवरी DHL द्वारा की जाती है और अंतिम-मील ट्रैकिंग इस वेबसाइट पर उपलब्ध है।',
+    spxUsaDduNote: 'यूएसए नोट: संयुक्त राज्य अमेरिका के लिए शिपमेंट डिफ़ॉल्ट रूप से DDU (Delivery Duty Unpaid) है; शुल्क और कर प्राप्तकर्ता द्वारा कस्टम्स को भुगतान किए जाते हैं।',
+    spxEtsyZone4Note: 'Etsy नोट: Etsy पर कीमतें Zone 4 पर निश्चित हैं। कृपया कोटेशन के लिए Etsy संदेशों के माध्यम से हमसे संपर्क करें।',
+    spxNoSaturdayNote: 'शिपिंग लागत बहुत अधिक होने के कारण यह सेवा शनिवार को पोस्ट नहीं की जाती।'
+  },
+  th: {
+    spxPoBoxNotice: 'สำคัญ: บริการนี้ไม่สามารถจัดส่งไปยัง PO Box หรือที่อยู่ APO/FPO ได้ การจัดส่งช่วงสุดท้ายดำเนินการโดย DHL และสามารถติดตามช่วงสุดท้ายได้บนเว็บไซต์นี้',
+    spxUsaDduNote: 'หมายเหตุสหรัฐฯ: การส่งไปสหรัฐอเมริกาเป็นแบบ DDU (Delivery Duty Unpaid) โดยค่าเริ่มต้น โดยผู้รับต้องชำระภาษีและอากรให้ศุลกากร',
+    spxEtsyZone4Note: 'หมายเหตุ Etsy: ราคาบน Etsy ถูกกำหนดคงที่ที่โซน 4 กรุณาติดต่อเราผ่านข้อความ Etsy เพื่อขอใบเสนอราคา',
+    spxNoSaturdayNote: 'บริการนี้ไม่ลงส่งในวันเสาร์เนื่องจากค่าจัดส่งสูงเกินไป'
+  },
+  ms: {
+    spxPoBoxNotice: 'Penting: Perkhidmatan ini tidak boleh dihantar ke alamat PO Box atau APO/FPO. Penghantaran last-mile dikendalikan oleh DHL dan penjejakan last-mile tersedia di laman web ini.',
+    spxUsaDduNote: 'Nota USA: Penghantaran ke Amerika Syarikat adalah DDU (Delivery Duty Unpaid) secara lalai; duti dan cukai dibayar oleh penerima kepada kastam.',
+    spxEtsyZone4Note: 'Nota Etsy: Harga di Etsy ditetapkan pada Zon 4. Sila hubungi kami melalui mesej Etsy untuk sebut harga.',
+    spxNoSaturdayNote: 'Perkhidmatan ini tidak dipos pada hari Sabtu kerana kos penghantaran terlalu tinggi.'
+  },
+  nl: {
+    spxPoBoxNotice: 'Belangrijk: Deze service kan niet worden verzonden naar PO Box- of APO/FPO-adressen. De last-mile levering wordt uitgevoerd door DHL en last-mile tracking is beschikbaar op deze website.',
+    spxUsaDduNote: 'VS-opmerking: Zendingen naar de Verenigde Staten zijn standaard DDU (Delivery Duty Unpaid); invoerrechten en belastingen worden door de ontvanger aan de douane betaald.',
+    spxEtsyZone4Note: 'Etsy-opmerking: Prijzen op Etsy staan vast op Zone 4. Neem via Etsy-berichten contact met ons op voor een offerte.',
+    spxNoSaturdayNote: 'Deze service wordt niet op zaterdag gepost omdat de verzendkosten te hoog zijn.'
+  },
+  id: {
+    spxPoBoxNotice: 'Penting: Layanan ini tidak dapat dikirim ke alamat PO Box atau APO/FPO. Pengantaran last-mile ditangani oleh DHL, dan pelacakan last-mile tersedia di situs web ini.',
+    spxUsaDduNote: 'Catatan USA: Pengiriman ke Amerika Serikat secara default adalah DDU (Delivery Duty Unpaid); bea dan pajak dibayar oleh penerima ke bea cukai.',
+    spxEtsyZone4Note: 'Catatan Etsy: Harga di Etsy ditetapkan pada Zona 4. Silakan hubungi kami melalui pesan Etsy untuk penawaran harga.',
+    spxNoSaturdayNote: 'Layanan ini tidak diposkan pada hari Sabtu karena biaya pengiriman terlalu tinggi.'
+  },
+  cs: {
+    spxPoBoxNotice: 'Důležité: Tuto službu nelze odeslat na PO Box ani APO/FPO adresy. Doručení poslední míle zajišťuje DHL a sledování poslední míle je dostupné na tomto webu.',
+    spxUsaDduNote: 'Poznámka USA: Zásilky do USA jsou ve výchozím stavu DDU (Delivery Duty Unpaid); cla a daně hradí příjemce celnímu úřadu.',
+    spxEtsyZone4Note: 'Poznámka Etsy: Ceny na Etsy jsou pevně nastaveny na zónu 4. Pro cenovou nabídku nás kontaktujte přes zprávy na Etsy.',
+    spxNoSaturdayNote: 'Tato služba se v sobotu nepodává, protože náklady na dopravu jsou příliš vysoké.'
+  },
+  it: {
+    spxPoBoxNotice: 'Importante: Questo servizio non può essere spedito a indirizzi PO Box o APO/FPO. La consegna dell’ultimo miglio è gestita da DHL e il tracciamento dell’ultimo miglio è disponibile su questo sito.',
+    spxUsaDduNote: 'Nota USA: Le spedizioni verso gli Stati Uniti sono DDU (Delivery Duty Unpaid) per impostazione predefinita; dazi e tasse sono pagati dal destinatario alla dogana.',
+    spxEtsyZone4Note: 'Nota Etsy: I prezzi su Etsy sono fissi per la Zona 4. Contattaci tramite i messaggi Etsy per un preventivo.',
+    spxNoSaturdayNote: 'Questo servizio non viene spedito il sabato perché i costi di spedizione sono troppo elevati.'
+  },
+  he: {
+    spxPoBoxNotice: 'חשוב: שירות זה לא ניתן למשלוח לכתובות PO Box או APO/FPO. המסירה במייל האחרון מתבצעת על ידי DHL, ומעקב המייל האחרון זמין באתר זה.',
+    spxUsaDduNote: 'הערת ארה״ב: משלוחים לארצות הברית הם DDU (Delivery Duty Unpaid) כברירת מחדל; מכסים ומסים משולמים על ידי הנמען לרשויות המכס.',
+    spxEtsyZone4Note: 'הערת Etsy: המחירים ב-Etsy קבועים לאזור 4. אנא צרו איתנו קשר דרך הודעות Etsy לקבלת הצעת מחיר.',
+    spxNoSaturdayNote: 'שירות זה אינו נשלח בשבת משום שעלויות המשלוח גבוהות מדי.'
+  },
+  ga: {
+    spxPoBoxNotice: 'Tábhachtach: Ní féidir an tseirbhís seo a sheoladh chuig seoltaí PO Box ná APO/FPO. Is DHL a láimhseálann seachadadh an mhíle dheireanaigh, agus tá rianú an mhíle dheireanaigh ar fáil ar an suíomh seo.',
+    spxUsaDduNote: 'Nóta SAM: Tá lastais chuig na Stáit Aontaithe mar DDU (Delivery Duty Unpaid) de réir réamhshocraithe; íocann an faighteoir dleachtanna agus cánacha leis an gcustam.',
+    spxEtsyZone4Note: 'Nóta Etsy: Tá praghsanna Etsy socraithe do Chrios 4. Déan teagmháil linn trí theachtaireachtaí Etsy le haghaidh luachan.',
+    spxNoSaturdayNote: 'Ní phostáiltear an tseirbhís seo ar an Satharn mar tá costas an loingseoireachta ró-ard.'
+  },
+  pl: {
+    spxPoBoxNotice: 'Ważne: Ta usługa nie może być wysyłana na adresy PO Box ani APO/FPO. Dostawę ostatniej mili realizuje DHL, a śledzenie ostatniej mili jest dostępne na tej stronie.',
+    spxUsaDduNote: 'Uwaga USA: Przesyłki do Stanów Zjednoczonych są domyślnie DDU (Delivery Duty Unpaid); cła i podatki opłaca odbiorca w urzędzie celnym.',
+    spxEtsyZone4Note: 'Uwaga Etsy: Ceny na Etsy są stałe dla strefy 4. Skontaktuj się z nami przez wiadomości Etsy, aby otrzymać wycenę.',
+    spxNoSaturdayNote: 'Ta usługa nie jest nadawana w soboty, ponieważ koszty wysyłki są zbyt wysokie.'
+  },
+  ko: {
+    spxPoBoxNotice: '중요: 이 서비스는 PO Box 및 APO/FPO 주소로 발송할 수 없습니다. 라스트마일 배송은 DHL이 담당하며, 라스트마일 추적은 이 웹사이트에서 확인할 수 있습니다.',
+    spxUsaDduNote: '미국 안내: 미국행 배송은 기본적으로 DDU(Delivery Duty Unpaid)이며, 관세 및 세금은 수취인이 세관에 납부합니다.',
+    spxEtsyZone4Note: 'Etsy 안내: Etsy 가격은 Zone 4로 고정됩니다. 견적은 Etsy 메시지로 문의해 주세요.',
+    spxNoSaturdayNote: '배송비가 너무 높아 이 서비스는 토요일에 접수되지 않습니다.'
+  },
+  no: {
+    spxPoBoxNotice: 'Viktig: Denne tjenesten kan ikke sendes til PO Box- eller APO/FPO-adresser. Last-mile levering håndteres av DHL, og last-mile sporing er tilgjengelig på dette nettstedet.',
+    spxUsaDduNote: 'USA-merknad: Forsendelser til USA er som standard DDU (Delivery Duty Unpaid); toll og avgifter betales av mottakeren til tollmyndighetene.',
+    spxEtsyZone4Note: 'Etsy-merknad: Prisene på Etsy er fastsatt til sone 4. Kontakt oss via Etsy-meldinger for pristilbud.',
+    spxNoSaturdayNote: 'Denne tjenesten postes ikke på lørdager fordi fraktkostnaden er for høy.'
+  },
+  ru: {
+    spxPoBoxNotice: 'Важно: Эта услуга не отправляется на адреса PO Box и APO/FPO. Доставку последней мили выполняет DHL, а отслеживание последней мили доступно на этом сайте.',
+    spxUsaDduNote: 'Примечание для США: Отправления в США по умолчанию идут как DDU (Delivery Duty Unpaid); пошлины и налоги оплачивает получатель таможне.',
+    spxEtsyZone4Note: 'Примечание Etsy: Цены на Etsy фиксированы для зоны 4. Свяжитесь с нами через сообщения Etsy для расчёта.',
+    spxNoSaturdayNote: 'Эта услуга не отправляется по субботам, так как стоимость доставки слишком высокая.'
+  },
+  sv: {
+    spxPoBoxNotice: 'Viktigt: Den här tjänsten kan inte skickas till PO Box- eller APO/FPO-adresser. Last-mile leverans hanteras av DHL, och last-mile spårning finns på denna webbplats.',
+    spxUsaDduNote: 'USA-notis: Försändelser till USA är som standard DDU (Delivery Duty Unpaid); tull och skatter betalas av mottagaren till tullen.',
+    spxEtsyZone4Note: 'Etsy-notis: Priser på Etsy är fasta för zon 4. Kontakta oss via Etsy-meddelanden för offert.',
+    spxNoSaturdayNote: 'Den här tjänsten postas inte på lördagar eftersom fraktkostnaden är för hög.'
+  },
+  fi: {
+    spxPoBoxNotice: 'Tärkeää: Tätä palvelua ei voi lähettää PO Box- tai APO/FPO-osoitteisiin. Viimeisen mailin toimituksen hoitaa DHL, ja viimeisen mailin seuranta on saatavilla tällä sivustolla.',
+    spxUsaDduNote: 'USA-huomio: Lähetykset Yhdysvaltoihin ovat oletuksena DDU (Delivery Duty Unpaid); tullit ja verot maksaa vastaanottaja tullille.',
+    spxEtsyZone4Note: 'Etsy-huomio: Etsy-hinnat on kiinnitetty vyöhykkeeseen 4. Ota yhteyttä Etsy-viesteillä saadaksesi tarjouksen.',
+    spxNoSaturdayNote: 'Tätä palvelua ei postiteta lauantaisin, koska toimituskustannukset ovat liian korkeat.'
+  },
+  tl: {
+    spxPoBoxNotice: 'Mahalaga: Ang serbisyong ito ay hindi maaaring ipadala sa PO Box o APO/FPO na address. Ang last-mile delivery ay pinamamahalaan ng DHL at ang last-mile tracking ay available sa website na ito.',
+    spxUsaDduNote: 'Paalala sa USA: Ang mga shipment papuntang United States ay DDU (Delivery Duty Unpaid) bilang default; ang duties at taxes ay binabayaran ng recipient sa customs.',
+    spxEtsyZone4Note: 'Paalala sa Etsy: Ang presyo sa Etsy ay naka-fix sa Zone 4. Makipag-ugnayan sa amin sa Etsy messages para sa quote.',
+    spxNoSaturdayNote: 'Hindi ito ipinopost tuwing Sabado dahil masyadong mataas ang shipping cost.'
+  },
+  vi: {
+    spxPoBoxNotice: 'Quan trọng: Dịch vụ này không thể gửi đến địa chỉ PO Box hoặc APO/FPO. Giao hàng chặng cuối do DHL thực hiện và theo dõi chặng cuối có sẵn trên website này.',
+    spxUsaDduNote: 'Lưu ý Mỹ: Lô hàng đến Hoa Kỳ mặc định là DDU (Delivery Duty Unpaid); thuế và phí do người nhận thanh toán cho hải quan.',
+    spxEtsyZone4Note: 'Lưu ý Etsy: Giá trên Etsy được cố định ở Zone 4. Vui lòng liên hệ chúng tôi qua tin nhắn Etsy để nhận báo giá.',
+    spxNoSaturdayNote: 'Dịch vụ này không gửi vào thứ Bảy vì chi phí vận chuyển quá cao.'
+  },
+  cy: {
+    spxPoBoxNotice: 'Pwysig: Ni ellir anfon y gwasanaeth hwn i gyfeiriadau PO Box nac APO/FPO. Mae danfon y filltir olaf yn cael ei drin gan DHL, ac mae olrhain y filltir olaf ar gael ar y wefan hon.',
+    spxUsaDduNote: 'Nodyn UDA: Mae cludo i’r Unol Daleithiau yn DDU (Delivery Duty Unpaid) yn ddiofyn; telir tollau a threthi gan y derbynnydd i’r tollau.',
+    spxEtsyZone4Note: 'Nodyn Etsy: Mae prisiau ar Etsy yn sefydlog i Barth 4. Cysylltwch â ni drwy negeseuon Etsy am ddyfynbris.',
+    spxNoSaturdayNote: 'Nid yw’r gwasanaeth hwn yn cael ei bostio ar ddydd Sadwrn gan fod cost cludo yn rhy uchel.'
+  },
+  ta: {
+    spxPoBoxNotice: 'முக்கியம்: இந்த சேவையை PO Box அல்லது APO/FPO முகவரிகளுக்கு அனுப்ப முடியாது. இறுதி-மைல் விநியோகம் DHL மூலம் நடைபெறும்; இறுதி-மைல் கண்காணிப்பு இந்த இணையதளத்தில் கிடைக்கும்.',
+    spxUsaDduNote: 'அமெரிக்க குறிப்பு: அமெரிக்காவுக்கான அனுப்புதல்கள் இயல்பாக DDU (Delivery Duty Unpaid) ஆகும்; சுங்கவரி மற்றும் வரிகளை பெறுநர் சுங்கத்துறைக்கு செலுத்த வேண்டும்.',
+    spxEtsyZone4Note: 'Etsy குறிப்பு: Etsy விலைகள் Zone 4-க்கு நிலைநிறுத்தப்பட்டுள்ளன. விலை மேற்கோள் பெற Etsy செய்திகளின் மூலம் எங்களை தொடர்புகொள்ளவும்.',
+    spxNoSaturdayNote: 'அனுப்பும் செலவு அதிகமாக இருப்பதால் இந்த சேவை சனிக்கிழமைகளில் அனுப்பப்படாது.'
+  },
+  mi: {
+    spxPoBoxNotice: 'He mea nui: Kāore tēnei ratonga e taea te tuku ki ngā wāhitau PO Box, APO/FPO rānei. Ko DHL te kaiwhakahaere o te tuku mile whakamutunga, ā, kei tēnei paetukutuku te aroturuki mile whakamutunga.',
+    spxUsaDduNote: 'Tuhipoka USA: Ko ngā tukunga ki te United States he DDU (Delivery Duty Unpaid) mā te taunoa; mā te kaiwhiwhi ngā taake me ngā utu ka utu ki ngā tikanga.',
+    spxEtsyZone4Note: 'Tuhipoka Etsy: Ka pūmau ngā utu Etsy ki te Rohe 4. Tēnā whakapā mai mā ngā karere Etsy mō tētahi kōrero utu.',
+    spxNoSaturdayNote: 'Kāore tēnei ratonga e whakairia i ngā Rāhoroi nā te nui rawa o te utu tuku.'
+  }
+};
+
 const normalizeLanguage = (language) => {
   const code = (language || 'en').toLowerCase();
   if (code === 'iw') return 'he';
@@ -236,7 +407,13 @@ const normalizeLanguage = (language) => {
 
 export const rt = (language, key) => {
   const lang = normalizeLanguage(language);
-  return EXTRA_TERMS[lang]?.[key] || TERMS[lang]?.[key] || EXTRA_TERMS.en[key] || TERMS.en[key] || key;
+  return SPEEDPOST_NOTES[lang]?.[key]
+    || EXTRA_TERMS[lang]?.[key]
+    || TERMS[lang]?.[key]
+    || SPEEDPOST_NOTES.en[key]
+    || EXTRA_TERMS.en[key]
+    || TERMS.en[key]
+    || key;
 };
 
 export const countryName = (language, countryCode, fallbackName) => {

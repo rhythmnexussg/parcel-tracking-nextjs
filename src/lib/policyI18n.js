@@ -383,7 +383,15 @@ const normalizeLang = (language) => {
   return code;
 };
 
-const normalizeTitle = (title) => (title || '').replace(/^[^\p{L}\p{N}]+/u, '').trim();
+const LEADING_NON_ALNUM_REGEX = (() => {
+  try {
+    return new RegExp('^[^\\p{L}\\p{N}]+', 'u');
+  } catch (_) {
+    return /^[^A-Za-z0-9]+/;
+  }
+})();
+
+const normalizeTitle = (title) => (title || '').replace(LEADING_NON_ALNUM_REGEX, '').trim();
 
 const pickTitle = (primary, fallback, englishFallback) => {
   const normalizedPrimary = normalizeTitle(primary);
@@ -397,12 +405,8 @@ export const policyText = (language) => {
   const lang = normalizeLang(language);
   // Cantonese (yue) falls back to zh-hant; any other unknown lang falls back to en
   const resolvedLang = POLICY_TRANSLATIONS[lang] ? lang : (lang === 'yue' ? 'zh-hant' : 'en');
-  const translation = POLICY_TRANSLATIONS[resolvedLang];
-  const supplement = POLICY_SUPPLEMENTS[resolvedLang];
-
-  if (!translation || !supplement) {
-    throw new Error(`Missing policy translation pack for language: ${lang}`);
-  }
+  const translation = POLICY_TRANSLATIONS[resolvedLang] || POLICY_TRANSLATIONS.en;
+  const supplement = POLICY_SUPPLEMENTS[resolvedLang] || POLICY_SUPPLEMENTS.en;
 
   return {
     ...translation,
