@@ -197,10 +197,31 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
   const getUTCOffsetAt = (timezone, date) => {
     try {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        timeZoneName: 'shortOffset',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).formatToParts(date);
+
+      const offsetName = parts.find((part) => part.type === 'timeZoneName')?.value || '';
+      const offsetMatch = offsetName.match(/GMT([+-]\d{1,2})(?::?(\d{2}))?/i);
+      if (offsetMatch) {
+        const signHours = parseInt(offsetMatch[1], 10);
+        const minutesPart = parseInt(offsetMatch[2] || '0', 10);
+        const sign = signHours < 0 ? -1 : 1;
+        return signHours * 60 + sign * minutesPart;
+      }
+    } catch (_) {
+      // Fallback below
+    }
+
+    try {
       const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
       const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
       return Math.round((tzDate - utcDate) / (1000 * 60));
-    } catch (error) {
+    } catch (_) {
       return 0;
     }
   };

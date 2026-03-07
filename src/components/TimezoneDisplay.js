@@ -104,6 +104,37 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
   
   // If user is in Singapore, only show Singapore time
   const isUserInSingapore = userCountry === 'SG';
+
+  const getUTCOffsetMinutesAt = (timezone, date) => {
+    try {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        timeZoneName: 'shortOffset',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).formatToParts(date);
+
+      const offsetName = parts.find((part) => part.type === 'timeZoneName')?.value || '';
+      const offsetMatch = offsetName.match(/GMT([+-]\d{1,2})(?::?(\d{2}))?/i);
+      if (offsetMatch) {
+        const signHours = parseInt(offsetMatch[1], 10);
+        const minutesPart = parseInt(offsetMatch[2] || '0', 10);
+        const sign = signHours < 0 ? -1 : 1;
+        return signHours * 60 + sign * minutesPart;
+      }
+    } catch (_) {
+      // Fallback below
+    }
+
+    try {
+      const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+      const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+      return Math.round((tzDate - utcDate) / (1000 * 60));
+    } catch (_) {
+      return 0;
+    }
+  };
   
   const formatTime = (timezone, countryCode) => {
     try {
@@ -132,22 +163,16 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
   // Check if destination has daylight saving time active
   const isDST = (timezone) => {
     try {
-      const january = new Date(currentTime.getFullYear(), 0, 1);
-      const july = new Date(currentTime.getFullYear(), 6, 1);
-      
-      const janOffset = new Date().toLocaleString('en-US', { timeZone: timezone, hour: 'numeric', timeZoneName: 'short' }).match(/GMT([+-]\d+(?:\.\d+)?)/)?.[1];
-      const julOffset = new Date(july).toLocaleString('en-US', { timeZone: timezone, hour: 'numeric', timeZoneName: 'short' }).match(/GMT([+-]\d+(?:\.\d+)?)/)?.[1];
-      
-      if (!janOffset || !julOffset) return false;
-      
-      const janOffsetNum = parseFloat(janOffset);
-      const julOffsetNum = parseFloat(julOffset);
-      const currentOffsetNum = parseFloat(new Date().toLocaleString('en-US', { timeZone: timezone, hour: 'numeric', timeZoneName: 'short' }).match(/GMT([+-]\d+(?:\.\d+)?)/)?.[1] || 0);
-      
-      // For Southern Hemisphere (Australia), DST is when offset is GREATER (more positive)
-      const maxOffset = Math.max(janOffsetNum, julOffsetNum);
-      return currentOffsetNum === maxOffset && janOffsetNum !== julOffsetNum;
-    } catch (error) {
+      const january = new Date(Date.UTC(currentTime.getFullYear(), 0, 15, 12, 0, 0));
+      const july = new Date(Date.UTC(currentTime.getFullYear(), 6, 15, 12, 0, 0));
+
+      const janOffset = getUTCOffsetMinutesAt(timezone, january);
+      const julOffset = getUTCOffsetMinutesAt(timezone, july);
+      const currentOffset = getUTCOffsetMinutesAt(timezone, currentTime);
+
+      const maxOffset = Math.max(janOffset, julOffset);
+      return currentOffset === maxOffset && janOffset !== julOffset;
+    } catch (_) {
       return false;
     }
   };
@@ -245,15 +270,9 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
   };
   
   const getTimeDifference = (timezone) => {
-    const singaporeOffset = new Date().toLocaleString('en-US', { timeZone: 'Asia/Singapore', timeZoneName: 'short' }).match(/GMT([+-]\d+)/);
-    const destOffset = new Date().toLocaleString('en-US', { timeZone: timezone, timeZoneName: 'short' }).match(/GMT([+-]\d+)/);
-    
-    if (!singaporeOffset || !destOffset) return 0;
-    
-    const sgHours = parseInt(singaporeOffset[1]);
-    const destHours = parseInt(destOffset[1]);
-    
-    return destHours - sgHours;
+    const singaporeOffset = getUTCOffsetMinutesAt('Asia/Singapore', currentTime);
+    const destinationOffset = getUTCOffsetMinutesAt(timezone, currentTime);
+    return (destinationOffset - singaporeOffset) / 60;
   };
 
   const singaporeTime = formatTime('Asia/Singapore', 'SG');
