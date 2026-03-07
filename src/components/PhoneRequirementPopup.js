@@ -482,10 +482,10 @@ const FULL_PHONE_REQUIREMENT_REASONS = {
   ],
   tl: [
     'Sa mga bansang mandatory ang phone number, nakakatulong ito para maiwasan ang delay sa processing at delivery.',
-    'United States: dahil sa DDP rules para sa postal shipments, maaaring hingin ng carrier ang phone number ng recipient para sa customs at delivery contact.',
-    'European Union: sa ilalim ng IOSS VAT rules, kailangan ang valid na numero para sa VAT processing, customs clearance, at delivery coordination.',
+    'USA: dahil sa DDP rules para sa postal shipments, maaaring hingin ng carrier ang phone number ng recipient para sa customs at delivery contact.',
+    'European Union (kabilang ang Alemanya): sa ilalim ng IOSS VAT rules, kailangan ang valid na numero para sa VAT processing, customs clearance, at delivery coordination.',
     'UK, Switzerland, at Norway: maaaring kailanganin ang contact ng buyer para sa paglilinaw sa VAT/customs procedures.',
-    'China, India, Indonesia, Philippines, South Korea, Taiwan, at Vietnam: maaaring hingin ng customs authority ang numero para sa verification ng declarations.',
+    'China, India, Indonesia, Pilipinas, South Korea, Taiwan, at Vietnam: maaaring hingin ng customs authority ang numero para sa verification ng declarations.',
     'Ang valid na numero ay nakakatulong maiwasan ang delay, failed delivery, at returns. Maaaring makipag-ugnayan ang customs o local courier para sa karagdagang detalye.'
   ],
   cy: [
