@@ -200,6 +200,9 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
       const code = inDST ? 'MDT' : 'MST';
       return `Mountain (${code})`;
     }
+    if (timezone === 'America/Phoenix') {
+      return `Arizona (MST)`;
+    }
     if (timezone === 'America/Los_Angeles') {
       const code = inDST ? 'PDT' : 'PST';
       return `Pacific (${code})`;
@@ -255,6 +258,34 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
 
   const singaporeTime = formatTime('Asia/Singapore', 'SG');
   const destinationTimezone = countryTimezones[destinationCountry];
+  const destinationTimezonesToRender = (() => {
+    if (!Array.isArray(destinationTimezone)) return destinationTimezone;
+    if (destinationCountry !== 'US') return destinationTimezone;
+
+    const usDstActive = isDST('America/Denver');
+    if (!usDstActive) return destinationTimezone;
+
+    const hasArizona = destinationTimezone.some((entry) => entry.timezone === 'America/Phoenix');
+    if (hasArizona) return destinationTimezone;
+
+    const mountainIndex = destinationTimezone.findIndex((entry) => entry.timezone === 'America/Denver');
+    const arizonaEntry = { name: 'Arizona (MST)', timezone: 'America/Phoenix' };
+
+    if (mountainIndex === -1) {
+      return [...destinationTimezone, arizonaEntry];
+    }
+
+    return [
+      ...destinationTimezone.slice(0, mountainIndex + 1),
+      arizonaEntry,
+      ...destinationTimezone.slice(mountainIndex + 1),
+    ];
+  })();
+
+  const isUsDstWithArizona =
+    destinationCountry === 'US'
+    && Array.isArray(destinationTimezonesToRender)
+    && destinationTimezonesToRender.some((entry) => entry.timezone === 'America/Phoenix');
   
   const getTimeDiffText = (diffHours) => {
     if (diffHours === 0) {
@@ -317,13 +348,17 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
               <span>{singaporeTime.time}</span>
             </div>
           )
-        ) : Array.isArray(destinationTimezone) ? (
+        ) : Array.isArray(destinationTimezonesToRender) ? (
           <>
-            {destinationTimezone.map((tz, index) => {
+            {destinationTimezonesToRender.map((tz, index) => {
               const destTime = formatTime(tz.timezone, destinationCountry);
               const diffHours = getTimeDifference(tz.timezone);
               const timeDiffText = getTimeDiffText(diffHours);
               const displayName = getTimezoneName(tz.timezone, tz.name);
+              const mobileDisplayName = displayName
+                .replace(/\(.*?\)/g, '')
+                .trim()
+                .replace('Arizona', 'AZ');
               
               return (
                 <div key={index} style={{
@@ -331,13 +366,13 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                   flexDirection: 'column',
                   alignItems: 'center',
                   gap: '4px',
-                  minWidth: isMobile ? '140px' : 'auto',
+                  minWidth: isMobile ? (isUsDstWithArizona ? '120px' : '140px') : 'auto',
                 }}>
                   <div style={{
                     fontSize: isMobile ? '0.9rem' : '1.2rem',
                     fontWeight: 'bold',
                     color: '#2c3e50',
-                    padding: isMobile ? '6px 12px' : '10px 20px',
+                    padding: isMobile ? (isUsDstWithArizona ? '6px 10px' : '6px 12px') : '10px 20px',
                     backgroundColor: '#ffffff',
                     borderRadius: '6px',
                     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
@@ -353,14 +388,15 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                   </div>
                   {isMobile && (
                     <span style={{
-                      fontSize: '0.6rem',
+                      fontSize: isUsDstWithArizona ? '0.55rem' : '0.6rem',
                       color: '#5a6c7d',
                       textAlign: 'center',
-                      maxWidth: '140px',
+                      maxWidth: isUsDstWithArizona ? '120px' : '140px',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
                     }}>
-                      {displayName.replace(/\(.*?\)/g, '').trim()}
+                      {mobileDisplayName}
                     </span>
                   )}
                   {!isMobile && (

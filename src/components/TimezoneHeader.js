@@ -719,7 +719,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
       const timezonesToRender = (() => {
         if (userCountry !== 'US') return timezoneData;
 
-        const usDstActive = isDST('America/New_York');
+        const usDstActive = isDST('America/Denver');
         if (!usDstActive) return timezoneData;
 
         const hasArizona = timezoneData.some((item) => item.timezone === 'America/Phoenix');
