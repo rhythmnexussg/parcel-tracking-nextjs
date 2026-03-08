@@ -119,6 +119,20 @@ const TimezoneHeader = ({ userCountry, t }) => {
   const getTimezoneLabel = (name) => {
     if (!name) return name;
 
+    const trimmedName = name.trim();
+
+    // Convert code-prefixed labels like "EST (Eastern)" to "Eastern"
+    const codePrefixMatch = trimmedName.match(/^[A-Z]{2,6}\s*\(([^)]+)\)$/);
+    if (codePrefixMatch?.[1]) {
+      return codePrefixMatch[1].trim();
+    }
+
+    // Keep region labels without code suffix, e.g. "Eastern (EDT)" -> "Eastern"
+    const codeSuffixMatch = trimmedName.match(/^(.+?)\s*\(([A-Z]{2,6})\)$/);
+    if (codeSuffixMatch?.[1] && codeSuffixMatch?.[2]) {
+      return codeSuffixMatch[1].trim();
+    }
+
     // Extract text before "(UTC"
     const regionPart = name.split('(')[0].trim();
 
