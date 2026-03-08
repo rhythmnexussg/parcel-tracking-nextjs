@@ -36,8 +36,11 @@ const getCountryTimezones = (t) => ({
     { name: t('tzAST') || 'AST (Atlantic)', timezone: 'America/Halifax' },
     { name: t('tzEST') || 'EST (Eastern)', timezone: 'America/Toronto' },
     { name: t('tzCST') || 'CST (Central)', timezone: 'America/Winnipeg' },
+    { name: 'CST (Saskatchewan)', timezone: 'America/Regina' },
     { name: t('tzMST') || 'MST (Mountain)', timezone: 'America/Edmonton' },
     { name: t('tzPST') || 'PST (Pacific)', timezone: 'America/Vancouver' },
+    { name: 'MST (Yukon)', timezone: 'America/Whitehorse' },
+    { name: 'EST (Nunavut Southampton)', timezone: 'America/Coral_Harbour' },
   ],
   CN: [
     { name: t('tzXinjiang') || 'Xinjiang', timezone: 'Asia/Urumqi' },
@@ -109,6 +112,16 @@ const TimezoneHeader = ({ userCountry, t }) => {
   // Hourly granularity means the notice flips within ~1 hour of the actual
   // scheduled transition time (e.g. 07:00 UTC for US, 01:00 UTC for EU CET/EET).
   const todayUTCToken = isMounted ? currentTime.toISOString().slice(0, 13) : '';
+  const BC_PERMANENT_PDT_START_UTC_MS = Date.UTC(2026, 2, 8, 10, 0, 0);
+
+  const isBcPermanentPdtActiveAt = (date) => date.getTime() >= BC_PERMANENT_PDT_START_UTC_MS;
+
+  const getEffectiveTimezoneAt = (timezone, date) => {
+    if (timezone === 'America/Vancouver' && isBcPermanentPdtActiveAt(date)) {
+      return 'America/Whitehorse';
+    }
+    return timezone;
+  };
 
   // Prevent hydration mismatch by only rendering time on client
   useEffect(() => {
@@ -151,6 +164,10 @@ const TimezoneHeader = ({ userCountry, t }) => {
     'Australia/Sydney': 'AEST/AEDT',
     'Australia/Adelaide': 'ACST/ACDT',
     'Australia/Perth': 'AWST',
+    'Australia/Eucla': 'ACWST',
+    'Australia/Darwin': 'ACST',
+    'Australia/Brisbane': 'AEST',
+    'Australia/Broken_Hill': 'ACST/ACDT',
 
     'Europe/Vienna': 'CET/CEST',
     'Europe/Brussels': 'CET/CEST',
@@ -201,6 +218,9 @@ const TimezoneHeader = ({ userCountry, t }) => {
     'Asia/Magadan': 'MAGT',
     'Asia/Kamchatka': 'PETT',
     'America/Phoenix': 'MST',
+    'America/Regina': 'CST',
+    'America/Whitehorse': 'MST',
+    'America/Coral_Harbour': 'EST',
   };
 
   const getCodeFromName = (name) => {
@@ -210,9 +230,11 @@ const TimezoneHeader = ({ userCountry, t }) => {
   };
 
   const getUTCOffsetAt = (timezone, date) => {
+    const effectiveTimezone = getEffectiveTimezoneAt(timezone, date);
+
     try {
       const parts = new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
+        timeZone: effectiveTimezone,
         timeZoneName: 'shortOffset',
         hour: '2-digit',
         minute: '2-digit',
@@ -233,7 +255,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
     try {
       const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
-      const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+      const tzDate = new Date(date.toLocaleString('en-US', { timeZone: effectiveTimezone }));
       return Math.round((tzDate - utcDate) / (1000 * 60));
     } catch (_) {
       return 0;
@@ -264,6 +286,11 @@ const TimezoneHeader = ({ userCountry, t }) => {
     // Australia - Southern Hemisphere DST
     if (timezone === 'Australia/Sydney') return inDST ? 'AEDT' : 'AEST';
     if (timezone === 'Australia/Adelaide') return inDST ? 'ACDT' : 'ACST';
+    if (timezone === 'Australia/Broken_Hill') return inDST ? 'ACDT' : 'ACST';
+    if (timezone === 'Australia/Brisbane') return 'AEST';
+    if (timezone === 'Australia/Darwin') return 'ACST';
+    if (timezone === 'Australia/Eucla') return 'ACWST';
+    if (timezone === 'Australia/Perth') return 'AWST';
 
     // New Zealand - Southern Hemisphere DST
     if (timezone === 'Pacific/Auckland') return inDST ? 'NZDT' : 'NZST';
@@ -283,7 +310,13 @@ const TimezoneHeader = ({ userCountry, t }) => {
     if (timezone === 'America/Toronto') return inDST ? 'EDT' : 'EST';
     if (timezone === 'America/Winnipeg') return inDST ? 'CDT' : 'CST';
     if (timezone === 'America/Edmonton') return inDST ? 'MDT' : 'MST';
-    if (timezone === 'America/Vancouver') return inDST ? 'PDT' : 'PST';
+    if (timezone === 'America/Vancouver') {
+      if (isBcPermanentPdtActiveAt(currentTime)) return 'PDT';
+      return inDST ? 'PDT' : 'PST';
+    }
+    if (timezone === 'America/Regina') return 'CST';
+    if (timezone === 'America/Whitehorse') return 'MST';
+    if (timezone === 'America/Coral_Harbour') return 'EST';
 
     // Europe - Northern Hemisphere DST
     if (timezone === 'Europe/London') return inDST ? 'BST' : 'GMT';
@@ -574,9 +607,11 @@ const TimezoneHeader = ({ userCountry, t }) => {
   }, []);
 
   const formatTime = (timezone) => {
+    const effectiveTimezone = getEffectiveTimezoneAt(timezone, currentTime);
+
     try {
       const options = {
-        timeZone: timezone,
+        timeZone: effectiveTimezone,
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
@@ -602,6 +637,8 @@ const TimezoneHeader = ({ userCountry, t }) => {
   };
 
   const formatDate = (timezone) => {
+    const effectiveTimezone = getEffectiveTimezoneAt(timezone, currentTime);
+
     try {
       const localeByLanguage = {
         en: 'en-US',
@@ -638,7 +675,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
       if (currentLanguage === 'mi') {
         const parts = new Intl.DateTimeFormat('en-US', {
-          timeZone: timezone,
+          timeZone: effectiveTimezone,
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
@@ -657,7 +694,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
       if (isTaiwanROCFormat) {
         const parts = new Intl.DateTimeFormat('en-US', {
-          timeZone: timezone,
+          timeZone: effectiveTimezone,
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
@@ -683,7 +720,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
         // All other languages: localized date string + ROC annotation
         const resolvedLocale = localeByLanguage[currentLanguage] || 'en-US';
         const localizedDate = currentTime.toLocaleDateString(resolvedLocale, {
-          timeZone: timezone,
+          timeZone: effectiveTimezone,
           year: 'numeric',
           month: 'long',
           day: 'numeric',
@@ -694,7 +731,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
       if (currentLanguage === 'zh' || currentLanguage === 'zh-hant' || currentLanguage === 'zh_hk' || currentLanguage === 'yue') {
         const locale = currentLanguage === 'zh' ? 'zh-CN' : 'zh-Hant-TW';
         const parts = new Intl.DateTimeFormat(locale, {
-          timeZone: timezone,
+          timeZone: effectiveTimezone,
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
@@ -708,7 +745,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
       const resolvedLocale = localeByLanguage[currentLanguage] || (currentLanguage === 'en' ? 'en-US' : currentLanguage);
       return currentTime.toLocaleDateString(resolvedLocale, {
-        timeZone: timezone,
+        timeZone: effectiveTimezone,
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -720,10 +757,12 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
   // Get UTC offset for a timezone in minutes
   const getUTCOffset = (timezone) => {
+    const effectiveTimezone = getEffectiveTimezoneAt(timezone, currentTime);
+
     try {
-      const date = new Date();
+      const date = currentTime;
       const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
-      const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+      const tzDate = new Date(date.toLocaleString('en-US', { timeZone: effectiveTimezone }));
       return Math.round((tzDate - utcDate) / (1000 * 60)); // difference in minutes
     } catch (error) {
       return 0;
@@ -757,6 +796,30 @@ const TimezoneHeader = ({ userCountry, t }) => {
     // Handle countries with multiple timezones
     if (Array.isArray(timezoneData)) {
       const timezonesToRender = (() => {
+        if (userCountry === 'AU') {
+          const easternDstActive = isDST('Australia/Sydney');
+          const centralDstActive = isDST('Australia/Adelaide') || isDST('Australia/Broken_Hill');
+          const isDstSeason = easternDstActive || centralDstActive;
+
+          if (isDstSeason) {
+            return [
+              { name: 'AWST (Western - WA)', timezone: 'Australia/Perth' },
+              { name: 'ACWST (Central Western - SE WA/Border Village)', timezone: 'Australia/Eucla' },
+              { name: 'ACST (Central - NT)', timezone: 'Australia/Darwin' },
+              { name: 'ACDT (Central - SA/Broken Hill)', timezone: 'Australia/Adelaide' },
+              { name: 'AEST (Eastern - QLD)', timezone: 'Australia/Brisbane' },
+              { name: 'AEDT (Eastern - NSW/TAS/VIC/ACT/JBT)', timezone: 'Australia/Sydney' },
+            ];
+          }
+
+          return [
+            { name: 'AWST (Western - WA)', timezone: 'Australia/Perth' },
+            { name: 'ACWST (Central Western - SE WA/Border Village)', timezone: 'Australia/Eucla' },
+            { name: 'ACST (Central - SA/NT/Broken Hill)', timezone: 'Australia/Adelaide' },
+            { name: 'AEST (Eastern - NSW/QLD/TAS/VIC/ACT/JBT)', timezone: 'Australia/Sydney' },
+          ];
+        }
+
         if (userCountry !== 'US') return timezoneData;
 
         const usDstActive = isDST('America/Denver');
@@ -844,53 +907,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
   const userLocalInfo = getUserLocalInfo();
 
-  // Special handling for Australian users - rename to AEDT/ACDT when DST is active
-  const getAustralianTimezones = () => {
-    if (userCountry !== 'AU' || !Array.isArray(userLocalInfo)) {
-      return userLocalInfo;
-    }
-
-    const result = [];
-
-    // Check DST status
-    const sydneyDST = isDST('Australia/Sydney');
-    const adelaideDST = isDST('Australia/Adelaide');
-
-    // Sydney/Melbourne - use AEDT during DST, otherwise AEST
-    if (sydneyDST) {
-      result.push({
-        ...userLocalInfo[0],
-        name: 'AEDT (Sydney/Melbourne)',
-        timezoneCode: 'AEDT',
-        hasCodeInName: true,
-      });
-    } else {
-      // Keep original AEST name and code
-      result.push(userLocalInfo[0]);
-    }
-
-    // Adelaide - use ACDT during DST, otherwise ACST
-    if (adelaideDST) {
-      result.push({
-        ...userLocalInfo[1],
-        name: 'ACDT (Adelaide)',
-        timezoneCode: 'ACDT',
-        hasCodeInName: true,
-      });
-    } else {
-      // Keep original ACST name and code
-      result.push(userLocalInfo[1]);
-    }
-
-    // AWST (Perth) - index 2 - no DST, always use original
-    result.push(userLocalInfo[2]);
-
-    return result;
-  };
-
-  const displayTimezones = userCountry === 'AU' && Array.isArray(userLocalInfo)
-    ? getAustralianTimezones()
-    : userLocalInfo;
+  const displayTimezones = userLocalInfo;
 
   // Ensure Israel's IST/IDT and UTC offset are always shown in navbar
   if (userCountry === 'IL' && displayTimezones) {
