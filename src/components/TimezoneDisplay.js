@@ -321,6 +321,28 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
     return (destinationOffset - singaporeOffset) / 60;
   };
 
+  const formatUTCOffsetLabel = (offsetMinutes) => {
+    const sign = offsetMinutes >= 0 ? '+' : '-';
+    const absMinutes = Math.abs(offsetMinutes);
+    const hours = Math.floor(absMinutes / 60);
+    const minutes = absMinutes % 60;
+    if (minutes === 0) return `UTC${sign}${hours}`;
+    return `UTC${sign}${hours}:${String(minutes).padStart(2, '0')}`;
+  };
+
+  const getCanadaRegionName = (timezone) => {
+    if (timezone === 'America/St_Johns') return 'Newfoundland';
+    if (timezone === 'America/Halifax') return 'Atlantic';
+    if (timezone === 'America/Toronto') return 'Eastern';
+    if (timezone === 'America/Winnipeg') return 'Central';
+    if (timezone === 'America/Regina') return 'Saskatchewan';
+    if (timezone === 'America/Edmonton') return 'Mountain';
+    if (timezone === 'America/Vancouver') return 'Pacific';
+    if (timezone === 'America/Whitehorse') return 'Yukon';
+    if (timezone === 'America/Coral_Harbour') return 'Nunavut';
+    return 'Canada';
+  };
+
   const singaporeTime = formatTime('Asia/Singapore', 'SG');
   const destinationTimezone = countryTimezones[destinationCountry];
   const destinationTimezonesToRender = (() => {
@@ -408,12 +430,12 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
       
       <div style={{
         display: 'flex',
-        flexDirection: isMobile ? 'row' : 'column',
+        flexDirection: (Array.isArray(destinationTimezonesToRender) || isMobile) ? 'row' : 'column',
         gap: isMobile ? '8px' : '12px',
         alignItems: 'center',
         justifyContent: 'center',
-        overflowX: isMobile ? 'auto' : 'visible',
-        flexWrap: isMobile ? 'nowrap' : 'wrap',
+        overflowX: isMobile ? 'auto' : 'hidden',
+        flexWrap: 'wrap',
         paddingBottom: isMobile ? '4px' : '0',
       }}>
         {isUserInSingapore ? (
@@ -445,14 +467,19 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
               const destTime = formatTime(tz.timezone, destinationCountry);
               const diffHours = getTimeDifference(tz.timezone);
               const timeDiffText = getTimeDiffText(diffHours);
-              const displayName = getTimezoneName(tz.timezone, tz.name);
-              const mobileDisplayName = displayName
-                .match(/[A-Z]{2,6}/)?.[0]
-                || displayName.replace(/\(.*?\)/g, '').trim()
-                .replace('Arizona', 'AZ')
-                .replace('Newfoundland', 'Nfld')
-                .replace('Saskatchewan', 'SK')
-                .replace('Southampton Island', 'Southampton');
+              const displayName = destinationCountry === 'CA'
+                ? `${getCanadaRegionName(tz.timezone)} (${formatUTCOffsetLabel(getUTCOffsetMinutesAt(tz.timezone, currentTime))})`
+                : getTimezoneName(tz.timezone, tz.name);
+              const mobileDisplayName = destinationCountry === 'CA'
+                ? displayName
+                : (
+                  displayName.match(/[A-Z]{2,6}/)?.[0]
+                  || displayName.replace(/\(.*?\)/g, '').trim()
+                    .replace('Arizona', 'AZ')
+                    .replace('Newfoundland', 'Nfld')
+                    .replace('Saskatchewan', 'SK')
+                    .replace('Southampton Island', 'Southampton')
+                );
               
               return (
                 <div key={index} style={{
@@ -461,8 +488,12 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                   alignItems: 'center',
                   gap: '4px',
                   minWidth: 0,
-                  width: isMobile ? (isUsDstWithArizona ? '112px' : '126px') : '100%',
-                  maxWidth: isMobile ? (isUsDstWithArizona ? '112px' : '126px') : '100%',
+                  width: isMobile
+                    ? (isUsDstWithArizona ? '112px' : '126px')
+                    : (destinationCountry === 'US' || destinationCountry === 'CA' || destinationCountry === 'AU' ? '210px' : '100%'),
+                  maxWidth: isMobile
+                    ? (isUsDstWithArizona ? '112px' : '126px')
+                    : (destinationCountry === 'US' || destinationCountry === 'CA' || destinationCountry === 'AU' ? '240px' : '100%'),
                 }}>
                   <div style={{
                     fontSize: isMobile ? '0.9rem' : '1.2rem',

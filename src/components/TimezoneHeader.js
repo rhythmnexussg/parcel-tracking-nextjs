@@ -346,6 +346,11 @@ const TimezoneHeader = ({ userCountry, t }) => {
   };
 
   const getTimezoneDisplayWithUTC = (info) => {
+    const shouldUseRegionUtcOnly = userCountry === 'RU' || userCountry === 'AU' || userCountry === 'CA';
+    if (shouldUseRegionUtcOnly) {
+      return `${getTimezoneLabel(info.name)} (${info.utcOffsetLabel})`;
+    }
+
     const base = getTimezoneLabel(info.name);
     const codeFromName = getCodeFromName(info.name);
     const hasCurrentCodeInName = Boolean(
@@ -361,13 +366,8 @@ const TimezoneHeader = ({ userCountry, t }) => {
   };
 
   const getMobileOptimizedTimezoneDisplay = (info) => {
-    if (isMobile && userCountry === 'RU') {
-      // For mobile Russia: Even more compact - just region name and UTC
-      const regionName = getTimezoneLabel(info.name);
-      return `${regionName} (${info.utcOffsetLabel})`;
-    }
-    if (!isMobile && userCountry === 'RU') {
-      // For desktop Russia: Remove timezone code to save space, keep region + UTC
+    const shouldUseRegionUtcOnly = userCountry === 'RU' || userCountry === 'AU' || userCountry === 'CA';
+    if (shouldUseRegionUtcOnly) {
       return `${getTimezoneLabel(info.name)} (${info.utcOffsetLabel})`;
     }
     return getTimezoneDisplayWithUTC(info);
@@ -961,16 +961,21 @@ const TimezoneHeader = ({ userCountry, t }) => {
   // Check if this is a 6-timezone country (US or CA) or 11-timezone country (RU)
   const isSixTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 6;
   const isSevenTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 7;
+  const isNineTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 9;
   const isElevenTimezoneCountry = Array.isArray(displayTimezones) && displayTimezones.length === 11;
   const isAustralia = userCountry === 'AU';
-  const shouldUseGridLayout = isSixTimezoneCountry || isSevenTimezoneCountry || isElevenTimezoneCountry || isAustralia;
-  const shouldUseCompactDesktopLayout = !isMobile && (isSixTimezoneCountry || isSevenTimezoneCountry || isElevenTimezoneCountry);
+  const isUsCaAu = userCountry === 'US' || userCountry === 'CA' || userCountry === 'AU';
+  const isCanadaExpanded = userCountry === 'CA' && isNineTimezoneCountry;
+  const shouldUseGridLayout = isSixTimezoneCountry || isSevenTimezoneCountry || isNineTimezoneCountry || isElevenTimezoneCountry || isAustralia;
+  const shouldUseCompactDesktopLayout = !isMobile && (isSixTimezoneCountry || isSevenTimezoneCountry || isNineTimezoneCountry || isElevenTimezoneCountry);
+  const shouldUseCompactTimezoneLayout = Array.isArray(displayTimezones) && (isUsCaAu || shouldUseCompactDesktopLayout);
   const isUsOrCaDesktop = !isMobile && (userCountry === 'US' || userCountry === 'CA');
   const isRuDesktop = !isMobile && userCountry === 'RU';
-  const shouldUseDenseCompactCards = isUsOrCaDesktop || isRuDesktop;
+  const isAuDesktop = !isMobile && userCountry === 'AU';
+  const shouldUseDenseCompactCards = isUsOrCaDesktop || isRuDesktop || isAuDesktop;
 
   // ✅ REFACTORED CHANGE: render daylightTimeNotice inside this early-return branch too
-  if (shouldUseCompactDesktopLayout && Array.isArray(displayTimezones)) {
+  if (shouldUseCompactTimezoneLayout) {
     const timezoneCards = [
       ...displayTimezones.map((info) => ({
         key: `${info.timezone}-${info.localTime}`,
@@ -994,7 +999,13 @@ const TimezoneHeader = ({ userCountry, t }) => {
       },
     ];
 
-    const rowSize = isElevenTimezoneCountry ? 6 : 4;
+    const rowSize = (() => {
+      if (isElevenTimezoneCountry) return isMobile ? 3 : 6;
+      if (userCountry === 'CA') return isMobile ? 2 : 5;
+      if (userCountry === 'US') return isMobile ? 2 : 4;
+      if (userCountry === 'AU') return isMobile ? 2 : 4;
+      return isMobile ? 2 : 4;
+    })();
     const rows = [];
     for (let index = 0; index < timezoneCards.length; index += rowSize) {
       rows.push(timezoneCards.slice(index, index + rowSize));
@@ -1034,9 +1045,15 @@ const TimezoneHeader = ({ userCountry, t }) => {
                 border: shouldUseDenseCompactCards
                   ? (card.isSingapore ? '1px solid #ffd8a8' : '1px solid #c7e2ec')
                   : (card.isSingapore ? '1px solid #ffcc80' : '1px solid #b3d9e6'),
-                flex: shouldUseDenseCompactCards ? '0 1 128px' : '1',
-                minWidth: shouldUseDenseCompactCards ? '115px' : '0',
-                maxWidth: shouldUseDenseCompactCards ? '128px' : 'none',
+                flex: shouldUseDenseCompactCards
+                  ? '0 1 128px'
+                  : (isMobile ? `0 1 calc(${100 / rowSize}% - 4px)` : '1'),
+                minWidth: shouldUseDenseCompactCards
+                  ? '115px'
+                  : (isMobile ? '84px' : '0'),
+                maxWidth: shouldUseDenseCompactCards
+                  ? '128px'
+                  : (isMobile ? '170px' : 'none'),
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '3px', minWidth: 0, maxWidth: '100%' }}>
                   <span style={{ fontSize: '0.8rem' }}>{card.flag}</span>
