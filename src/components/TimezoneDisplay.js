@@ -360,7 +360,10 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              whiteSpace: 'nowrap',
+              whiteSpace: 'normal',
+              textAlign: 'center',
+              maxWidth: '100%',
+              overflowWrap: 'anywhere',
             }}>
               <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>🇸🇬</span>
               {!isMobile && <span>{singaporeTime.country}:</span>}
@@ -385,7 +388,9 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                   flexDirection: 'column',
                   alignItems: 'center',
                   gap: '4px',
-                  minWidth: isMobile ? (isUsDstWithArizona ? '120px' : '140px') : 'auto',
+                  minWidth: 0,
+                  width: isMobile ? (isUsDstWithArizona ? '120px' : '140px') : '100%',
+                  maxWidth: isMobile ? (isUsDstWithArizona ? '120px' : '140px') : '100%',
                 }}>
                   <div style={{
                     fontSize: isMobile ? '0.9rem' : '1.2rem',
@@ -399,25 +404,26 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                     alignItems: 'center',
                     gap: isMobile ? '4px' : '6px',
                     flexDirection: isMobile ? 'column' : 'row',
-                    whiteSpace: 'nowrap',
+                    whiteSpace: 'normal',
+                    textAlign: 'center',
+                    width: '100%',
+                    minWidth: 0,
+                    maxWidth: '100%',
+                    boxSizing: 'border-box',
                   }}>
                     <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>{countryFlags[destinationCountry] || '🌍'}</span>
-                    {!isMobile && <span style={{ fontSize: '0.8rem', color: '#5a6c7d' }}>{displayName}</span>}
-                    <span style={{ fontSize: isMobile ? '0.85rem' : '1rem' }}>{destTime?.time}</span>
-                  </div>
-                  {isMobile && (
                     <span style={{
-                      fontSize: isUsDstWithArizona ? '0.55rem' : '0.6rem',
+                      fontSize: isMobile ? (isUsDstWithArizona ? '0.55rem' : '0.6rem') : '0.8rem',
                       color: '#5a6c7d',
                       textAlign: 'center',
-                      maxWidth: isUsDstWithArizona ? '120px' : '140px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
+                      maxWidth: '100%',
+                      lineHeight: '1.2',
+                      overflowWrap: 'anywhere',
                     }}>
-                      {mobileDisplayName}
+                      {isMobile ? mobileDisplayName : displayName}
                     </span>
-                  )}
+                    <span style={{ fontSize: isMobile ? '0.85rem' : '1rem' }}>{destTime?.time}</span>
+                  </div>
                   {!isMobile && (
                     <span style={{
                       fontSize: '0.75rem',
@@ -440,8 +446,11 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
               display: 'flex',
               alignItems: 'center',
               gap: isMobile ? '4px' : '6px',
-              whiteSpace: 'nowrap',
-              minWidth: isMobile ? '110px' : 'auto',
+              whiteSpace: 'normal',
+              textAlign: 'center',
+              minWidth: 0,
+              maxWidth: isMobile ? '110px' : '100%',
+              overflowWrap: 'anywhere',
             }}>
               <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>🇸🇬</span>
               {!isMobile && <span>Singapore:</span>}
@@ -463,7 +472,10 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  whiteSpace: 'nowrap',
+                  whiteSpace: 'normal',
+                  textAlign: 'center',
+                  maxWidth: '100%',
+                  overflowWrap: 'anywhere',
                 }}>
                   <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>🇸🇬</span>
                   {!isMobile && <span>{singaporeTime.country}:</span>}
@@ -496,7 +508,10 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                         display: 'flex',
                         alignItems: 'center',
                         gap: '6px',
-                        whiteSpace: 'nowrap',
+                        whiteSpace: 'normal',
+                        textAlign: 'center',
+                        maxWidth: '100%',
+                        overflowWrap: 'anywhere',
                       }}>
                         <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>{countryFlags[destinationCountry] || '🌍'}</span>
                         {!isMobile && <span>{destTime.country}:</span>}
@@ -526,7 +541,10 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                       display: 'flex',
                       alignItems: 'center',
                       gap: isMobile ? '4px' : '6px',
-                      whiteSpace: 'nowrap',
+                      whiteSpace: 'normal',
+                      textAlign: 'center',
+                      maxWidth: '100%',
+                      overflowWrap: 'anywhere',
                     }}>
                       <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>🇸🇬</span>
                       {!isMobile && <span>{singaporeTime.country}:</span>}
