@@ -229,15 +229,13 @@ const TimezoneHeader = ({ userCountry, t }) => {
   // Check if a timezone is currently observing DST
   const isDST = (timezone) => {
     try {
-      const now = new Date();
-      const january = new Date(now.getFullYear(), 0, 1);
-      const july = new Date(now.getFullYear(), 6, 1);
+      const referenceDate = currentTime;
+      const january = new Date(Date.UTC(referenceDate.getFullYear(), 0, 15, 12, 0, 0));
+      const july = new Date(Date.UTC(referenceDate.getFullYear(), 6, 15, 12, 0, 0));
 
       const janOffset = getUTCOffsetAt(timezone, january);
       const julOffset = getUTCOffsetAt(timezone, july);
-      const currentOffset = getUTCOffsetAt(timezone, now);
-
-      // In Southern Hemisphere, DST is active when offset is greater (July is winter)
+      const currentOffset = getUTCOffsetAt(timezone, referenceDate);
       const maxOffset = Math.max(janOffset, julOffset);
       return currentOffset === maxOffset && janOffset !== julOffset;
     } catch (error) {
@@ -302,7 +300,14 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
   const getTimezoneDisplayWithUTC = (info) => {
     const base = getTimezoneLabel(info.name);
-    if (!info.timezoneCode || info.hasCodeInName) {
+    const codeFromName = getCodeFromName(info.name);
+    const hasCurrentCodeInName = Boolean(
+      codeFromName
+      && info.timezoneCode
+      && codeFromName === info.timezoneCode,
+    );
+
+    if (!info.timezoneCode || hasCurrentCodeInName) {
       return `${base} (${info.utcOffsetLabel})`;
     }
     return `${base} (${info.timezoneCode}, ${info.utcOffsetLabel})`;
@@ -790,7 +795,7 @@ const TimezoneHeader = ({ userCountry, t }) => {
           localDate,
           utcOffsetLabel,
           timezoneCode,
-          hasCodeInName: Boolean(codeFromName),
+          hasCodeInName: Boolean(codeFromName) && codeFromName === timezoneCode,
           timeDiffText,
           isSameTime: diffHours === 0,
         };
