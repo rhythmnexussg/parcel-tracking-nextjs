@@ -36,11 +36,11 @@ const getCountryTimezones = (t) => ({
     { name: t('tzAST') || 'AST (Atlantic)', timezone: 'America/Halifax' },
     { name: t('tzEST') || 'EST (Eastern)', timezone: 'America/Toronto' },
     { name: t('tzCST') || 'CST (Central)', timezone: 'America/Winnipeg' },
-    { name: 'CST (Saskatchewan)', timezone: 'America/Regina' },
+    { name: 'CST (SK)', timezone: 'America/Regina' },
     { name: t('tzMST') || 'MST (Mountain)', timezone: 'America/Edmonton' },
     { name: t('tzPST') || 'PST (Pacific)', timezone: 'America/Vancouver' },
-    { name: 'MST (Yukon)', timezone: 'America/Whitehorse' },
-    { name: 'EST (Nunavut Southampton)', timezone: 'America/Coral_Harbour' },
+    { name: 'MST (YT)', timezone: 'America/Whitehorse' },
+    { name: 'EST (NU)', timezone: 'America/Coral_Harbour' },
   ],
   CN: [
     { name: t('tzXinjiang') || 'Xinjiang', timezone: 'Asia/Urumqi' },
@@ -803,20 +803,20 @@ const TimezoneHeader = ({ userCountry, t }) => {
 
           if (isDstSeason) {
             return [
-              { name: 'AWST (Western - WA)', timezone: 'Australia/Perth' },
-              { name: 'ACWST (Central Western - SE WA/Border Village)', timezone: 'Australia/Eucla' },
-              { name: 'ACST (Central - NT)', timezone: 'Australia/Darwin' },
-              { name: 'ACDT (Central - SA/Broken Hill)', timezone: 'Australia/Adelaide' },
-              { name: 'AEST (Eastern - QLD)', timezone: 'Australia/Brisbane' },
-              { name: 'AEDT (Eastern - NSW/TAS/VIC/ACT/JBT)', timezone: 'Australia/Sydney' },
+              { name: `AWST (${t('tzAWST') || 'AWST'}) WA`, timezone: 'Australia/Perth' },
+              { name: 'ACWST WA-SA', timezone: 'Australia/Eucla' },
+              { name: `ACST (${t('tzACST') || 'ACST'}) NT`, timezone: 'Australia/Darwin' },
+              { name: 'ACDT SA/BH', timezone: 'Australia/Adelaide' },
+              { name: `AEST (${t('tzAEST') || 'AEST'}) QLD`, timezone: 'Australia/Brisbane' },
+              { name: 'AEDT NSW/TAS/VIC/ACT/JBT', timezone: 'Australia/Sydney' },
             ];
           }
 
           return [
-            { name: 'AWST (Western - WA)', timezone: 'Australia/Perth' },
-            { name: 'ACWST (Central Western - SE WA/Border Village)', timezone: 'Australia/Eucla' },
-            { name: 'ACST (Central - SA/NT/Broken Hill)', timezone: 'Australia/Adelaide' },
-            { name: 'AEST (Eastern - NSW/QLD/TAS/VIC/ACT/JBT)', timezone: 'Australia/Sydney' },
+            { name: `AWST (${t('tzAWST') || 'AWST'}) WA`, timezone: 'Australia/Perth' },
+            { name: 'ACWST WA-SA', timezone: 'Australia/Eucla' },
+            { name: 'ACST SA/NT/BH', timezone: 'Australia/Adelaide' },
+            { name: `AEST (${t('tzAEST') || 'AEST'}) NSW/QLD/TAS/VIC/ACT/JBT`, timezone: 'Australia/Sydney' },
           ];
         }
 

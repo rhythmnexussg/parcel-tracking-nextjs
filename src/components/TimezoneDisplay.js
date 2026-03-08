@@ -7,24 +7,24 @@ import React, { useState, useEffect } from 'react';
 const countryTimezones = {
   SG: 'Asia/Singapore',
   AU: [
-    { name: 'Western (AWST)', timezone: 'Australia/Perth' },
-    { name: 'Central Western (ACWST)', timezone: 'Australia/Eucla' },
-    { name: 'Central (ACST)', timezone: 'Australia/Adelaide' },
-    { name: 'Eastern (AEST)', timezone: 'Australia/Sydney' },
+    { name: 'AWST', timezone: 'Australia/Perth' },
+    { name: 'ACWST', timezone: 'Australia/Eucla' },
+    { name: 'ACST', timezone: 'Australia/Adelaide' },
+    { name: 'AEST', timezone: 'Australia/Sydney' },
   ],
   AT: 'Europe/Vienna',
   BE: 'Europe/Brussels',
   BN: 'Asia/Brunei',
   CA: [
-    { name: 'Newfoundland (NST)', timezone: 'America/St_Johns' },
-    { name: 'Atlantic (AST)', timezone: 'America/Halifax' },
-    { name: 'Eastern (EST)', timezone: 'America/Toronto' },
-    { name: 'Central (CST)', timezone: 'America/Winnipeg' },
-    { name: 'Saskatchewan (CST)', timezone: 'America/Regina' },
-    { name: 'Mountain (MST)', timezone: 'America/Edmonton' },
-    { name: 'Pacific (PST)', timezone: 'America/Vancouver' },
-    { name: 'Yukon (MST)', timezone: 'America/Whitehorse' },
-    { name: 'Nunavut (Southampton Island, EST)', timezone: 'America/Coral_Harbour' },
+    { name: 'NST (Nfld)', timezone: 'America/St_Johns' },
+    { name: 'AST', timezone: 'America/Halifax' },
+    { name: 'EST', timezone: 'America/Toronto' },
+    { name: 'CST', timezone: 'America/Winnipeg' },
+    { name: 'CST (SK)', timezone: 'America/Regina' },
+    { name: 'MST', timezone: 'America/Edmonton' },
+    { name: 'PST', timezone: 'America/Vancouver' },
+    { name: 'MST (YT)', timezone: 'America/Whitehorse' },
+    { name: 'EST (NU)', timezone: 'America/Coral_Harbour' },
   ],
   CN: 'Asia/Shanghai',
   CZ: 'Europe/Prague',
@@ -217,27 +217,27 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
     // Australia - Southern Hemisphere DST
     if (timezone === 'Australia/Sydney') {
       const code = inDST ? 'AEDT' : 'AEST';
-      return `Eastern (${code})`;
+      return code;
     }
     if (timezone === 'Australia/Adelaide') {
       const code = inDST ? 'ACDT' : 'ACST';
-      return `Central (${code})`;
+      return code;
     }
     if (timezone === 'Australia/Broken_Hill') {
       const code = inDST ? 'ACDT' : 'ACST';
-      return `Central (${code})`;
+      return code;
     }
     if (timezone === 'Australia/Darwin') {
-      return 'Central (ACST)';
+      return 'ACST';
     }
     if (timezone === 'Australia/Brisbane') {
-      return 'Eastern (AEST)';
+      return 'AEST';
     }
     if (timezone === 'Australia/Eucla') {
-      return 'Central Western (ACWST)';
+      return 'ACWST';
     }
     if (timezone === 'Australia/Perth') {
-      return 'Western (AWST)';
+      return 'AWST';
     }
     
     // New Zealand - Southern Hemisphere DST
@@ -297,19 +297,19 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
     }
     if (timezone === 'America/Vancouver') {
       if (isBcPermanentPdtActiveAt(currentTime)) {
-        return 'Pacific (PDT)';
+        return 'PDT';
       }
       const code = inDST ? 'PDT' : 'PST';
-      return `Pacific (${code})`;
+      return code;
     }
     if (timezone === 'America/Regina') {
-      return 'Saskatchewan (CST)';
+      return 'CST (SK)';
     }
     if (timezone === 'America/Whitehorse') {
-      return 'Yukon (MST)';
+      return 'MST (YT)';
     }
     if (timezone === 'America/Coral_Harbour') {
-      return 'Nunavut (Southampton Island, EST)';
+      return 'EST (NU)';
     }
     
     return baseName;
@@ -332,20 +332,20 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
 
       if (isDstSeason) {
         return [
-          { name: 'Western (AWST) - WA', timezone: 'Australia/Perth' },
-          { name: 'Central Western (ACWST) - SE WA/Border Village', timezone: 'Australia/Eucla' },
-          { name: 'Central (ACST) - NT', timezone: 'Australia/Darwin' },
-          { name: 'Central (ACDT) - SA/Broken Hill', timezone: 'Australia/Adelaide' },
-          { name: 'Eastern (AEST) - QLD', timezone: 'Australia/Brisbane' },
-          { name: 'Eastern (AEDT) - NSW/TAS/VIC/ACT/JBT', timezone: 'Australia/Sydney' },
+          { name: `AWST (${t ? t('tzAWST') : 'AWST'}) WA`, timezone: 'Australia/Perth' },
+          { name: 'ACWST WA-SA', timezone: 'Australia/Eucla' },
+          { name: `ACST (${t ? t('tzACST') : 'ACST'}) NT`, timezone: 'Australia/Darwin' },
+          { name: 'ACDT SA/BH', timezone: 'Australia/Adelaide' },
+          { name: `AEST (${t ? t('tzAEST') : 'AEST'}) QLD`, timezone: 'Australia/Brisbane' },
+          { name: 'AEDT NSW/TAS/VIC/ACT/JBT', timezone: 'Australia/Sydney' },
         ];
       }
 
       return [
-        { name: 'Western (AWST) - WA', timezone: 'Australia/Perth' },
-        { name: 'Central Western (ACWST) - SE WA/Border Village', timezone: 'Australia/Eucla' },
-        { name: 'Central (ACST) - SA/NT/Broken Hill', timezone: 'Australia/Adelaide' },
-        { name: 'Eastern (AEST) - NSW/QLD/TAS/VIC/ACT/JBT', timezone: 'Australia/Sydney' },
+        { name: `AWST (${t ? t('tzAWST') : 'AWST'}) WA`, timezone: 'Australia/Perth' },
+        { name: 'ACWST WA-SA', timezone: 'Australia/Eucla' },
+        { name: 'ACST SA/NT/BH', timezone: 'Australia/Adelaide' },
+        { name: `AEST (${t ? t('tzAEST') : 'AEST'}) NSW/QLD/TAS/VIC/ACT/JBT`, timezone: 'Australia/Sydney' },
       ];
     }
     if (destinationCountry !== 'US') return destinationTimezone;
@@ -447,8 +447,8 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
               const timeDiffText = getTimeDiffText(diffHours);
               const displayName = getTimezoneName(tz.timezone, tz.name);
               const mobileDisplayName = displayName
-                .replace(/\(.*?\)/g, '')
-                .trim()
+                .match(/[A-Z]{2,6}/)?.[0]
+                || displayName.replace(/\(.*?\)/g, '').trim()
                 .replace('Arizona', 'AZ')
                 .replace('Newfoundland', 'Nfld')
                 .replace('Saskatchewan', 'SK')
@@ -461,8 +461,8 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
                   alignItems: 'center',
                   gap: '4px',
                   minWidth: 0,
-                  width: isMobile ? (isUsDstWithArizona ? '120px' : '140px') : '100%',
-                  maxWidth: isMobile ? (isUsDstWithArizona ? '120px' : '140px') : '100%',
+                  width: isMobile ? (isUsDstWithArizona ? '112px' : '126px') : '100%',
+                  maxWidth: isMobile ? (isUsDstWithArizona ? '112px' : '126px') : '100%',
                 }}>
                   <div style={{
                     fontSize: isMobile ? '0.9rem' : '1.2rem',
