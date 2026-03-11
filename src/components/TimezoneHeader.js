@@ -973,6 +973,8 @@ const TimezoneHeader = ({ userCountry, t }) => {
   const isRuDesktop = !isMobile && userCountry === 'RU';
   const isAuDesktop = !isMobile && userCountry === 'AU';
   const shouldUseDenseCompactCards = isUsOrCaDesktop || isRuDesktop || isAuDesktop;
+  // True for any mobile user viewing a country with multiple timezones in the standard branch
+  const isMobileMultiTz = isMobile && !shouldUseCompactTimezoneLayout;
 
   // ✅ REFACTORED CHANGE: render daylightTimeNotice inside this early-return branch too
   if (shouldUseCompactTimezoneLayout) {
@@ -1050,10 +1052,10 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   : (isMobile ? `0 1 calc(${100 / rowSize}% - 4px)` : '1'),
                 minWidth: shouldUseDenseCompactCards
                   ? '115px'
-                  : (isMobile ? '84px' : '0'),
+                  : (isMobile ? '80px' : '0'),
                 maxWidth: shouldUseDenseCompactCards
                   ? '128px'
-                  : (isMobile ? '170px' : 'none'),
+                  : (isMobile ? `calc(${100 / rowSize}% - 4px)` : 'none'),
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '3px', minWidth: 0, maxWidth: '100%' }}>
                   <span style={{ fontSize: '0.8rem' }}>{card.flag}</span>
@@ -1104,9 +1106,9 @@ const TimezoneHeader = ({ userCountry, t }) => {
       fontSize: isMobile ? '0.8rem' : '0.7rem',
       fontWeight: '500',
       color: '#2c3e50',
-      flexWrap: shouldUseGridLayout ? 'wrap' : 'nowrap',
+      flexWrap: shouldUseGridLayout ? 'wrap' : (isMobileMultiTz ? 'wrap' : 'nowrap'),
       justifyContent: 'center',
-      overflowX: (isMobile && !shouldUseGridLayout) ? 'auto' : 'visible',
+      overflowX: (isMobile && !shouldUseGridLayout && !isMobileMultiTz) ? 'auto' : 'visible',
       maxWidth: '100%',
       padding: isMobile ? '4px 0' : (isElevenTimezoneCountry ? '8px 0' : '4px 0'),
       minHeight: isElevenTimezoneCountry ? '120px' : 'auto',
@@ -1118,23 +1120,25 @@ const TimezoneHeader = ({ userCountry, t }) => {
             isAustralia ? (
               // Special layout for Australia: Show timezones in rows with SGT at the end
               <>
-                <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? '6px' : '6px', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: isMobile ? '5px' : '6px', justifyContent: 'center', width: '100%', flexWrap: 'wrap' }}>
                   {displayTimezones.map((info, index) => (
                     <div key={index} style={{
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
                       gap: isMobile ? '2px' : '1px',
-                      padding: isMobile ? '8px 12px' : '6px 8px',
+                      padding: isMobile ? '7px 6px' : '6px 8px',
                       backgroundColor: '#e8f4f8',
                       borderRadius: isMobile ? '6px' : '4px',
                       border: '1px solid #b3d9e6',
-                      whiteSpace: 'nowrap',
-                      minWidth: isMobile ? '100px' : '80px',
+                      whiteSpace: isMobile ? 'normal' : 'nowrap',
+                      flex: isMobile ? '0 0 calc(50% - 4px)' : '0 0 auto',
+                      minWidth: isMobile ? 'calc(50% - 4px)' : '80px',
+                      maxWidth: isMobile ? 'calc(50% - 4px)' : 'none',
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '3px' }}>
-                        <span style={{ fontSize: isMobile ? '1.1rem' : '0.9rem' }}>{countryFlags[userCountry] || '🌍'}</span>
-                        <span style={{ fontSize: isMobile ? '0.77rem' : desktopLabelFontSize, color: '#5a6c7d', fontWeight: '600' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '3px' : '3px', justifyContent: 'center', width: '100%', minWidth: 0 }}>
+                        <span style={{ fontSize: isMobile ? '0.95rem' : '0.9rem', flexShrink: 0 }}>{countryFlags[userCountry] || '🌍'}</span>
+                        <span style={{ fontSize: isMobile ? '0.68rem' : desktopLabelFontSize, color: '#5a6c7d', fontWeight: '600', textAlign: 'center', lineHeight: '1.15', overflowWrap: 'anywhere', wordBreak: 'break-word', minWidth: 0 }}>
                           {getTimezoneDisplayWithUTC(info)}
                         </span>
                       </div>
@@ -1150,17 +1154,19 @@ const TimezoneHeader = ({ userCountry, t }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: isMobile ? '3px' : '2px',
-                    padding: isMobile ? '8px 12px' : '6px 10px',
+                    gap: isMobile ? '2px' : '2px',
+                    padding: isMobile ? '7px 6px' : '6px 10px',
                     backgroundColor: '#fff3e0',
                     borderRadius: isMobile ? '6px' : '4px',
                     border: '1px solid #ffcc80',
-                    whiteSpace: 'nowrap',
-                    minWidth: isMobile ? '100px' : '80px',
+                    whiteSpace: isMobile ? 'normal' : 'nowrap',
+                    flex: isMobile ? '0 0 calc(50% - 4px)' : '0 0 auto',
+                    minWidth: isMobile ? 'calc(50% - 4px)' : '80px',
+                    maxWidth: isMobile ? 'calc(50% - 4px)' : 'none',
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '3px' }}>
-                      <span style={{ fontSize: isMobile ? '1.1rem' : '0.9rem' }}>🇸🇬</span>
-                      <span style={{ fontSize: isMobile ? '0.77rem' : desktopLabelFontSize, color: '#5a6c7d', fontWeight: '600' }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '3px' : '3px', justifyContent: 'center', width: '100%', minWidth: 0 }}>
+                      <span style={{ fontSize: isMobile ? '0.95rem' : '0.9rem', flexShrink: 0 }}>🇸🇬</span>
+                      <span style={{ fontSize: isMobile ? '0.68rem' : desktopLabelFontSize, color: '#5a6c7d', fontWeight: '600', textAlign: 'center', lineHeight: '1.15', overflowWrap: 'anywhere', wordBreak: 'break-word', minWidth: 0 }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
                     </div>
                     <span style={{ fontSize: isMobile ? '0.85rem' : desktopTimeFontSize, fontWeight: '700' }}>{singaporeTime}</span>
                     <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', color: '#5a6c7d' }}>{singaporeDate}</span>
@@ -1411,16 +1417,26 @@ const TimezoneHeader = ({ userCountry, t }) => {
                   flexDirection: 'column',
                   alignItems: 'center',
                   gap: '3px',
-                  padding: isMobile ? '8px 12px' : '6px 10px',
+                  padding: isMobileMultiTz ? '7px 8px' : (isMobile ? '8px 12px' : '6px 10px'),
                   backgroundColor: '#e8f4f8',
                   borderRadius: isMobile ? '6px' : '4px',
                   border: '1px solid #b3d9e6',
-                  whiteSpace: 'nowrap',
-                  minWidth: isMobile ? '110px' : '90px',
+                  whiteSpace: isMobileMultiTz ? 'normal' : 'nowrap',
+                  minWidth: isMobileMultiTz ? 'calc(50% - 6px)' : (isMobile ? '110px' : '90px'),
+                  maxWidth: isMobileMultiTz ? 'calc(50% - 6px)' : 'none',
+                  flex: isMobileMultiTz ? '0 0 calc(50% - 6px)' : '0 0 auto',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '3px' }}>
-                    <span style={{ fontSize: isMobile ? '1.1rem' : '0.9rem' }}>{countryFlags[userCountry] || '🌍'}</span>
-                    <span style={{ fontSize: isMobile ? '0.77rem' : desktopLabelFontSize, color: '#5a6c7d', fontWeight: '600' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '3px', justifyContent: 'center', width: '100%', minWidth: 0 }}>
+                    <span style={{ fontSize: isMobileMultiTz ? '0.95rem' : (isMobile ? '1.1rem' : '0.9rem') }}>{countryFlags[userCountry] || '🌍'}</span>
+                    <span style={{ 
+                      fontSize: isMobileMultiTz ? '0.68rem' : (isMobile ? '0.77rem' : desktopLabelFontSize),
+                      color: '#5a6c7d',
+                      fontWeight: '600',
+                      textAlign: 'center',
+                      lineHeight: isMobileMultiTz ? '1.15' : '1.2',
+                      overflowWrap: isMobileMultiTz ? 'anywhere' : 'normal',
+                      wordBreak: isMobileMultiTz ? 'break-word' : 'normal',
+                    }}>
                       {getTimezoneDisplayWithUTC(info)}
                     </span>
                   </div>
@@ -1436,16 +1452,26 @@ const TimezoneHeader = ({ userCountry, t }) => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: '3px',
-                padding: isMobile ? '8px 12px' : '6px 10px',
+                padding: isMobileMultiTz ? '7px 8px' : (isMobile ? '8px 12px' : '6px 10px'),
                 backgroundColor: '#fff3e0',
                 borderRadius: isMobile ? '6px' : '4px',
                 border: '1px solid #ffcc80',
-                whiteSpace: 'nowrap',
-                minWidth: isMobile ? '100px' : '80px',
+                whiteSpace: isMobileMultiTz ? 'normal' : 'nowrap',
+                minWidth: isMobileMultiTz ? 'calc(50% - 6px)' : (isMobile ? '100px' : '80px'),
+                maxWidth: isMobileMultiTz ? 'calc(50% - 6px)' : 'none',
+                flex: isMobileMultiTz ? '0 0 calc(50% - 6px)' : '0 0 auto',
               }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '3px' }}>
-                  <span style={{ fontSize: isMobile ? '1.1rem' : '0.9rem' }}>🇸🇬</span>
-                  <span style={{ fontSize: isMobile ? '0.77rem' : desktopLabelFontSize, color: '#5a6c7d', fontWeight: '600' }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '4px' : '3px', justifyContent: 'center', width: '100%', minWidth: 0 }}>
+                  <span style={{ fontSize: isMobileMultiTz ? '0.95rem' : (isMobile ? '1.1rem' : '0.9rem') }}>🇸🇬</span>
+                  <span style={{
+                    fontSize: isMobileMultiTz ? '0.68rem' : (isMobile ? '0.77rem' : desktopLabelFontSize),
+                    color: '#5a6c7d',
+                    fontWeight: '600',
+                    textAlign: 'center',
+                    lineHeight: isMobileMultiTz ? '1.15' : '1.2',
+                    overflowWrap: isMobileMultiTz ? 'anywhere' : 'normal',
+                    wordBreak: isMobileMultiTz ? 'break-word' : 'normal',
+                  }}>{`${singaporeTimezoneCode} (${singaporeUTCLabel})`}</span>
                 </div>
                 <span style={{ fontSize: isMobile ? '0.85rem' : desktopTimeFontSize, fontWeight: '700' }}>{singaporeTime}</span>
                 <span style={{ fontSize: isMobile ? '0.7rem' : '0.65rem', color: '#5a6c7d' }}>{singaporeDate}</span>
