@@ -57,6 +57,14 @@ In the terminal:
 npm run dev
 ```
 
+## Step 6.1: AdSense Review Requirement
+If AdSense flagged low-value content or non-content screens:
+
+1. Keep the AdSense snippet in code.
+2. Keep `public/ads.txt` published.
+3. Keep the `google-adsense-account` meta tag in layout.
+4. Improve page quality and submit policy re-review.
+
 ## Step 7: Test
 Visit: http://localhost:3000/api/orders
 

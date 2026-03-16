@@ -18,6 +18,7 @@ const pass = (message) => {
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
 const adsLoader = read('src/components/AdSenseLoader.js');
+const layout = read('src/app/layout.js');
 const privacyPolicy = read('src/app/privacy-policy/page.js');
 const adsTxt = read('public/ads.txt').trim();
 
@@ -42,6 +43,18 @@ if (!adsLoader.includes('requestNonPersonalizedAds = 1')) {
   fail('Non-personalized ads default is missing in AdSenseLoader.');
 } else {
   pass('Non-personalized ads default is configured.');
+}
+
+if (!adsLoader.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')) {
+  fail('AdSenseLoader is missing the AdSense script snippet.');
+} else {
+  pass('AdSenseLoader includes the AdSense script snippet.');
+}
+
+if (!layout.includes('meta name="google-adsense-account"')) {
+  fail('Layout is missing google-adsense-account meta declaration.');
+} else {
+  pass('Layout includes google-adsense-account meta declaration.');
 }
 
 if (!privacyPolicy.includes('policies.google.com/technologies/partner-sites')) {

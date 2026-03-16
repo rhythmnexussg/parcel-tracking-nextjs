@@ -49,6 +49,22 @@ Choose ONE authentication method:
 
 See `.env.local.example` for all available options.
 
+### 1.2 AdSense Policy Re-Review Workflow
+
+Use this flow if AdSense reports low-value content or ads on non-content screens:
+
+1. Keep AdSense integration present during review:
+   - Do not remove the AdSense snippet, `ads.txt`, or `google-adsense-account` meta tag.
+2. Improve content quality before re-review:
+   - Add unique, long-form publisher content on indexed pages.
+   - Avoid placeholder, under-construction, utility-only, or navigation-only screens for ad serving.
+3. Run local policy checks:
+   ```bash
+   node scripts/google-publisher-policy-audit.mjs
+   ```
+4. Request policy re-review from AdSense.
+5. Keep ad placements limited to high-value editorial pages until policy status is stable.
+
 ### 1.1 Optional: AI Chatbot (Flowise)
 
 To enable the website chatbot, add these variables to your `.env.local` (or Vercel env vars):
