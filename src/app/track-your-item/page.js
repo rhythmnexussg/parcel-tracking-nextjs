@@ -16,7 +16,6 @@ import { LanguageSelector } from "../../LanguageSelector";
 import { detectLanguageFromIPWithRestrictions, isAccessAllowedFromChina } from "../../ipGeolocation";
 import { Navigation } from "../../components/Navigation";
 import USAWinterStormNotice from "../../components/USAWinterStormNotice";
-import ItalyOlympicsNotice from "../../components/ItalyOlympicsNotice";
 import MiddleEastAirspaceNotice from "../../components/MiddleEastAirspaceNotice";
 import { EuropeAirspaceNotice } from "../../components/MiddleEastAirspaceNotice";
 
@@ -1016,9 +1015,6 @@ function App() {
 
     {/* USA Winter Storm Notice */}
     <USAWinterStormNotice userCountry={userCountry} t={t} />
-
-    {/* Italy Milano Cortina 2026 Olympics & Paralympics Notice */}
-    <ItalyOlympicsNotice language={currentLanguage} />
 
     {/* Middle East Airspace Closure Notice (Israel) */}
     <MiddleEastAirspaceNotice language={currentLanguage} />
