@@ -73,6 +73,7 @@ export const Navigation = () => {
   }, []);
   
   return (
+    <>
     <nav className="navbar">
       <div className="navbar-brand">
         <Link href={withOverride('/')}>
@@ -102,5 +103,7 @@ export const Navigation = () => {
         <LanguageSelector />
       </div>
     </nav>
+      <div className="navbar-spacer"></div>
+    </>
   );
 };

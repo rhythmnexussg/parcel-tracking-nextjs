@@ -5,6 +5,7 @@ import Link from "next/link";
 import "../../App.css";
 import { useLanguage } from "../../LanguageContext";
 import { Navigation } from "../../components/Navigation";
+import { Footer } from "../../components/Footer";
 
 const BLOG_CARD_I18N = {
   en: {
@@ -349,7 +350,7 @@ function BlogIndex() {
           ))}
         </div>
 
-        <p className="text-muted">© {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}</p>
+        <Footer />
       </div>
     </>
   );

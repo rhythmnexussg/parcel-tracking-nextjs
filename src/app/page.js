@@ -5,6 +5,7 @@ import "../App.css";
 import { useLanguage } from "../LanguageContext";
 import { detectLanguageFromIPWithRestrictions } from "../ipGeolocation";
 import { Navigation } from "../components/Navigation";
+import { Footer } from "../components/Footer";
 
 export default function Home() {
   const { t } = useLanguage();
@@ -93,11 +94,10 @@ export default function Home() {
         </div>
 
         <div className="mt-4">
-        </div>
-        <p className="text-muted">
-          © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
-        </p>
+</div>
+        <Footer />
       </div>
     </>
   );
 }
+

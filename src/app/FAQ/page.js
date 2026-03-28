@@ -266,9 +266,7 @@ export default function FAQ() {
             ))}
           </div>
 
-          <p className="text-muted">
-            © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
-          </p>
+          <Footer />
         </div>
       </main>
     </>

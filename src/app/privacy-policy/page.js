@@ -4,6 +4,7 @@ import { Navigation } from '../../components/Navigation';
 import { useLanguage } from '../../LanguageContext';
 import { policyText } from '../../lib/policyI18n';
 import { getLocalizedPolicyDate, getPrivacyUiLabels } from '../../lib/policyUiI18n';
+import { Footer } from "../../components/Footer";
 
 const normalizeLang = (language) => {
   const code = (language || 'en').toLowerCase();
@@ -282,7 +283,7 @@ export default function PrivacyPolicyPage() {
             </>
           )}
         </div>
-        <p className="text-muted">© {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}</p>
+        <Footer />
       </div>
     </>
   );

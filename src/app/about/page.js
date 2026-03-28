@@ -34,9 +34,7 @@ export default function About() {
             </p>
           </div>
 
-          <p className="text-muted">
-            © {new Date().getFullYear()} Rhythm Nexus. {t('copyrightText')}
-          </p>
+          <Footer />
         </div>
       </main>
     </>

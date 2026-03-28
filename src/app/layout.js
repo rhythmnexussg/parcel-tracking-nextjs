@@ -6,7 +6,6 @@ import { AccessGuard } from "../components/AccessGuard";
 import { ChatbotWidget } from "../components/ChatbotWidget";
 import { PhoneRequirementPopup } from "../components/PhoneRequirementPopup";
 import { USSection122Popup } from "../components/USSection122Popup";
-import { TemporaryClosurePopup } from "../components/TemporaryClosurePopup";
 import { AdSenseLoader } from "../components/AdSenseLoader";
 
 const geistSans = Geist({
@@ -106,7 +105,6 @@ export default function RootLayout({ children }) {
             {children}
             <PhoneRequirementPopup />
             <USSection122Popup />
-            <TemporaryClosurePopup />
           </AccessGuard>
           <ChatbotWidget />
         </LanguageProvider>
