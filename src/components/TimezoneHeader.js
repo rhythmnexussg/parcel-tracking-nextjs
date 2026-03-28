@@ -618,7 +618,8 @@ const TimezoneHeader = ({ userCountry, t }) => {
         hour12: true,
       };
 
-      return currentTime.toLocaleTimeString('en-US', options);
+      let timeString = currentTime.toLocaleTimeString('en-US', options);
+      return t ? timeString.replace(' AM', ' ' + t('amText')).replace(' PM', ' ' + t('pmText')) : timeString;
     } catch (error) {
       return '--:--:--';
     }

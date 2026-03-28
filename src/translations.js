@@ -1,6 +1,8 @@
 ﻿// Language translations for Rhythm Nexus - Complete with all languages
 export const translations = {
   "en": {
+    "amText": "AM",
+    "pmText": "PM",
     footerDesc: "Your premier destination for arcade amusement cards, rhythm game gloves, and specialized merch. Enjoy global e-commerce with seamless international parcel tracking and reliable shipping data.",
     footerQuickLinks: "Quick Links",
     footerSupportLegal: "Support & Legal",
@@ -526,6 +528,8 @@ export const translations = {
     "dstNewZealandLabel": "New Zealand"
   },
   "de": {
+    "amText": "vormittags",
+    "pmText": "nachmittags",
     footerDesc: "Ihre erste Anlaufstelle für Arcade-Vergnügungskarten, Rhythm-Game-Handschuhe und spezielles Merchandise. Genießen Sie globalen E-Commerce mit nahtloser internationaler Paketverfolgung und zuverlässigen Versanddaten.",
     footerQuickLinks: "Quicklinks",
     footerSupportLegal: "Support & Recht",
@@ -1052,6 +1056,8 @@ export const translations = {
     "dstNewZealandLabel": "Neuseeland"
   },
   "fr": {
+    "amText": "AM",
+    "pmText": "PM",
     footerDesc: "Votre destination privilégiée pour les cartes de divertissement d'arcade, les gants de jeux de rythme et les produits spécialisés. Profitez du commerce électronique mondial avec un suivi international transparent des colis et des données d'expédition fiables.",
     footerQuickLinks: "Liens rapides",
     footerSupportLegal: "Assistance et informations juridiques",
@@ -1578,6 +1584,8 @@ export const translations = {
     "dstNewZealandLabel": "Nouvelle-Zélande"
   },
   "es": {
+    "amText": "a. m.",
+    "pmText": "p. m.",
     footerDesc: "Su principal destino para tarjetas de entretenimiento arcade, guantes para juegos de ritmo y productos especializados. Disfrute del comercio electrónico global con un seguimiento fluido de paquetes internacionales y datos de envío confiables.",
     footerQuickLinks: "Enlaces rápidos",
     footerSupportLegal: "Soporte y Legal",
@@ -2104,6 +2112,8 @@ export const translations = {
     "dstNewZealandLabel": "Nueva Zelanda"
   },
   "ja": {
+    "amText": "午前",
+    "pmText": "午後",
     footerDesc: "アーケード アミューズメント カード、リズム ゲーム グローブ、専門グッズを扱う最高の場所。シームレスな国際荷物追跡と信頼性の高い配送データを利用して、グローバルな電子商取引をお楽しみください。",
     footerQuickLinks: "クイックリンク",
     footerSupportLegal: "サポートと法務",
@@ -2631,6 +2641,8 @@ export const translations = {
     "parcelSubmit": "送信",
   },
   "zh": {
+    "amText": "上午",
+    "pmText": "下午",
     "tzAEST": "AEST (悉尼/墨尔本)",
     "tzACST": "ACST (阿德莱德)",
     "tzAWST": "AWST (珀斯)",
@@ -3353,6 +3365,8 @@ export const translations = {
     "statusHeldByCustms": "被海关扣留"
   },
   "zh-hant": {
+    "amText": "上午",
+    "pmText": "下午",
     "tzAEST": "AEST (雪梨/墨爾本)",
     "tzACST": "ACST (阿德雷德)",
     "tzAWST": "AWST (伯斯)",
@@ -4049,6 +4063,8 @@ export const translations = {
     "parcelSubmit": "提交",
   },
   "pt": {
+    "amText": "AM",
+    "pmText": "PM",
     footerDesc: "Seu principal destino para cartões de diversão de fliperama, luvas para jogos de ritmo e produtos especializados. Aproveite o comércio eletrônico global com rastreamento de encomendas internacionais contínuo e dados de remessa confiáveis.",
     footerQuickLinks: "Links rápidos",
     footerSupportLegal: "Suporte e Jurídico",
@@ -4784,6 +4800,8 @@ export const translations = {
     "parcelSubmit": "Submeter",
   },
   "hi": {
+    "amText": "पूर्वाह्न",
+    "pmText": "अपराह्न",
     footerDesc: "Your premier destination for arcade amusement cards, rhythm game gloves, and specialized merch. Enjoy global e-commerce with seamless international parcel tracking and reliable shipping data.",
     footerQuickLinks: "Quick Links",
     footerSupportLegal: "Support & Legal",
@@ -5515,6 +5533,8 @@ export const translations = {
     "parcelSubmit": "सबमिट करें",
   },
   "th": {
+    "amText": "ก่อนเที่ยง",
+    "pmText": "หลังเที่ยง",
     footerDesc: "จุดหมายปลายทางชั้นนำของคุณสำหรับการ์ดเกมอาร์เคด ถุงมือเกมจังหวะ และสินค้าเฉพาะทาง เพลิดเพลินกับอีคอมเมิร์ซระดับโลกด้วยการติดตามพัสดุระหว่างประเทศที่ราบรื่นและข้อมูลการจัดส่งที่เชื่อถือได้",
     footerQuickLinks: "ลิงค์ด่วน",
     footerSupportLegal: "Support & Legal",
@@ -6247,6 +6267,8 @@ export const translations = {
     "parcelSubmit": "ส่ง",
   },
   "ms": {
+    "amText": "pagi",
+    "pmText": "petang",
     footerDesc: "Your premier destination for arcade amusement cards, rhythm game gloves, and specialized merch. Enjoy global e-commerce with seamless international parcel tracking and reliable shipping data.",
     footerQuickLinks: "Quick Links",
     footerSupportLegal: "Support & Legal",
@@ -6774,6 +6796,8 @@ export const translations = {
     "parcelSubmit": "Hantar",
   },
   "nl": {
+    "amText": "v.m.",
+    "pmText": "n.m.",
     footerDesc: "Uw belangrijkste bestemming voor arcade-amusementkaarten, ritmegame-handschoenen en gespecialiseerde merchandise. Geniet van wereldwijde e-commerce met naadloze internationale tracking van pakketten en betrouwbare verzendgegevens.",
     footerQuickLinks: "Snelle koppelingen",
     footerSupportLegal: "Ondersteuning en juridisch",
@@ -7473,6 +7497,8 @@ export const translations = {
     "parcelSubmit": "Verzenden",
   },
   "id": {
+    "amText": "pagi",
+    "pmText": "sore",
     footerDesc: "Your premier destination for arcade amusement cards, rhythm game gloves, and specialized merch. Enjoy global e-commerce with seamless international parcel tracking and reliable shipping data.",
     footerQuickLinks: "Quick Links",
     footerSupportLegal: "Support & Legal",
@@ -8172,6 +8198,8 @@ export const translations = {
     "parcelSubmit": "Kirim",
   },
   "cs": {
+    "amText": "dop.",
+    "pmText": "odp.",
     footerDesc: "Your premier destination for arcade amusement cards, rhythm game gloves, and specialized merch. Enjoy global e-commerce with seamless international parcel tracking and reliable shipping data.",
     footerQuickLinks: "Quick Links",
     footerSupportLegal: "Support & Legal",
@@ -8872,6 +8900,8 @@ export const translations = {
     "destinationNotAllowed": "Přístup do této cílové země není z vašeho místa dostupný. Vyberte prosím jinou destinaci."
   },
   "it": {
+    "amText": "AM",
+    "pmText": "PM",
     footerDesc: "La tua destinazione principale per carte da gioco arcade, guanti per giochi ritmici e merchandising specializzato. Goditi l'e-commerce globale con il tracciamento internazionale dei pacchi senza soluzione di continuità e dati di spedizione affidabili.",
     footerQuickLinks: "Collegamenti rapidi",
     footerSupportLegal: "Supporto e legale",
@@ -9401,6 +9431,8 @@ export const translations = {
     "dstNewZealandLabel": "Nuova Zelanda",
   },
   "he": {
+    "amText": "לפני הצהריים",
+    "pmText": "אחרי הצהריים",
     "tzAEST": "AEST (סידני/מלבורן)",
     "tzACST": "ACST (אדלייד)",
     "tzAWST": "AWST (פרת')",
@@ -9918,6 +9950,8 @@ export const translations = {
     "parcelSubmit": "Submit",
   },
   "ga": {
+    "amText": "r.n.",
+    "pmText": "i.n.",
     "tzAEST": "AEST (Sydney/Melbourne)",
     "tzACST": "ACST (Adelaide)",
     "tzAWST": "AWST (Perth)",
@@ -10433,6 +10467,8 @@ export const translations = {
     "parcelSubmit": "Submit",
   },
   "pl": {
+    "amText": "AM",
+    "pmText": "PM",
     footerDesc: "Twoje najważniejsze miejsce zakupu kart do gier arkadowych, rękawic do gier rytmicznych i specjalistycznych towarów. Ciesz się globalnym handlem elektronicznym dzięki płynnemu śledzeniu przesyłek międzynarodowych i niezawodnym danym o wysyłce.",
     footerQuickLinks: "Szybkie linki",
     footerSupportLegal: "Wsparcie i kwestie prawne",
@@ -10960,6 +10996,8 @@ export const translations = {
     "parcelSubmit": "Wyślij",
   },
   "ko": {
+    "amText": "오전",
+    "pmText": "오후",
     footerDesc: "아케이드 놀이 카드, 리듬 게임 장갑, 전문 상품을 구입할 수 있는 최고의 장소입니다. 원활한 국제 소포 추적과 신뢰할 수 있는 배송 데이터로 글로벌 전자상거래를 즐겨보세요.",
     footerQuickLinks: "빠른 링크",
     footerSupportLegal: "지원 및 법률",
@@ -11696,6 +11734,8 @@ export const translations = {
     "parcelSubmit": "제출",
   },
   "no": {
+    "amText": "a.m.",
+    "pmText": "p.m.",
     "tzAEST": "AEST (Sydney/Melbourne)",
     "tzACST": "ACST (Adelaide)",
     "tzAWST": "AWST (Perth)",
@@ -12211,6 +12251,8 @@ export const translations = {
     "parcelSubmit": "Submit",
   },
   "sv": {
+    "amText": "fm",
+    "pmText": "em",
     "tzAEST": "AEST (Sydney/Melbourne)",
     "tzACST": "ACST (Adelaide)",
     "tzAWST": "AWST (Perth)",
@@ -12726,6 +12768,8 @@ export const translations = {
     "parcelSubmit": "Submit",
   },
   "tl": {
+    "amText": "AM",
+    "pmText": "PM",
     footerDesc: "Your premier destination for arcade amusement cards, rhythm game gloves, and specialized merch. Enjoy global e-commerce with seamless international parcel tracking and reliable shipping data.",
     footerQuickLinks: "Quick Links",
     footerSupportLegal: "Support & Legal",
@@ -13253,6 +13297,8 @@ export const translations = {
     "parcelSubmit": "Submit",
   },
   "vi": {
+    "amText": "SA",
+    "pmText": "CH",
     footerDesc: "Điểm đến hàng đầu của bạn về thẻ giải trí arcade, găng tay trò chơi nhịp điệu và hàng hóa chuyên dụng. Tận hưởng thương mại điện tử toàn cầu với tính năng theo dõi bưu kiện quốc tế liền mạch và dữ liệu vận chuyển đáng tin cậy.",
     footerQuickLinks: "Liên kết nhanh",
     footerSupportLegal: "Hỗ trợ & Pháp lý",
@@ -13780,6 +13826,8 @@ export const translations = {
     "parcelSubmit": "Gửi",
   },
   "fi": {
+    "amText": "ap.",
+    "pmText": "ip.",
     "tzAEST": "AEST (Sydney/Melbourne)",
     "tzACST": "ACST (Adelaide)",
     "tzAWST": "AWST (Perth)",
@@ -14295,6 +14343,8 @@ export const translations = {
     "parcelSubmit": "Submit",
   },
   "ru": {
+    "amText": "ДП",
+    "pmText": "ПП",
     footerDesc: "Лучшее место для покупки карточек для аркадных развлечений, перчаток для ритм-игр и специализированных товаров. Наслаждайтесь глобальной электронной коммерцией с бесперебойным международным отслеживанием посылок и надежными данными о доставке.",
     footerQuickLinks: "Быстрые ссылки",
     footerSupportLegal: "Поддержка и юридическая поддержка",
@@ -15031,6 +15081,8 @@ export const translations = {
     "parcelSubmit": "Отправить",
   },
   "cy": {
+    "amText": "yb",
+    "pmText": "yh",
     "tzAEST": "AEST (Sydney/Melbourne)",
     "tzACST": "ACST (Adelaide)",
     "tzAWST": "AWST (Perth)",
@@ -15546,6 +15598,8 @@ export const translations = {
     "parcelSubmit": "Submit",
   },
   "ta": {
+    "amText": "முற்பகல்",
+    "pmText": "பிற்பகல்",
     "tzAEST": "AEST (சிட்னி/மெல்போர்ன்)",
     "tzACST": "ACST (அடிலெய்டு)",
     "tzAWST": "AWST (பெர்த்)",
@@ -16059,6 +16113,8 @@ export const translations = {
     "parcelSubmit": "Submit",
   },
   "mi": {
+    "amText": "AM",
+    "pmText": "PM",
     footerDesc: "Your premier destination for arcade amusement cards, rhythm game gloves, and specialized merch. Enjoy global e-commerce with seamless international parcel tracking and reliable shipping data.",
     footerQuickLinks: "Quick Links",
     footerSupportLegal: "Support & Legal",
@@ -16581,6 +16637,8 @@ export const translations = {
   
   },
   "yue": {
+    "amText": "上午",
+    "pmText": "下午",
     "tzAEST": "AEST（悉尼／墨爾本）",
     "tzACST": "ACST（阿德萊德）",
     "tzAWST": "AWST（珀斯）",

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../LanguageContext';
 
 // Timezone mappings for each destination country
 // Countries with multiple timezones use array format: [{ name, timezone }]
@@ -164,7 +165,10 @@ const TimezoneDisplay = ({ destinationCountry, userCountry, t, getCountryName })
         hour12: true,
       };
       
-      const timeString = currentTime.toLocaleTimeString('en-US', options);
+      let timeString = currentTime.toLocaleTimeString('en-US', options);
+      if (t) {
+        timeString = timeString.replace(' AM', ' ' + t('amText')).replace(' PM', ' ' + t('pmText'));
+      }
       const countryName = getCountryName ? getCountryName(countryCode) : countryCode;
       
       return {

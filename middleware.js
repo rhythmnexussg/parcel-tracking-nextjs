@@ -368,7 +368,7 @@ function isIpadUserAgent(userAgent) {
   return ua.includes('macintosh') && ua.includes('mobile/') && ua.includes('safari');
 }
 
-function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platformVersionMajor = null, platformVersionParts = null) {
+function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platformVersionMajor = null, platformVersionParts = null, platformName = '') {
   const ua = (userAgent || '').toLowerCase();
   const isIpad = isIpadUserAgent(userAgent);
   const resolvedPlatformVersionParts = platformVersionParts || {
@@ -450,9 +450,6 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platfo
     return 'Windows Vista / Server 2008';
   }
 
-  if (/windows nt 6\.1|windows 7/.test(ua)) {
-    return 'Windows 7 / Server 2008 R2';
-  }
 
   if (/windows nt 6\.2|windows 8/.test(ua)) {
     return 'Windows 8 / Server 2012';
@@ -637,6 +634,7 @@ export async function middleware(request) {
     hostHeader.startsWith('127.0.0.1:') ||
     hostHeader.startsWith('[::1]:');
   const userAgent = request.headers.get('user-agent') || '';
+  const platformHeader = (request.headers.get('sec-ch-ua-platform') || '').replace(/"/g, '');
   const platformVersionHeader = request.headers.get('sec-ch-ua-platform-version') || '';
   const platformVersionParts = extractPlatformVersionParts(platformVersionHeader);
   const platformVersionMajor = extractPlatformVersionMajor(platformVersionHeader);
@@ -647,7 +645,7 @@ export async function middleware(request) {
   const hasCaptchaCookie = request.cookies.get(ACCESS_COOKIE_NAME)?.value === ACCESS_COOKIE_VALUE;
 
   if (!isOsPolicyExemptPath(path)) {
-    const unsupportedSystem = getUnsupportedSystemFromUserAgent(userAgent, nowMs, platformVersionMajor, platformVersionParts);
+    const unsupportedSystem = getUnsupportedSystemFromUserAgent(userAgent, nowMs, platformVersionMajor, platformVersionParts, platformHeader);
     if (unsupportedSystem) {
       const blockedUrl = nextUrl.clone();
       blockedUrl.pathname = '/blocked';

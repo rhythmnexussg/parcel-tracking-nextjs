@@ -131,7 +131,8 @@ const AustralianDSTNotification = ({ userCountry, t }) => {
         second: '2-digit',
         hour12: true,
       };
-      return currentTime.toLocaleTimeString('en-US', options);
+      let timeString = currentTime.toLocaleTimeString('en-US', options);
+      return t ? timeString.replace(' AM', ' ' + t('amText')).replace(' PM', ' ' + t('pmText')) : timeString;
     } catch (error) {
       console.error(`Error formatting time for ${timezone}:`, error);
       return '';
