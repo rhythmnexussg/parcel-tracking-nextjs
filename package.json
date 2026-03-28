@@ -12,16 +12,16 @@
   "dependencies": {
     "@vitalets/google-translate-api": "^9.2.1",
     "cheerio": "^1.2.0",
-    "googleapis": "^144.0.0",
-    "next": "16.1.6",
-    "nodemailer": "^6.9.16",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "xlsx": "^0.18.5"
+    "googleapis": "^171.4.0",
+    "next": "^16.2.1",
+    "nodemailer": "^8.0.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.6"
+    "eslint": "^10",
+    "eslint-config-next": "16.2.1"
   }
 }

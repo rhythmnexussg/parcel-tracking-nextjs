@@ -340,8 +340,8 @@ function extractFirefoxMajorVersion(userAgent) {
   return Number.isFinite(major) ? major : null;
 }
 
-function isWindows81OrBelowUserAgent(ua) {
-  return /windows nt 6\.3|windows 8\.1|windows nt 6\.2|windows 8|windows nt 6\.1|windows 7|windows nt 6\.0|windows vista|windows nt 5\.2|windows nt 5\.1|windows xp|windows nt 5\.0|windows 2000|windows 98|windows 95|windows me|windows nt 4\.0/.test(ua);
+function isWindowsVistaOrBelowUserAgent(ua) {
+  return /windows nt 6\.0|windows vista|windows nt 5\.2|windows nt 5\.1|windows xp|windows nt 5\.0|windows 2000|windows 98|windows 95|windows me|windows nt 4\.0/.test(ua);
 }
 
 function extractIphoneOsVersion(userAgent) {
@@ -385,27 +385,27 @@ function getUnsupportedSystemFromUserAgent(userAgent, nowMs = Date.now(), platfo
     return 'Windows Mobile/Embedded (unsupported)';
   }
 
-  if (isWindows81OrBelowUserAgent(ua)) {
+  if (isWindowsVistaOrBelowUserAgent(ua)) {
     const firefoxMajor = extractFirefoxMajorVersion(userAgent || '');
     if (/\bsupermium\b/.test(ua)) {
-      return 'Supermium on Windows 8.1 or below';
+      return 'Supermium on Windows Vista or below';
     }
     if (/\bthorium\b/.test(ua)) {
-      return 'Thorium on Windows 8.1 or below';
+      return 'Thorium on Windows Vista or below';
     }
     if (/\bpale\s?moon\b|\bpalemoon\b/.test(ua)) {
-      return 'Pale Moon on Windows 8.1 or below';
+      return 'Pale Moon on Windows Vista or below';
     }
     if (/\bmypal\b/.test(ua)) {
-      return 'Mypal on Windows 8.1 or below';
+      return 'Mypal on Windows Vista or below';
     }
     if (/\bserpent\b|\bbasilisk\b|\bwaterfox\b|\bseamonkey\b|\bkmelon\b/.test(ua)) {
-      return 'Legacy browser on Windows 8.1 or below';
+      return 'Legacy browser on Windows Vista or below';
     }
     if (/\bfirefox\b/.test(ua) && firefoxMajor != null && firefoxMajor >= 115) {
-      return `Firefox ESR ${firefoxMajor} on Windows 8.1 or below`;
+      return `Firefox ESR ${firefoxMajor} on Windows Vista or below`;
     }
-    return 'Windows 8.1 or below';
+    return 'Windows Vista or below';
   }
 
   const androidVersion = extractAndroidVersion(userAgent || '');
