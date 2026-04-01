@@ -4,6 +4,7 @@ import React from "react";
 import "../../App.css";
 import { useLanguage } from "../../LanguageContext";
 import { Navigation } from "../../components/Navigation";
+import { Footer } from "../../components/Footer";
 
 export default function About() {
   const { t } = useLanguage();
