@@ -20,6 +20,8 @@ const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'u
 const adsLoader = read('src/components/AdSenseLoader.js');
 const chatbotWidget = read('src/components/ChatbotWidget.js');
 const layout = read('src/app/layout.js');
+const accessLayout = read('src/app/access/layout.js');
+const blockedLayout = read('src/app/blocked/layout.js');
 const privacyPolicy = read('src/app/privacy-policy/page.js');
 const adsTxt = read('public/ads.txt').trim();
 
@@ -70,6 +72,18 @@ if (!adsLoader.includes('setGlobalAdPause(true);')) {
   pass('AdSenseLoader explicitly pauses ad requests before eligibility checks.');
 }
 
+if (!adsLoader.includes('DISALLOWED_SCREEN_PATTERNS') || !adsLoader.includes('hasDisallowedScreenSignals')) {
+  fail('AdSenseLoader is missing under-construction/utility screen signal checks.');
+} else {
+  pass('AdSenseLoader includes disallowed screen signal checks.');
+}
+
+if (!adsLoader.includes('hasUtilityLikeLayout') || !adsLoader.includes('MINIMUM_TEXT_TO_LINK_RATIO')) {
+  fail('AdSenseLoader is missing utility/navigation-heavy layout checks.');
+} else {
+  pass('AdSenseLoader includes utility/navigation-heavy layout checks.');
+}
+
 if (!chatbotWidget.includes('const ADS_ELIGIBLE_PATHS = new Set([') || !chatbotWidget.includes('isAdEligibleArticlePage')) {
   fail('ChatbotWidget does not enforce suppression on ad-eligible pages.');
 } else {
@@ -86,6 +100,12 @@ if (!layout.includes('meta name="google-adsense-account"')) {
   fail('Layout is missing google-adsense-account meta declaration.');
 } else {
   pass('Layout includes google-adsense-account meta declaration.');
+}
+
+if (!accessLayout.includes('index: false') || !blockedLayout.includes('index: false')) {
+  fail('Access/Blocked routes are missing noindex metadata.');
+} else {
+  pass('Access/Blocked routes are marked noindex.');
 }
 
 if (!privacyPolicy.includes('policies.google.com/technologies/partner-sites')) {

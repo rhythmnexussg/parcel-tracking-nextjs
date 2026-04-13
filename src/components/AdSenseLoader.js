@@ -22,6 +22,18 @@ const MINIMUM_CONTENT_WORDS = 700;
 const MINIMUM_CONTENT_CHARACTERS = 4200;
 const MINIMUM_PARAGRAPH_COUNT = 6;
 const MINIMUM_HEADING_COUNT = 2;
+const MINIMUM_TEXT_TO_LINK_RATIO = 10;
+const MAXIMUM_FORM_COUNT = 1;
+
+const DISALLOWED_SCREEN_PATTERNS = [
+  /\bunder construction\b/i,
+  /\bcoming soon\b/i,
+  /\bmaintenance\b/i,
+  /\baccess blocked\b/i,
+  /\bverify you are human\b/i,
+  /\bcaptcha\b/i,
+  /\bpage not found\b/i,
+];
 
 function normalizePath(pathname) {
   if (!pathname || typeof pathname !== 'string') {
@@ -81,10 +93,13 @@ function getPublisherContentStats() {
 
   if (!root) {
     return {
+      root: null,
       wordCount: 0,
       characterCount: 0,
       paragraphCount: 0,
       headingCount: 0,
+      linkCount: 0,
+      formCount: 0,
     };
   }
 
@@ -93,13 +108,40 @@ function getPublisherContentStats() {
   const characterCount = text.length;
   const paragraphCount = root.querySelectorAll('p, li').length;
   const headingCount = root.querySelectorAll('h2, h3, h4').length;
+  const linkCount = root.querySelectorAll('a').length;
+  const formCount = root.querySelectorAll('form').length;
 
   return {
+    root,
     wordCount,
     characterCount,
     paragraphCount,
     headingCount,
+    linkCount,
+    formCount,
   };
+}
+
+function hasDisallowedScreenSignals(root) {
+  if (!root) {
+    return true;
+  }
+
+  const title = document.title || '';
+  const headingText = Array.from(root.querySelectorAll('h1, h2'))
+    .map((node) => node.textContent || '')
+    .join(' ');
+  const sampleText = (root.textContent || '').replace(/\s+/g, ' ').slice(0, 2200);
+  const signalText = `${title} ${headingText} ${sampleText}`;
+
+  return DISALLOWED_SCREEN_PATTERNS.some((pattern) => pattern.test(signalText));
+}
+
+function hasUtilityLikeLayout(stats) {
+  const linkBase = Math.max(1, stats.linkCount);
+  const textToLinkRatio = stats.wordCount / linkBase;
+
+  return textToLinkRatio < MINIMUM_TEXT_TO_LINK_RATIO || stats.formCount > MAXIMUM_FORM_COUNT;
 }
 
 export function AdSenseLoader() {
@@ -124,6 +166,8 @@ export function AdSenseLoader() {
       const isIndexable = !robotsMeta.includes('noindex');
       const blockedByOverlay = hasBlockingOverlay();
       const stats = getPublisherContentStats();
+      const blockedByScreenSignals = hasDisallowedScreenSignals(stats.root);
+      const blockedByUtilityLayout = hasUtilityLikeLayout(stats);
 
       const hasSubstantialPublisherContent =
         stats.wordCount >= MINIMUM_CONTENT_WORDS &&
@@ -131,7 +175,13 @@ export function AdSenseLoader() {
         stats.paragraphCount >= MINIMUM_PARAGRAPH_COUNT &&
         stats.headingCount >= MINIMUM_HEADING_COUNT;
 
-      setShouldFireAds(isIndexable && !blockedByOverlay && hasSubstantialPublisherContent);
+      setShouldFireAds(
+        isIndexable &&
+          !blockedByOverlay &&
+          !blockedByScreenSignals &&
+          !blockedByUtilityLayout &&
+          hasSubstantialPublisherContent
+      );
     }, 900);
     
     return () => {
