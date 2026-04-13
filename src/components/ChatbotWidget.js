@@ -7,6 +7,32 @@ import { useLanguage } from '../LanguageContext';
 
 const CHATBOT_NAME = 'Rhythm Bot';
 
+const ADS_ELIGIBLE_PATHS = new Set([
+  '/blog/singpost-epac',
+  '/blog/speedpost-ems',
+  '/blog/speedpost-express',
+  '/blog/us-pddp',
+  '/blog/eu-vat-ioss',
+  '/blog/uk-vat-hmrc',
+  '/blog/norway-voec',
+  '/blog/swiss-vat',
+  '/blog/phone-number-required',
+  '/blog/parcel-scams',
+  '/blog/usa-section-122',
+]);
+
+function normalizePath(pathname) {
+  if (!pathname || typeof pathname !== 'string') {
+    return '/';
+  }
+
+  if (pathname === '/') {
+    return '/';
+  }
+
+  return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+}
+
 const CHATBOT_WELCOME_TRANSLATIONS = {
   en: 'Hi, I am Rhythm Bot, your 24/7 AI virtual assistant. How can I assist you?',
   de: 'Hallo, ich bin Rhythm Bot, Ihr 24/7 KI-virtueller Assistent. Wie kann ich Ihnen helfen?',
@@ -140,8 +166,9 @@ export function ChatbotWidget() {
   const [isClientMounted, setIsClientMounted] = useState(false);
   const runtimePathname =
     pathname || (typeof window !== 'undefined' ? window.location.pathname : '');
-  const normalizedPathname = runtimePathname && runtimePathname !== '/' ? runtimePathname.replace(/\/+$/, '') : runtimePathname;
+  const normalizedPathname = normalizePath(runtimePathname);
   const isAccessStatusPage = normalizedPathname === '/access' || normalizedPathname === '/blocked';
+  const isAdEligibleArticlePage = ADS_ELIGIBLE_PATHS.has(normalizedPathname);
   const title = process.env.NEXT_PUBLIC_CHATBOT_TITLE || CHATBOT_NAME;
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -181,7 +208,7 @@ export function ChatbotWidget() {
     });
   }, [language]);
 
-  if (!isClientMounted || !enabled || isAccessStatusPage) {
+  if (!isClientMounted || !enabled || isAccessStatusPage || isAdEligibleArticlePage) {
     return null;
   }
 

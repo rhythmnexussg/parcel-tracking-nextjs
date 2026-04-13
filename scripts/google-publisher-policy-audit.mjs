@@ -18,6 +18,7 @@ const pass = (message) => {
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
 const adsLoader = read('src/components/AdSenseLoader.js');
+const chatbotWidget = read('src/components/ChatbotWidget.js');
 const layout = read('src/app/layout.js');
 const privacyPolicy = read('src/app/privacy-policy/page.js');
 const adsTxt = read('public/ads.txt').trim();
@@ -43,6 +44,36 @@ if (!adsLoader.includes('requestNonPersonalizedAds = 1')) {
   fail('Non-personalized ads default is missing in AdSenseLoader.');
 } else {
   pass('Non-personalized ads default is configured.');
+}
+
+const minimumWordsMatch = adsLoader.match(/const MINIMUM_CONTENT_WORDS = (\d+);/);
+if (!minimumWordsMatch) {
+  fail('Unable to parse MINIMUM_CONTENT_WORDS in AdSenseLoader.');
+} else if (Number(minimumWordsMatch[1]) < 700) {
+  fail(`Content word threshold is too low (${minimumWordsMatch[1]}). Use at least 700 words for policy safety.`);
+} else {
+  pass(`Content word threshold is strict (${minimumWordsMatch[1]} words).`);
+}
+
+const minimumCharactersMatch = adsLoader.match(/const MINIMUM_CONTENT_CHARACTERS = (\d+);/);
+if (!minimumCharactersMatch) {
+  fail('Unable to parse MINIMUM_CONTENT_CHARACTERS in AdSenseLoader.');
+} else if (Number(minimumCharactersMatch[1]) < 4200) {
+  fail(`Content character threshold is too low (${minimumCharactersMatch[1]}). Use at least 4200 characters for policy safety.`);
+} else {
+  pass(`Content character threshold is strict (${minimumCharactersMatch[1]} characters).`);
+}
+
+if (!adsLoader.includes('setGlobalAdPause(true);')) {
+  fail('AdSenseLoader does not explicitly pause ad requests before route/content checks.');
+} else {
+  pass('AdSenseLoader explicitly pauses ad requests before eligibility checks.');
+}
+
+if (!chatbotWidget.includes('const ADS_ELIGIBLE_PATHS = new Set([') || !chatbotWidget.includes('isAdEligibleArticlePage')) {
+  fail('ChatbotWidget does not enforce suppression on ad-eligible pages.');
+} else {
+  pass('ChatbotWidget suppression is configured for ad-eligible pages.');
 }
 
 if (!adsLoader.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')) {

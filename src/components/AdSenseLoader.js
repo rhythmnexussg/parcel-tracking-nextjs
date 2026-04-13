@@ -18,51 +18,131 @@ const ALLOWED_EXACT_PATHS = new Set([
   '/blog/parcel-scams',
   '/blog/usa-section-122',
 ]);
-const MINIMUM_CONTENT_WORDS = 320;
-const MINIMUM_CONTENT_CHARACTERS = 1800;
+const MINIMUM_CONTENT_WORDS = 700;
+const MINIMUM_CONTENT_CHARACTERS = 4200;
+const MINIMUM_PARAGRAPH_COUNT = 6;
+const MINIMUM_HEADING_COUNT = 2;
+
+function normalizePath(pathname) {
+  if (!pathname || typeof pathname !== 'string') {
+    return '/';
+  }
+
+  if (pathname === '/') {
+    return '/';
+  }
+
+  return pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+}
+
+function setGlobalAdPause(shouldPause) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.adsbygoogle = window.adsbygoogle || [];
+  window.adsbygoogle.pauseAdRequests = shouldPause ? 1 : 0;
+}
+
+function hasBlockingOverlay() {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  const candidates = Array.from(
+    document.querySelectorAll('[aria-modal="true"], [role="dialog"], .popup-overlay, .language-modal-overlay')
+  );
+
+  return candidates.some((node) => {
+    const style = window.getComputedStyle(node);
+    if (
+      style.display === 'none' ||
+      style.visibility === 'hidden' ||
+      style.pointerEvents === 'none' ||
+      Number(style.opacity || 1) === 0
+    ) {
+      return false;
+    }
+
+    if (style.position !== 'fixed' && style.position !== 'sticky') {
+      return false;
+    }
+
+    const rect = node.getBoundingClientRect();
+    return rect.width >= window.innerWidth * 0.6 && rect.height >= window.innerHeight * 0.35;
+  });
+}
+
+function getPublisherContentStats() {
+  const root =
+    document.querySelector('.blog-content-card') ||
+    document.querySelector('article') ||
+    document.querySelector('main');
+
+  if (!root) {
+    return {
+      wordCount: 0,
+      characterCount: 0,
+      paragraphCount: 0,
+      headingCount: 0,
+    };
+  }
+
+  const text = (root.textContent || '').replace(/\s+/g, ' ').trim();
+  const wordCount = text.split(' ').filter(Boolean).length;
+  const characterCount = text.length;
+  const paragraphCount = root.querySelectorAll('p, li').length;
+  const headingCount = root.querySelectorAll('h2, h3, h4').length;
+
+  return {
+    wordCount,
+    characterCount,
+    paragraphCount,
+    headingCount,
+  };
+}
 
 export function AdSenseLoader() {
   const pathname = usePathname();
   const [shouldFireAds, setShouldFireAds] = useState(false);
 
   useEffect(() => {
+    const normalizedPath = normalizePath(pathname);
+
+    // Always pause before evaluating the page so ad requests do not leak to non-content screens.
+    setShouldFireAds(false);
+    setGlobalAdPause(true);
+
     // If not a permitted path, disable ads via pauseAdRequests.
-    if (!ALLOWED_EXACT_PATHS.has(pathname)) {
-      setShouldFireAds(false);
+    if (!ALLOWED_EXACT_PATHS.has(normalizedPath)) {
       return;
     }
 
     // Delay evaluation slightly to let DOM render
     const timer = setTimeout(() => {
-      const isIndexable = !document.querySelector('meta[name="robots"]')?.getAttribute('content')?.toLowerCase().includes('noindex');
-      
-      const selectors = ['main', 'article', '.blog-content-card', '.about-content-card', '.faq-content'];
-      const text = selectors
-        .map((selector) => Array.from(document.querySelectorAll(selector)).map((node) => node.textContent || '').join(' '))
-        .join(' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-        
-      const wordCount = text.split(' ').filter(Boolean).length;
-      
-      // If it has enough text and is allowed, we can fire ads
-      if (isIndexable && wordCount >= MINIMUM_CONTENT_WORDS && text.length >= MINIMUM_CONTENT_CHARACTERS) {
-        setShouldFireAds(true);
-      } else {
-        setShouldFireAds(false);
-      }
-    }, 500);
+      const robotsMeta = document.querySelector('meta[name="robots"]')?.getAttribute('content')?.toLowerCase() || '';
+      const isIndexable = !robotsMeta.includes('noindex');
+      const blockedByOverlay = hasBlockingOverlay();
+      const stats = getPublisherContentStats();
+
+      const hasSubstantialPublisherContent =
+        stats.wordCount >= MINIMUM_CONTENT_WORDS &&
+        stats.characterCount >= MINIMUM_CONTENT_CHARACTERS &&
+        stats.paragraphCount >= MINIMUM_PARAGRAPH_COUNT &&
+        stats.headingCount >= MINIMUM_HEADING_COUNT;
+
+      setShouldFireAds(isIndexable && !blockedByOverlay && hasSubstantialPublisherContent);
+    }, 900);
     
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      setGlobalAdPause(true);
+    };
   }, [pathname]);
 
-  // Use an effect to sync the pauseAdRequests global state 
+  // Use an effect to sync the pauseAdRequests global state.
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.adsbygoogle = window.adsbygoogle || [];
-      // If we shouldn't fire ads, pause ad requests BEFORE they happen.
-      window.adsbygoogle.pauseAdRequests = shouldFireAds ? 0 : 1;
-    }
+    setGlobalAdPause(!shouldFireAds);
   }, [shouldFireAds]);
 
   // WE NEVER RETURN NULL HERE ! The user expressly required:
